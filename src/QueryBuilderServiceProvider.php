@@ -2,9 +2,9 @@
 
 namespace ACTTraining\QueryBuilder;
 
+use ACTTraining\QueryBuilder\Commands\QueryBuilderCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use ACTTraining\QueryBuilder\Commands\QueryBuilderCommand;
 
 class QueryBuilderServiceProvider extends PackageServiceProvider
 {
