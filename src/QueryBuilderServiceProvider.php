@@ -19,7 +19,7 @@ class QueryBuilderServiceProvider extends PackageServiceProvider
             ->name('query-builder')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_query-builder_table')
+//            ->hasMigration('create_query-builder_table')
             ->hasCommand(QueryBuilderCommand::class);
     }
 }

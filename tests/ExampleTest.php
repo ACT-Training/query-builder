@@ -1,5 +1,9 @@
 <?php
 
+use ACTTraining\QueryBuilder\Commands\QueryBuilderCommand;
+use function Pest\Laravel\artisan;
+
 it('can test', function () {
-    expect(true)->toBeTrue();
+    artisan(QueryBuilderCommand::class)
+        ->assertExitCode(0);
 });
