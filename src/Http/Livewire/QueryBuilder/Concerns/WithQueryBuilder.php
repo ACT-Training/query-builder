@@ -158,10 +158,10 @@ trait WithQueryBuilder
 
         return match ($criteria['operation']) {
             'not_equals' => new CompareCriteria($column, $value, '!='),
-            'contains' => new LikeCriteria($column, '%' . $value . '%'),
-            'not_contains' => new LikeCriteria($column, '%' . $value . '%', 'not like'),
-            'starts_with' => new LikeCriteria($column, $value . '%'),
-            'ends_with' => new LikeCriteria($column, '%' . $value),
+            'contains' => new LikeCriteria($column, '%'.$value.'%'),
+            'not_contains' => new LikeCriteria($column, '%'.$value.'%', 'not like'),
+            'starts_with' => new LikeCriteria($column, $value.'%'),
+            'ends_with' => new LikeCriteria($column, '%'.$value),
             'is_true' => new BooleanCriteria($column, true),
             'is_false' => new BooleanCriteria($column, false),
             'is' => new DateCriteria($column, $value, '='),
