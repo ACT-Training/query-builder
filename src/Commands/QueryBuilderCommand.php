@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace ACTTraining\QueryBuilder\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class QueryBuilderCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'query-builder';
 
     public $description = 'My command';
 
