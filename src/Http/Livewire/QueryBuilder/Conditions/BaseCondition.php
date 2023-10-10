@@ -4,6 +4,7 @@ namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Conditions;
 
 use Illuminate\Support\Str;
 
+/** @phpstan-consistent-constructor */
 class BaseCondition
 {
     public string $key;

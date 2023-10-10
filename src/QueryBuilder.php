@@ -54,6 +54,7 @@ abstract class QueryBuilder extends Component
 
     public function data(): Collection|LengthAwarePaginator|array|\Illuminate\Pagination\LengthAwarePaginator
     {
+        /* @phpstan-ignore-next-line */
         $query = $this
             ->query()
             ->apply($this->getCriteriaCollection($this->getCriteriaArray()))

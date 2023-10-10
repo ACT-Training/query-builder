@@ -7,6 +7,7 @@ namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\CollectionTrait;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Contracts\CriteriaInterface;
 
+/** @phpstan-consistent-constructor */
 class AllOfCriteriaCollection implements CriteriaInterface
 {
     use CollectionTrait;
