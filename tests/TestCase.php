@@ -2,9 +2,9 @@
 
 namespace ACTTraining\QueryBuilder\Tests;
 
+use ACTTraining\QueryBuilder\QueryBuilderServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use ACTTraining\QueryBuilder\QueryBuilderServiceProvider;
 
 class TestCase extends Orchestra
 {
