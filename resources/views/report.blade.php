@@ -12,6 +12,20 @@
         </div>
     @endif
 
+    @if($this->isToolbarVisible())
+        <div class="p-4 flex items-center gap-2 justify-end bg-gray-50">
+
+            @if($this->isColumnSelectorVisible())
+                @include('query-builder::components.columns-selector')
+            @endif
+
+            @if($this->isRowSelectorVisible())
+                @include('query-builder::components.rows-selector')
+            @endif
+
+        </div>
+    @endif
+
     @if($this->data()->count())
 
         <div class="relative overflow-x-auto">
@@ -20,33 +34,37 @@
                 <tr class="border-y border-gray-200">
 
                     @foreach ($this->columns() as $column)
-                        <th @if ($column->isSortable()) wire:click="sort('{{ $column->key }}')" @endif>
-                            @if ($column->showHeader)
-                                <div @class([
+                        @if(in_array($column->key, $displayColumns))
+                            <th @if ($column->isSortable()) wire:click="sort('{{ $column->key }}')" @endif>
+                                @if ($column->showHeader)
+                                    <div @class([
                             'flex items-center gap-1 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 ' . $column->justify,
                             'cursor-pointer' => $column->isSortable(),
                         ])>
-                                    {{ $column->label }}
-                                    @if ($sortBy === $column->key)
-                                        @if ($sortDirection === 'asc')
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                                 fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                      d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
-                                                      clip-rule="evenodd"/>
-                                            </svg>
-                                        @else
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                                 fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                      d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-                                                      clip-rule="evenodd"/>
-                                            </svg>
+                                        {{ $column->label }}
+                                        @if ($sortBy === $column->key)
+                                            @if ($sortDirection === 'asc')
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                     viewBox="0 0 20 20"
+                                                     fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                          d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
+                                                          clip-rule="evenodd"/>
+                                                </svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                     viewBox="0 0 20 20"
+                                                     fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                          d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
+                                                          clip-rule="evenodd"/>
+                                                </svg>
+                                            @endif
                                         @endif
-                                    @endif
-                                </div>
-                            @endif
-                        </th>
+                                    </div>
+                                @endif
+                            </th>
+                        @endif
                     @endforeach
                 </tr>
                 </thead>
@@ -58,6 +76,7 @@
                                 'hover:bg-gray-50 cursor-pointer' => $this->isClickable(),
                             ])>
                         @foreach ($this->columns() as $column)
+                            @if(in_array($column->key, $displayColumns))
                             <td>
                                 <div class="py-3 px-6 flex items-center">
                                     <x-dynamic-component
@@ -69,6 +88,7 @@
                                     </x-dynamic-component>
                                 </div>
                             </td>
+                            @endif
                         @endforeach
                     </tr>
                 @endforeach

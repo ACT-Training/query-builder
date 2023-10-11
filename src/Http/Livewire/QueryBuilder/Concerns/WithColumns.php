@@ -18,6 +18,16 @@ trait WithColumns
         return [];
     }
 
+    public function columnsForSelector(): array
+    {
+        return $this->resolveColumns()->pluck('label', 'key')->toArray();
+    }
+
+    public function allColumns(): array
+    {
+        return $this->resolveColumns()->pluck('key')->toArray();
+    }
+
     protected function resolveColumns(): Enumerable
     {
         return collect($this->columns());
