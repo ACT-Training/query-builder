@@ -15,13 +15,6 @@ You can install the package via composer:
 composer require act-training/query-builder
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="query-builder-migrations"
-php artisan migrate
-```
-
 You can publish the config file with:
 
 ```bash
