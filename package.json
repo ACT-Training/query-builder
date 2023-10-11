@@ -12,7 +12,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ACT-Training/query-builder.git"
+  },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@act-training"
+    "registry": "https://npm.pkg.github.com/@ACT-Training"
   }
 }
