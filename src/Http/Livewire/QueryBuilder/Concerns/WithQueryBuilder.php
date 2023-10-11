@@ -127,8 +127,8 @@ trait WithQueryBuilder
     protected function getCriteriaCollection($criteriaArray): OneOfCriteriaCollection|AllOfCriteriaCollection
     {
         return match ($this->andOr) {
-            'and' => CriteriaCollection::allOf($criteriaArray),
             'or' => CriteriaCollection::oneOf($criteriaArray),
+            default => CriteriaCollection::allOf($criteriaArray),
         };
     }
 

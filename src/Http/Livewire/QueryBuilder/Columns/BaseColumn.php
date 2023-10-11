@@ -5,6 +5,7 @@ namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Columns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
 use Illuminate\Support\Str;
 
+/** @phpstan-consistent-constructor */
 class BaseColumn
 {
     use WithSorting;
@@ -19,13 +20,10 @@ class BaseColumn
 
     public string $component = 'columns.column';
 
-    protected string $code;
-
     public function __construct($key, $label)
     {
         $this->key = $key;
         $this->label = $label;
-        $this->code = $code ?? Str::of($key)->replace('.', '_')->toString();
     }
 
     public static function make($label, $key = null): static
