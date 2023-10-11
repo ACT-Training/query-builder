@@ -49,6 +49,10 @@ abstract class QueryBuilder extends Component
 
     public function config(): void
     {
+        $this
+            ->displayToolbar()
+            ->displayRowSelector()
+            ->displayColumnSelector();
     }
 
     public function enableQueryBuilder(bool $enableQueryBuilder = true): static
