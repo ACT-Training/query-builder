@@ -20,6 +20,8 @@ class BaseColumn
 
     public string $component = 'columns.column';
 
+    public bool $hideFromSelector = false;
+
     public function __construct($key, $label)
     {
         $this->key = $key;
@@ -45,6 +47,13 @@ class BaseColumn
     public function hideHeader(): static
     {
         $this->showHeader = false;
+
+        return $this;
+    }
+
+    public function hideFromSelector(): static
+    {
+        $this->hideFromSelector = true;
 
         return $this;
     }

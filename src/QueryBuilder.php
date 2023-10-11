@@ -7,6 +7,7 @@ namespace ACTTraining\QueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -21,6 +22,7 @@ abstract class QueryBuilder extends Component
     use WithPagination;
     use WithQueryBuilder;
     use WithRowClick;
+    use WithToolbar;
 
     public int $perPage = 10;
 
@@ -32,6 +34,8 @@ abstract class QueryBuilder extends Component
 
     public bool $enableQueryBuilder = true;
 
+    public array $displayColumns = [];
+
     protected $listeners = [
         'refreshTable' => '$refresh',
     ];
@@ -39,10 +43,16 @@ abstract class QueryBuilder extends Component
     public function booted(): void
     {
         $this->config();
+
+        $this->displayColumns = $this->allColumns();
     }
 
     public function config(): void
     {
+        $this
+            ->displayToolbar()
+            ->displayRowSelector()
+            ->displayColumnSelector();
     }
 
     public function enableQueryBuilder(bool $enableQueryBuilder = true): static

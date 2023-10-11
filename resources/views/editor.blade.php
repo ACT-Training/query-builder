@@ -58,7 +58,7 @@ bg-white rounded-lg text-slate-400 shadow">
                             @endif
 
                             @if($criterion['inputType'] === 'date')
-                                @include('query-builder::date-input')
+                                @include('query-builder::components.date-input')
                             @endif
 
                         @endif
@@ -87,7 +87,7 @@ bg-white rounded-lg text-slate-400 shadow">
                     <x-tabler-plus class="w-4 h-auto"/> Add</span>
 
                 <div class="flex items-center gap-2">
-                    @include('query-builder::condition-selector')
+                    @include('query-builder::components.condition-selector')
                 </div>
 
             </div>
