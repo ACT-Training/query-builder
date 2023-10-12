@@ -2,12 +2,14 @@
 
 namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Columns;
 
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
 use Illuminate\Support\Str;
 
 /** @phpstan-consistent-constructor */
 class BaseColumn
 {
+    use WithSearch;
     use WithSorting;
 
     public string $key;
@@ -21,6 +23,8 @@ class BaseColumn
     public string $component = 'columns.column';
 
     public bool $hideFromSelector = false;
+
+    public bool $isSearchable = false;
 
     public function __construct($key, $label)
     {

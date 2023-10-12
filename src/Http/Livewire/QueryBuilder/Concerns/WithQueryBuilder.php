@@ -132,11 +132,15 @@ trait WithQueryBuilder
         };
     }
 
-    protected function getCriteriaArray(): array
+    protected function getCriteriaArray($criteria = null): array
     {
         $classArray = [];
 
-        foreach ($this->criteria as $criterion) {
+        if ($criteria === null) {
+            $criteria = $this->criteria;
+        }
+
+        foreach ($criteria as $criterion) {
             $class = $this->getCriteriaClass($criterion);
             if ($class !== null) {
                 $classArray[] = $class;
@@ -146,8 +150,8 @@ trait WithQueryBuilder
         return $classArray;
     }
 
-    private function getCriteriaClass($criteria): CompareCriteria|LikeCriteria|BooleanCriteria|DateCriteria|NullCriteria|null
-    {
+    private function getCriteriaClass($criteria
+    ): CompareCriteria|LikeCriteria|BooleanCriteria|DateCriteria|NullCriteria|null {
         $column = $criteria['column'];
         $value = $criteria['value'] ?? null;
         $extraValue = $criteria['extraValue'] ?? null;

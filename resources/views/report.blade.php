@@ -13,16 +13,23 @@
     @endif
 
     @if($this->isToolbarVisible())
-        <div class="p-4 flex items-center gap-2 justify-end bg-gray-50">
+        <div class="p-4 flex items-center gap-2 justify-between bg-gray-50">
 
-            @if($this->isColumnSelectorVisible())
-                @include('query-builder::components.columns-selector')
-            @endif
+            <div class="p-4 flex items-center gap-2">
+                @if($this->isSearchVisible())
+                    @include('query-builder::components.search')
+                @endif
+            </div>
 
-            @if($this->isRowSelectorVisible())
-                @include('query-builder::components.rows-selector')
-            @endif
+            <div class="p-4 flex items-center gap-2">
+                @if($this->isColumnSelectorVisible())
+                    @include('query-builder::components.columns-selector')
+                @endif
 
+                @if($this->isRowSelectorVisible())
+                    @include('query-builder::components.rows-selector')
+                @endif
+            </div>
         </div>
     @endif
 
@@ -42,6 +49,7 @@
                             'cursor-pointer' => $column->isSortable(),
                         ])>
                                         {{ $column->label }}
+
                                         @if ($sortBy === $column->key)
                                             @if ($sortDirection === 'asc')
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
@@ -61,6 +69,11 @@
                                                 </svg>
                                             @endif
                                         @endif
+
+                                        @if($this->isSearchableIconVisible() && $column->isSearchable())
+                                            <x-tabler-search class="w-4 h-4 text-gray-300"/>
+                                        @endif
+
                                     </div>
                                 @endif
                             </th>
@@ -77,17 +90,17 @@
                             ])>
                         @foreach ($this->columns() as $column)
                             @if(in_array($column->key, $displayColumns))
-                            <td>
-                                <div class="py-3 px-6 flex items-center">
-                                    <x-dynamic-component
-                                            :component="$column->component"
-                                            :value="$column->getValue($row)"
-                                            :column="$column"
-                                            :row="$row"
-                                    >
-                                    </x-dynamic-component>
-                                </div>
-                            </td>
+                                <td>
+                                    <div class="py-3 px-6 flex items-center">
+                                        <x-dynamic-component
+                                                :component="$column->component"
+                                                :value="$column->getValue($row)"
+                                                :column="$column"
+                                                :row="$row"
+                                        >
+                                        </x-dynamic-component>
+                                    </div>
+                                </td>
                             @endif
                         @endforeach
                     </tr>

@@ -31,7 +31,7 @@
                 :aria-expanded="open"
                 :aria-controls="$id('dropdown-button')"
                 type="button"
-                class="flex items-center gap-2 bg-white px-5 py-2.5 rounded-md shadow"
+                class="flex items-center gap-2 bg-white text-gray-600 text-sm border border-gray-300 px-5 py-2.5 rounded-md shadow outline-none"
         >
             {{ $perPage }}
 
@@ -52,21 +52,12 @@
                 class="absolute right-0 mt-2 w-24 rounded-md bg-white shadow-md z-50"
         >
             <ul>
-                <li @click="open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500">
-                    <input id="row-10" type="radio" wire:model="perPage" value="10" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="row-10" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">10</label>
-                </li>
-
-                <li @click="open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500">
-                    <input id="row-25" type="radio" wire:model="perPage" value="25" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="row-25" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">25</label>
-                </li>
-
-                <li @click="open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500">
-                    <input id="row-50" type="radio" wire:model="perPage" value="50" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="row-50" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">50</label>
-                </li>
-
+                @foreach($rowOptions as $rowOption)
+                    <li @click="open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2 text-left text-sm hover:bg-gray-50 disabled:text-gray-500">
+                        <input id="row-{{ $rowOption }}" type="radio" wire:model="perPage" value="{{ $rowOption }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="row-{{ $rowOption }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $rowOption }}</label>
+                    </li>
+                @endforeach
             </ul>
 
         </div>
