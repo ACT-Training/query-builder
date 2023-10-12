@@ -11,7 +11,7 @@ class BaseCriteria implements CriteriaInterface
     {
     }
 
-    protected function applyWhereCondition($query, $field, $condition): void
+    public function applyWhereCondition($query, $field, $condition): void
     {
         if (Str::contains($field, '.')) {
             $parts = explode('.', $field);
