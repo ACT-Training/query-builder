@@ -9,6 +9,7 @@ use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
@@ -25,6 +26,7 @@ abstract class QueryBuilder extends Component
     use WithQueryBuilder;
     use WithRowClick;
     use WithSearch;
+    use WithSelecting;
     use WithToolbar;
 
     public int $perPage = 10;
@@ -40,6 +42,7 @@ abstract class QueryBuilder extends Component
     public array $displayColumns = [];
 
     public array $rowOptions = [10, 25, 50];
+
 
     protected $listeners = [
         'refreshTable' => '$refresh',
