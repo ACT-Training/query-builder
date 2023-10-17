@@ -59,7 +59,7 @@ trait WithSearch
         return $searchableKeys->toArray();
     }
 
-    public function updatedSearchBy($value): void
+    public function updatedSearchBy(): void
     {
         $this->resetPage();
     }
