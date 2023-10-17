@@ -42,8 +42,10 @@
 
                     <th class="p-0">
                         <div class="pl-6 flex items-center">
-                            <input wire:model="selectPage" id="checkbox-select-page" type="checkbox"  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="checkbox-select-page" class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+                            <input wire:model="selectPage" id="checkbox-select-page" type="checkbox"
+                                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="checkbox-select-page"
+                                   class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
                         </div>
                     </th>
 
@@ -89,20 +91,39 @@
                 </tr>
                 </thead>
                 <tbody>
+                @if($selectPage && $this->data()->count() < $this->data()->total())
+                    <tr class="bg-gray-100" wire:key="row-message">
+                        <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
+                            @unless($selectAll)
+                                <div>
+                                    <span>You have selected <span
+                                                class="font-bold">{{ count($selectedRows) }} {{ Str::of('row')->plural(count($selectedRows))  }}</span>. Do you want to select all {{ $this->data()->total() }}?</span>
+                                    <button wire:click="selectAll" class="ml-2 text-blue-500 hover:text-blue-600">Select all
+                                    </button>
+                                </div>
+                            @else
+                                <span>You have selected all {{ $this->data()->total() }} {{ Str::of('row')->plural(count($selectedRows))  }}.</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endif
                 @foreach ($this->data() as $row)
                     <tr @if($this->isClickable())
                             wire:click="rowClick('{{ $row->id }}')"
                         @endif
                         wire:key="row-{{ $row->id }}"
-                        @class([
-                            'bg-white border-b',
-                            'hover:bg-gray-50 cursor-pointer' => $this->isClickable(),
-                        ])>
+                            @class([
+                                'bg-white border-b',
+                                'hover:bg-gray-50 cursor-pointer' => $this->isClickable(),
+                            ])>
 
                         <td class="p-0">
                             <div class="pl-6 flex items-center">
-                                <input wire:model="selectedRows" id="checkbox-{{ $row->id }}" type="checkbox" value="{{ $row->id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                <label for="checkbox-{{ $row->id }}" class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+                                <input wire:model="selectedRows" id="checkbox-{{ $row->id }}" type="checkbox"
+                                       value="{{ $row->id }}"
+                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checkbox-{{ $row->id }}"
+                                       class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
                             </div>
                         </td>
 

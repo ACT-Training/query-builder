@@ -43,7 +43,6 @@ abstract class QueryBuilder extends Component
 
     public array $rowOptions = [10, 25, 50];
 
-
     protected $listeners = [
         'refreshTable' => '$refresh',
     ];
@@ -122,6 +121,10 @@ abstract class QueryBuilder extends Component
 
     public function render(): Factory|View
     {
+        if ($this->selectAll) {
+            $this->selectedRows = $this->data()->pluck('id')->toArray();
+        }
+
         return view('query-builder::report');
     }
 }
