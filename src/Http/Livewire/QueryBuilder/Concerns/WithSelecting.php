@@ -13,7 +13,7 @@ trait WithSelecting
     public function updatedSelectPage($value): void
     {
         $this->selectedRows = $value
-            ? $this->data()->pluck('id')->toArray()
+            ? $this->rows->pluck('id')->toArray()
             : [];
 
         if ($this->selectAll && ! $value) {

@@ -3,7 +3,7 @@
         <div class="m-4">
             @include('query-builder::editor')
 
-            @if(! $this->data()->count())
+            @if(! $this->rows->count())
                 <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
                      role="alert">
                     <span class="font-bold">No records found have been found.</span> Try changing your query settings.
@@ -33,7 +33,7 @@
         </div>
     @endif
 
-    @if($this->data()->count())
+    @if($this->rows->count())
 
         <div class="relative overflow-x-auto">
             <table class="w-full text-sm text-left text-gray-500">
@@ -91,23 +91,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                @if($selectPage && $this->data()->count() < $this->data()->total())
+                @if($selectPage && $this->rows->count() < $this->rows->total())
                     <tr class="bg-gray-100" wire:key="row-message">
                         <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
                             @unless($selectAll)
                                 <div>
                                     <span>You have selected <span
-                                                class="font-bold">{{ count($selectedRows) }} {{ Str::of('row')->plural(count($selectedRows))  }}</span>. Do you want to select all {{ $this->data()->total() }}?</span>
+                                                class="font-bold">{{ count($selectedRows) }} {{ Str::of('row')->plural(count($selectedRows))  }}</span>. Do you want to select all {{ $this->rows->total() }}?</span>
                                     <button wire:click="selectAll" class="ml-2 text-blue-500 hover:text-blue-600">Select all
                                     </button>
                                 </div>
                             @else
-                                <span>You have selected all {{ $this->data()->total() }} {{ Str::of('row')->plural(count($selectedRows))  }}.</span>
+                                <span>You have selected all {{ $this->rows->total() }} {{ Str::of('row')->plural(count($selectedRows))  }}.</span>
                             @endif
                         </td>
                     </tr>
                 @endif
-                @foreach ($this->data() as $row)
+                @foreach ($this->rows as $row)
                     <tr @if($this->isClickable())
                             wire:click="rowClick('{{ $row->id }}')"
                         @endif
@@ -148,9 +148,9 @@
             </table>
         </div>
 
-        @if($this->data()->hasPages())
+        @if($this->rows->hasPages())
             <div class="border-b border-gray-200 shadow-sm">
-                <div class="py-2 px-6">{{ $this->data()->links() }}</div>
+                <div class="py-2 px-6">{{ $this->rows->links() }}</div>
             </div>
         @endif
     @endif

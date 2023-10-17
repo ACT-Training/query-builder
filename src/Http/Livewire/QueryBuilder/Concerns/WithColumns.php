@@ -25,7 +25,14 @@ trait WithColumns
 
     public function allColumns(): array
     {
+        $this->useCachedRows();
+
         return $this->resolveColumns()->pluck('key')->toArray();
+    }
+
+    public function updatedDisplayColumns(): void
+    {
+        $this->useCachedRows();
     }
 
     protected function resolveColumns(): Enumerable

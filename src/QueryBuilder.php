@@ -5,22 +5,24 @@
 namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection\CriteriaCollection;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
-use Livewire\WithPagination;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 abstract class QueryBuilder extends Component
 {
+    use WithCaching;
     use WithColumns;
     use WithPagination;
     use WithQueryBuilder;
@@ -29,13 +31,9 @@ abstract class QueryBuilder extends Component
     use WithSelecting;
     use WithToolbar;
 
-    public int $perPage = 10;
-
     public string $sortBy = '';
 
     public string $sortDirection = 'asc';
-
-    public bool $paginate = true;
 
     public bool $enableQueryBuilder = true;
 
@@ -47,13 +45,15 @@ abstract class QueryBuilder extends Component
         'refreshTable' => '$refresh',
     ];
 
+    //    protected $queryString = ['perPage', 'sortBy', 'sortDirection', 'searchBy'];
+
     abstract public function query(): Builder;
 
     public function booted(): void
     {
         $this->config();
 
-        $this->displayColumns = $this->allColumns();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
 
     public function config(): void
@@ -73,14 +73,14 @@ abstract class QueryBuilder extends Component
         return $this;
     }
 
-    public function data(): Collection|LengthAwarePaginator|array|\Illuminate\Pagination\LengthAwarePaginator
+    public function getRowsQueryProperty()
     {
         /* @phpstan-ignore-next-line */
         $query = $this
             ->query()
             ->apply($this->getCriteriaCollection($this->getCriteriaArray()));
 
-        if ($this->searchBy !== '') {
+        if ($this->searchBy && $this->searchBy !== '') {
             $criteria = [];
             foreach ($this->getSearchableColumns() as $column) {
                 $criteria[] = [
@@ -97,11 +97,18 @@ abstract class QueryBuilder extends Component
             $query->orderBy($this->sortBy, $this->sortDirection);
         });
 
-        if ($this->paginate) {
-            return $query->paginate($this->perPage);
-        }
+        return $query;
+    }
 
-        return $query->get();
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
+        });
     }
 
     public function sort($key): void
@@ -122,7 +129,7 @@ abstract class QueryBuilder extends Component
     public function render(): Factory|View
     {
         if ($this->selectAll) {
-            $this->selectedRows = $this->data()->pluck('id')->toArray();
+            $this->selectedRows = $this->rows->pluck('id')->toArray();
         }
 
         return view('query-builder::report');
