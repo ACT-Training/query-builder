@@ -22,6 +22,11 @@
             </div>
 
             <div class="p-4 flex items-center gap-2">
+
+                @if($this->areActionsVisible())
+                    @include('query-builder::components.actions')
+                @endif
+
                 @if($this->isColumnSelectorVisible())
                     @include('query-builder::components.columns-selector')
                 @endif
