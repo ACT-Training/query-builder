@@ -19,6 +19,8 @@ trait WithSelecting
         if ($this->selectAll && ! $value) {
             $this->selectAll = false;
         }
+
+        $this->emitSelf('refreshTable');
     }
 
     public function updatedSelectedRows(): void
@@ -30,5 +32,12 @@ trait WithSelecting
     public function selectAll(): void
     {
         $this->selectAll = ! $this->selectAll;
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selectAll = false;
+        $this->selectPage = false;
+        $this->selectedRows = [];
     }
 }

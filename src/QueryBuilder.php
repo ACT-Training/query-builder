@@ -5,6 +5,7 @@
 namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection\CriteriaCollection;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
@@ -12,16 +13,19 @@ use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilde
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 abstract class QueryBuilder extends Component
 {
+    use WithActions;
     use WithCaching;
     use WithColumns;
     use WithPagination;
@@ -29,11 +33,10 @@ abstract class QueryBuilder extends Component
     use WithRowClick;
     use WithSearch;
     use WithSelecting;
+    use WithSorting;
     use WithToolbar;
 
-    public string $sortBy = '';
-
-    public string $sortDirection = 'asc';
+    protected string $model = Model::class;
 
     public bool $enableQueryBuilder = true;
 
@@ -45,7 +48,7 @@ abstract class QueryBuilder extends Component
         'refreshTable' => '$refresh',
     ];
 
-    //    protected $queryString = ['perPage', 'sortBy', 'sortDirection', 'searchBy'];
+    protected $queryString = ['perPage'];
 
     abstract public function query(): Builder;
 
@@ -54,6 +57,7 @@ abstract class QueryBuilder extends Component
         $this->config();
 
         $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
+
     }
 
     public function config(): void
@@ -111,19 +115,11 @@ abstract class QueryBuilder extends Component
         });
     }
 
-    public function sort($key): void
+    protected function model(): Model
     {
-        $this->resetPage();
+        $model = $this->model;
 
-        if ($this->sortBy === $key) {
-            $direction = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-            $this->sortDirection = $direction;
-
-            return;
-        }
-
-        $this->sortBy = $key;
-        $this->sortDirection = 'asc';
+        return app($model);
     }
 
     public function render(): Factory|View
