@@ -1,8 +1,7 @@
 <div class="mb-4">
 
     @if (! count($criteria))
-        <div class="flex justify-between items-center p-2 mb-4 text-sm font-medium leading-5
-bg-white rounded-lg text-slate-400 shadow">
+        <div class="flex justify-between items-center p-2 mb-4 text-sm font-medium leading-5 bg-white rounded-lg text-slate-400 shadow">
             <span wire:click="addCriteria"
                   class="flex items-center gap-1 text-gray-500 hover:text-flamingo-500 text-sm cursor-pointer"><x-tabler-plus
                         class="w-4 h-auto"/> Add a new condition</span>

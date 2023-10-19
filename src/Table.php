@@ -4,21 +4,17 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection\CriteriaCollection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithActions;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -26,6 +22,7 @@ use Psr\Container\NotFoundExceptionInterface;
 abstract class Table extends Component
 {
     use WithColumns;
+    use WithFilters;
     use WithPagination;
     use WithRowClick;
     use WithSorting;
@@ -35,8 +32,6 @@ abstract class Table extends Component
     protected $listeners = [
         'refreshTable' => '$refresh',
     ];
-
-    protected $queryString = ['perPage'];
 
     abstract public function query(): Builder;
 
@@ -51,12 +46,33 @@ abstract class Table extends Component
         //
     }
 
-
     public function getRowsQueryProperty()
     {
-       return $this->query()->when($this->sortBy !== '', function ($query) {
+        $query = $this->query()->when($this->sortBy !== '', function ($query) {
             $query->orderBy($this->sortBy, $this->sortDirection);
         });
+
+        $dottedFilterValue = Arr::dot($this->filterValues);
+
+        foreach ($this->filters() as $filter) {
+            $value = $dottedFilterValue[$filter->code()] ?? null;
+
+            $query->when($value !== null, function ($query) use ($filter, $value) {
+                $value = $filter->parseValue($value);
+                if (Str::contains($filter->key(), '.')) {
+                    $relation = Str::beforeLast($filter->key(), '.');
+                    $column = Str::afterLast($filter->key(), '.');
+
+                    $query->whereHas($relation, function ($query) use ($filter, $value, $column) {
+                        $query->where($column, $filter->operator(), $value);
+                    });
+                } else {
+                    $query->where($filter->key(), $filter->operator(), $value);
+                }
+            });
+        }
+
+        return $query;
     }
 
     /**
