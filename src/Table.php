@@ -4,17 +4,10 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection\CriteriaCollection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithActions;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,10 +44,9 @@ abstract class Table extends Component
         //
     }
 
-
     public function getRowsQueryProperty()
     {
-       return $this->query()->when($this->sortBy !== '', function ($query) {
+        return $this->query()->when($this->sortBy !== '', function ($query) {
             $query->orderBy($this->sortBy, $this->sortDirection);
         });
     }
