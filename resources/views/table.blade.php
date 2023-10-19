@@ -51,7 +51,7 @@
                         @endforeach
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody wire:loading.class="opacity-50">
 
                     @foreach ($this->rows as $row)
                         <tr @if($this->isClickable())
