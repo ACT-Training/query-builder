@@ -2,9 +2,7 @@
 
     <div>
         @if ($this->areFiltersAvailable())
-            <div class="m-2 mb-4 bg-white rounded shadow">
-                @include('query-builder::filters')
-            </div>
+            @include('query-builder::filters')
         @endif
     </div>
 
