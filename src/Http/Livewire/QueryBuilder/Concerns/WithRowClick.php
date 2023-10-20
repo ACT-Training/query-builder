@@ -18,7 +18,7 @@ trait WithRowClick
         return $this;
     }
 
-    public function rowClick($row): void
+    public function rowClick(int $row): void
     {
         //
     }

@@ -13,7 +13,7 @@ trait WithPagination
     public function applyPagination($query)
     {
         if ($this->paginate) {
-            return $query->ray()->paginate($this->perPage);
+            return $query->paginate($this->perPage);
         } else {
             return $query->get();
         }
