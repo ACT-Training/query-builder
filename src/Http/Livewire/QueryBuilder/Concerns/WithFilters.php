@@ -27,16 +27,7 @@ trait WithFilters
 
     public function filters(): array
     {
-        return [
-            TextFilter::make('Name', 'full_name')->useOperator('like'),
-            SelectFilter::make('Location', 'contract.location.name')->withOptions([
-                'ACT Skills Centre, Caerphilly' => 'ACT Skills Centre, Caerphilly',
-                'Home Based' => 'Home Based',
-            ]),
-            BooleanFilter::make('Line Manager', 'contract.line_manager'),
-            DateFilter::make('Started on or after', 'contract.start_date')->useOperator('>='),
-            DateFilter::make('Started on or before', 'contract.start_date')->useOperator('<='),
-        ];
+        return [];
     }
 
     public function resetFilters(): void
