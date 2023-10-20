@@ -2,11 +2,6 @@
 
 namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Filters\BooleanFilter;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Filters\DateFilter;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Filters\SelectFilter;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Filters\TextFilter;
-
 trait WithFilters
 {
     protected $displayFilters = false;

@@ -2,6 +2,8 @@
 
 namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns;
 
+use Illuminate\Support\Facades\Blade;
+
 trait WithRowClick
 {
     protected $rowClickable = true;
@@ -21,5 +23,13 @@ trait WithRowClick
     public function rowClick(int $row): void
     {
         //
+    }
+
+    public function renderRowClick($row): string
+    {
+        return Blade::render(
+            'wire:click="rowClick({{ $row }})"',
+            ['row' => $row]
+        );
     }
 }
