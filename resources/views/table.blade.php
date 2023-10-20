@@ -53,7 +53,8 @@
 
                     @foreach ($this->rows as $row)
                         <tr @if($this->isClickable())
-                                wire:click="rowClick('{{ $row->id }}')"
+{{--                                wire:click="rowClick('{{ $row->id }}')"--}}
+                            {{ $this->renderRowClick() }}
                             @endif
                             wire:key="row-{{ $row->id }}"
                                 @class([

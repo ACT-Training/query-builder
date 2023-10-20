@@ -91,6 +91,13 @@ abstract class Table extends Component
         return app($model);
     }
 
+    public function renderRowClick(): string
+    {
+        return <<<'blade'
+            wire:click="rowClick('{{ $row->id }}')"
+        blade;
+    }
+
     public function render(): Factory|View
     {
         return view('query-builder::table');
