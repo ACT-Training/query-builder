@@ -26,6 +26,8 @@ class BaseColumn
 
     public bool $isSearchable = false;
 
+    private bool $isHidden = false;
+
     public function __construct($key, $label)
     {
         $this->key = $key;
@@ -46,6 +48,19 @@ class BaseColumn
         $this->component = $component;
 
         return $this;
+    }
+
+    public function hideIf(Callable $condition): static
+    {
+        $this->isHidden = $condition();
+
+        return $this;
+    }
+
+    public function hidden(): bool
+    {
+       return $this->isHidden;
+
     }
 
     public function hideHeader(): static

@@ -12,6 +12,7 @@ use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowInjection;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
@@ -33,6 +34,7 @@ abstract class QueryBuilder extends Component
     use WithPagination;
     use WithQueryBuilder;
     use WithRowClick;
+    use WithRowInjection;
     use WithSearch;
     use WithSelecting;
     use WithSorting;

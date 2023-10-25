@@ -6,8 +6,10 @@ namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowInjection;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -23,8 +25,10 @@ abstract class Table extends Component
 {
     use WithColumns;
     use WithFilters;
+    use WithMessage;
     use WithPagination;
     use WithRowClick;
+    use WithRowInjection;
     use WithSorting;
 
     protected string $model = Model::class;
