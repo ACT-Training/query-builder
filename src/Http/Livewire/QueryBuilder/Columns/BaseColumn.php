@@ -28,6 +28,8 @@ class BaseColumn
 
     private bool $isHidden = false;
 
+    private $subTitle = null;
+
     public function __construct($key, $label)
     {
         $this->key = $key;
@@ -61,6 +63,24 @@ class BaseColumn
     {
        return $this->isHidden;
 
+    }
+
+    public function withSubTitle(Callable $condition): static
+    {
+        $this->subTitle = $condition;
+
+        return $this;
+    }
+
+
+    public function subTitle($row): string
+    {
+        return call_user_func($this->subTitle, $row);
+    }
+
+    public function hasSubTitle(): bool
+    {
+        return is_callable($this->subTitle);
     }
 
     public function hideHeader(): static
