@@ -113,6 +113,9 @@
                     </tr>
                 @endif
                 @foreach ($this->rows as $row)
+
+                    @if($this->rowPreview($row)) {!! $this->injectRow($row) !!}  @endif
+
                     <tr @if($this->isClickable()) {!! $this->renderRowClick($row->id)  !!} @endif
                         wire:key="row-{{ $row->id }}"
                             @class([
