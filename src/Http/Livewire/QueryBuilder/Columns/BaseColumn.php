@@ -30,6 +30,8 @@ class BaseColumn
 
     private $subTitle = null;
 
+    private $reformatCallback = null;
+
     public function __construct($key, $label)
     {
         $this->key = $key;
@@ -109,8 +111,19 @@ class BaseColumn
         return $this;
     }
 
+    public function reformatUsing(Callable $callback): static
+    {
+        $this->reformatCallback = $callback;
+
+        return $this;
+    }
+
     public function getValue($row)
     {
-        return data_get($row, $this->key);
+        $value = data_get($row, $this->key);
+        if (is_callable($this->reformatCallback)) {
+            return call_user_func($this->reformatCallback, $value, $row, $this);
+        }
+        return $value;
     }
 }
