@@ -77,8 +77,7 @@
                                                     :value="$column->getValue($row)"
                                                     :column="$column"
                                                     :row="$row"
-                                            >
-                                            </x-dynamic-component>
+                                            />
                                         </div>
                                     </td>
                                 @endif

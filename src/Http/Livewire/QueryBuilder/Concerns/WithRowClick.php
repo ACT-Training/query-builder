@@ -2,7 +2,7 @@
 
 namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns;
 
-use Illuminate\Support\Facades\Blade;
+use Blade;
 
 trait WithRowClick
 {
@@ -27,9 +27,6 @@ trait WithRowClick
 
     public function renderRowClick($row): string
     {
-        return Blade::render(
-            'wire:click="rowClick({{ $row }})"',
-            ['row' => $row]
-        );
+        return 'wire:click="rowClick(' . $row . ')"';
     }
 }
