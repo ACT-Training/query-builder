@@ -4,7 +4,6 @@ namespace ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns;
 
 trait WithRowInjection
 {
-
     public function rowPreview($row): bool
     {
         return false;
@@ -14,6 +13,4 @@ trait WithRowInjection
     {
         return '';
     }
-
-
 }
