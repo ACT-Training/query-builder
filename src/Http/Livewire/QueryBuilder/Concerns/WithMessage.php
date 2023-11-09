@@ -25,5 +25,4 @@ trait WithMessage
 
         return $this;
     }
-
 }

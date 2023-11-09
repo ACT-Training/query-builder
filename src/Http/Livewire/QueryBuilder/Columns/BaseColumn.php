@@ -54,7 +54,7 @@ class BaseColumn
         return $this;
     }
 
-    public function hideIf(Callable $condition): static
+    public function hideIf(callable $condition): static
     {
         $this->isHidden = $condition();
 
@@ -63,17 +63,16 @@ class BaseColumn
 
     public function hidden(): bool
     {
-       return $this->isHidden;
+        return $this->isHidden;
 
     }
 
-    public function withSubTitle(Callable $condition): static
+    public function withSubTitle(callable $condition): static
     {
         $this->subTitle = $condition;
 
         return $this;
     }
-
 
     public function subTitle($row): string
     {
@@ -111,7 +110,7 @@ class BaseColumn
         return $this;
     }
 
-    public function reformatUsing(Callable $callback): static
+    public function reformatUsing(callable $callback): static
     {
         $this->reformatCallback = $callback;
 
@@ -124,6 +123,7 @@ class BaseColumn
         if (is_callable($this->reformatCallback)) {
             return call_user_func($this->reformatCallback, $value, $row, $this);
         }
+
         return $value;
     }
 }

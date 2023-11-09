@@ -9,7 +9,6 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class QueryBuilderServiceProvider extends PackageServiceProvider
 {
-
     public function bootingPackage(): void
     {
         Blade::component('query-builder::components.columns.boolean-column', 'columns.boolean-column');
@@ -17,7 +16,6 @@ class QueryBuilderServiceProvider extends PackageServiceProvider
         Blade::component('query-builder::components.columns.date-column', 'columns.date-column');
         Blade::component('query-builder::components.columns.view-column', 'columns.view-column');
     }
-
 
     public function configurePackage(Package $package): void
     {

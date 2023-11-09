@@ -33,5 +33,4 @@ class DateColumn extends BaseColumn
     {
         return $this->showHumanDiff;
     }
-
 }
