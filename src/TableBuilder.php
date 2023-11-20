@@ -85,7 +85,7 @@ abstract class TableBuilder extends Component
      */
     public function getRowsProperty()
     {
-        return $this->applyPagination($this->rowsQuery);
+        return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
     }
 
     protected function model(): Model
@@ -98,5 +98,21 @@ abstract class TableBuilder extends Component
     public function render(): Factory|View
     {
         return view('query-builder::table');
+    }
+
+    /**
+     * The view to add markup above the table.
+     */
+    public function headerView(): string
+    {
+        return 'query-builder::header';
+    }
+
+    /**
+     * The view to add markup below the table.
+     */
+    public function footerView(): string
+    {
+        return 'query-builder::footer';
     }
 }

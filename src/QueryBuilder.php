@@ -115,7 +115,7 @@ abstract class QueryBuilder extends Component
     public function getRowsProperty()
     {
         return $this->cache(function () {
-            return $this->applyPagination($this->rowsQuery);
+            return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
         });
     }
 
@@ -129,9 +129,25 @@ abstract class QueryBuilder extends Component
     public function render(): Factory|View
     {
         if ($this->selectAll) {
-            $this->selectedRows = $this->rows->pluck('id')->toArray();
+            $this->selectedRows = $this->rows->pluck('id')->toArray(); /* @phpstan-ignore-line */
         }
 
         return view('query-builder::report');
+    }
+
+    /**
+     * The view to add markup above the table.
+     */
+    public function customHeaderView(): string
+    {
+        return 'query-builder::header';
+    }
+
+    /**
+     * The view to add markup below the table.
+     */
+    public function customFooterView(): string
+    {
+        return 'query-builder::footer';
     }
 }
