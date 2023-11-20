@@ -21,7 +21,7 @@ use Livewire\Component;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-abstract class Table extends Component
+abstract class TableBuilder extends Component
 {
     use WithColumns;
     use WithFilters;
