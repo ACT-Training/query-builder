@@ -138,7 +138,7 @@ abstract class QueryBuilder extends Component
     /**
      * The view to add markup above the table.
      */
-    public function customHeaderView(): string
+    public function headerView(): string
     {
         return 'query-builder::header';
     }
@@ -146,7 +146,7 @@ abstract class QueryBuilder extends Component
     /**
      * The view to add markup below the table.
      */
-    public function customFooterView(): string
+    public function footerView(): string
     {
         return 'query-builder::footer';
     }
