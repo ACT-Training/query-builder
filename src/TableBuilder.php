@@ -6,6 +6,7 @@ namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithIndicator;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
@@ -25,6 +26,7 @@ abstract class TableBuilder extends Component
 {
     use WithColumns;
     use WithFilters;
+    use WithIndicator;
     use WithMessage;
     use WithPagination;
     use WithRowClick;
