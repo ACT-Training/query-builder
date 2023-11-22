@@ -56,7 +56,7 @@
                             @endforeach
                         </tr>
                         </thead>
-                        <tbody wire:loading.class="opacity-50">
+                        <tbody @if($this->useLoadingIndicator()) wire:loading.class="{{ $this->loadingClass }}" @endif>
 
                         @foreach ($this->rows as $row)
 
