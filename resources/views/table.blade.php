@@ -16,8 +16,8 @@
         <div>
             @if($this->rows->count())
 
-                <div class="relative overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-500">
+                <div class="relative overflow-x-auto" wire:ignore>
+                    <table class="w-full text-sm text-left text-gray-500" >
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
 
@@ -95,7 +95,7 @@
                     </table>
                 </div>
 
-                <div wire:ignore>
+                <div>
                     @if($this->isPaginated() && $this->rows->hasPages())
                         <div class="border-b border-gray-200 shadow-sm">
                             <div class="py-2 px-6">{{ $this->rows->links() }}</div>
