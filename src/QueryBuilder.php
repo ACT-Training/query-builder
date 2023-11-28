@@ -114,9 +114,9 @@ abstract class QueryBuilder extends Component
      */
     public function getRowsProperty()
     {
-        return $this->cache(function () {
+//        return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
-        });
+//        });
     }
 
     protected function model(): Model
