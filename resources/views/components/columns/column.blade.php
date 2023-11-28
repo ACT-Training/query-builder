@@ -1,7 +1,7 @@
 @props([
     'value',
     'column',
-    'row'
+    'row',
 ])
 
 <div class="flex items-center {{ $column->justify }} w-full">

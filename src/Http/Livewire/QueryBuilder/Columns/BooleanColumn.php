@@ -8,9 +8,9 @@ class BooleanColumn extends BaseColumn
 
     protected $hideCondition = null;
 
-    public function hideIf($value): static
+    public function hideIf($condition): static
     {
-        $this->hideCondition = $value;
+        $this->hideCondition = $condition;
 
         return $this;
     }
