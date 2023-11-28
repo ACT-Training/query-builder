@@ -9,6 +9,7 @@ use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithIndicator;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
@@ -31,6 +32,7 @@ abstract class QueryBuilder extends Component
     use WithCaching;
     use WithColumns;
     use WithFilters;
+    use WithIndicator;
     use WithPagination;
     use WithQueryBuilder;
     use WithRowClick;
