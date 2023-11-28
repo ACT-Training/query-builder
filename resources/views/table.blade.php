@@ -1,6 +1,8 @@
 <div>
 
-    @includeIf($this->headerView())
+    <div>
+        @includeIf($this->headerView())
+    </div>
 
     <div class="my-6">
 
@@ -93,21 +95,23 @@
                     </table>
                 </div>
 
-                @if($this->isPaginated() && $this->rows->hasPages())
-                    <div class="border-b border-gray-200 shadow-sm">
-                        <div class="py-2 px-6">{{ $this->rows->links() }}</div>
-                    </div>
-                @endif
+                <div wire:ignore>
+                    @if($this->isPaginated() && $this->rows->hasPages())
+                        <div class="border-b border-gray-200 shadow-sm">
+                            <div class="py-2 px-6">{{ $this->rows->links() }}</div>
+                        </div>
+                    @endif
+                </div>
 
             @else
-
                 @include('query-builder::none-found')
-
             @endif
         </div>
     </div>
 
-    @includeIf($this->footerView())
+    <div>
+        @includeIf($this->footerView())
+    </div>
 
 
 </div>
