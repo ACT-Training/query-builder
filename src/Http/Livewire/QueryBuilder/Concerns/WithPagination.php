@@ -8,11 +8,18 @@ trait WithPagination
 
     public int $perPage = 10;
 
-    public bool $paginate = true;
+    private bool $paginate = true;
 
-    public function usePagination($usePagination = true): void
+    public function usePagination($usePagination = true): static
     {
         $this->paginate = $usePagination;
+
+        return $this;
+    }
+
+    public function isPaginated(): bool
+    {
+        return $this->paginate;
     }
 
     public function applyPagination($query)
