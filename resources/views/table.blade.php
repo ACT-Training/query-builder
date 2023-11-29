@@ -6,17 +6,22 @@
 
     <div class="my-6">
 
+        @if($this->isSearchVisible())
+            <div class="p-4 flex items-center gap-2 w-full">
+                @include('query-builder::components.search')
+            </div>
+        @endif
+
         <div>
             @if ($this->areFiltersAvailable())
                 @include('query-builder::filters')
             @endif
         </div>
 
-
         <div>
             @if($this->rows->count())
                 <div class="relative overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-500" wire:key="table-1" >
+                    <table class="w-full text-sm text-left text-gray-500" wire:key="table-1">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
 

@@ -11,6 +11,7 @@ use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowInjection;
+use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -31,6 +32,7 @@ abstract class TableBuilder extends Component
     use WithPagination;
     use WithRowClick;
     use WithRowInjection;
+    use WithSearch;
     use WithSorting;
 
     protected string $model = Model::class;
@@ -45,6 +47,7 @@ abstract class TableBuilder extends Component
     {
         $this->config();
 
+        $this->resetFilters();
     }
 
     public function config(): void
@@ -77,7 +80,6 @@ abstract class TableBuilder extends Component
                 }
             });
         }
-
         return $query;
     }
 
