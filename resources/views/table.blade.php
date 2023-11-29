@@ -109,13 +109,19 @@
                 </div>
 
             @else
-                @include('query-builder::none-found')
+                <div>
+                    @if($this->messageEnabled())
+                        @include('query-builder::none-found')
+                    @endif
+                </div>
             @endif
         </div>
     </div>
 
     <div>
+
         @includeIf($this->footerView())
+
     </div>
 
 
