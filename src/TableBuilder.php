@@ -48,11 +48,6 @@ abstract class TableBuilder extends Component
         $this->config();
     }
 
-    public function mount(): void
-    {
-        $this->resetFilters();
-    }
-
     public function config(): void
     {
         //
