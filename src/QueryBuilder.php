@@ -4,20 +4,20 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection\CriteriaCollection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithActions;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithIndicator;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowInjection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
+use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
+use ACTTraining\QueryBuilder\Support\Concerns\WithCaching;
+use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
+use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
+use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
+use ACTTraining\QueryBuilder\Support\Concerns\WithQueryBuilder;
+use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
+use ACTTraining\QueryBuilder\Support\Concerns\WithRowInjection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
+use ACTTraining\QueryBuilder\Support\Concerns\WithToolbar;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,7 +54,7 @@ abstract class QueryBuilder extends Component
         'refreshTable' => '$refresh',
     ];
 
-    protected $queryString = ['perPage'];
+    protected array $queryString = ['perPage'];
 
     abstract public function query(): Builder;
 

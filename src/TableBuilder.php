@@ -4,15 +4,15 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithIndicator;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithMessage;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowInjection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
+use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
+use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
+use ACTTraining\QueryBuilder\Support\Concerns\WithMessage;
+use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
+use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
+use ACTTraining\QueryBuilder\Support\Concerns\WithRowInjection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;

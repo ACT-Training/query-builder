@@ -36,15 +36,7 @@ Create a Livewire component and make sure it extends QueryBuilder.
 
 namespace App\Http\Livewire;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Columns\BooleanColumn;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Columns\Column;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Columns\DateColumn;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Conditions\BooleanCondition;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Conditions\DateCondition;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Conditions\TextCondition;
-use ACTTraining\QueryBuilder\QueryBuilder;
-use App\Models\Employee;
-use Illuminate\Database\Eloquent\Builder;
+use ACTTraining\QueryBuilder\QueryBuilder;use ACTTraining\QueryBuilder\Support\Columns\BooleanColumn;use ACTTraining\QueryBuilder\Support\Columns\Column;use ACTTraining\QueryBuilder\Support\Columns\DateColumn;use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;use App\Models\Employee;use Illuminate\Database\Eloquent\Builder;
 
 class EmployeesReport extends QueryBuilder
 {
