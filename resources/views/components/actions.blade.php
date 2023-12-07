@@ -46,7 +46,7 @@
 
         <!-- Panel -->
         <div
-                wire:model="updatePanel"
+                wire:model.live.debounce.500ms="updatePanel"
                 wire:key="panel"
                 x-ref="panel"
                 x-show="open"

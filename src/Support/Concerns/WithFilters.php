@@ -4,9 +4,9 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithFilters
 {
-    protected $displayFilters = false;
+    protected bool $displayFilters = false;
 
-    public $filterValues = [];
+    public array $filterValues = [];
 
     public function areFiltersAvailable(): bool
     {

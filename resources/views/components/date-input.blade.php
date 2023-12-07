@@ -22,7 +22,7 @@
 
             <label class="sr-only" for="{{ $loop->index }}-end-date">End date</label>
             <input  type="date"
-                    wire:model.lazy="criteria.{{ $loop->index }}.value"
+                    wire:model.live.debounce.500ms="criteria.{{ $loop->index }}.value"
                     wire:key="criteria.{{ $loop->index }}.value"
                     class="col-span-1"
                     id="{{ $loop->index }}-end-date"
