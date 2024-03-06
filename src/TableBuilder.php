@@ -105,7 +105,7 @@ abstract class TableBuilder extends Component
     /**
      * The view to add markup above the table.
      */
-    public function headerView(): string
+    public function headerView(): ?string
     {
         return 'query-builder::header';
     }
@@ -113,7 +113,7 @@ abstract class TableBuilder extends Component
     /**
      * The view to add markup below the table.
      */
-    public function footerView(): string
+    public function footerView(): ?string
     {
         return 'query-builder::footer';
     }
@@ -121,7 +121,7 @@ abstract class TableBuilder extends Component
     /**
      * The view to display when there are no results.
      */
-    public function emptyView(): string
+    public function emptyView(): ?string
     {
         return 'query-builder::none-found';
     }
