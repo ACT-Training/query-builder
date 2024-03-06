@@ -117,4 +117,12 @@ abstract class TableBuilder extends Component
     {
         return 'query-builder::footer';
     }
+
+    /**
+     * The view to display when there are no results.
+     */
+    public function emptyView(): string
+    {
+        return 'query-builder::none-found';
+    }
 }
