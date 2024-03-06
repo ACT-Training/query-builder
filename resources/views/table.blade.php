@@ -1,4 +1,4 @@
-<div >
+<div>
 
     <div>
         @includeIf($this->headerView())
@@ -14,7 +14,9 @@
 
         <div>
             @if ($this->areFiltersAvailable())
-                @include('query-builder::filters')
+                @if($this->isFiltered() || $this->rows->count() > 0)
+                    @include('query-builder::filters')
+                @endif
             @endif
         </div>
 
