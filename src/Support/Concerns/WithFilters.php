@@ -37,4 +37,17 @@ trait WithFilters
     {
         $this->resetPage();
     }
+
+    public function isFiltered(): bool
+    {
+        $filtered = false;
+        foreach($this->filters() as $filter) {
+            if ($this->filterValues[$filter->code()] !== null) {
+                $filtered = true;
+                break;
+            }
+        }
+
+        return $filtered;
+    }
 }
