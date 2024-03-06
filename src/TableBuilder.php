@@ -4,7 +4,6 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
@@ -69,21 +68,20 @@ abstract class TableBuilder extends Component
                 $actualColumnName = array_pop($parts);
 
                 // If there are relationships defined (implied by remaining elements in $parts)
-                if (!empty($parts)) {
+                if (! empty($parts)) {
                     // Build the relationship string from the remaining $parts
                     $relationshipPath = implode('.', $parts);
 
                     // Use a closure to apply the search condition on the related model
                     $query->orWhereHas($relationshipPath, function ($query) use ($actualColumnName) {
-                        $query->where($actualColumnName, 'like', '%' . $this->searchBy . '%');
+                        $query->where($actualColumnName, 'like', '%'.$this->searchBy.'%');
                     });
                 } else {
                     // If there are no relationships, directly apply the search condition on the current model
-                    $query->orWhere($actualColumnName, 'like', '%' . $this->searchBy . '%');
+                    $query->orWhere($actualColumnName, 'like', '%'.$this->searchBy.'%');
                 }
             }
         }
-
 
         $dottedFilterValue = Arr::dot($this->filterValues);
 
@@ -104,6 +102,7 @@ abstract class TableBuilder extends Component
                 }
             });
         }
+
         return $query;
     }
 

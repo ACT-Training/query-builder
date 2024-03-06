@@ -27,7 +27,7 @@ trait WithFilters
 
     public function resetFilters(): void
     {
-        foreach($this->filters() as $filter) {
+        foreach ($this->filters() as $filter) {
             $this->filterValues[$filter->code()] = null;
         }
         $this->resetPage();
@@ -41,7 +41,7 @@ trait WithFilters
     public function isFiltered(): bool
     {
         $filtered = false;
-        foreach($this->filterValues as $filterValue) {
+        foreach ($this->filterValues as $filterValue) {
             if ($filterValue !== null) {
                 $filtered = true;
                 break;
