@@ -38,6 +38,11 @@ trait WithSearch
         return $this->displaySearch;
     }
 
+    public function isSearchActive(): bool
+    {
+        return $this->searchBy !== '';
+    }
+
     public function displaySearchableIcon(bool $displaySearchableIcon = true): static
     {
         $this->displaySearchableIcon = $displaySearchableIcon;
