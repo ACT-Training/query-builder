@@ -62,9 +62,28 @@ abstract class TableBuilder extends Component
 
         if ($this->searchBy && $this->searchBy !== '') {
             foreach ($this->getSearchableColumns() as $column) {
-                $query->orWhere($column, 'like', '%' . $this->searchBy . '%');
+                // Explode the column to separate relationships and the actual column name
+                $parts = explode('.', $column);
+
+                // Extract the actual column name from the end of the array
+                $actualColumnName = array_pop($parts);
+
+                // If there are relationships defined (implied by remaining elements in $parts)
+                if (!empty($parts)) {
+                    // Build the relationship string from the remaining $parts
+                    $relationshipPath = implode('.', $parts);
+
+                    // Use a closure to apply the search condition on the related model
+                    $query->orWhereHas($relationshipPath, function ($query) use ($actualColumnName) {
+                        $query->where($actualColumnName, 'like', '%' . $this->searchBy . '%');
+                    });
+                } else {
+                    // If there are no relationships, directly apply the search condition on the current model
+                    $query->orWhere($actualColumnName, 'like', '%' . $this->searchBy . '%');
+                }
             }
         }
+
 
         $dottedFilterValue = Arr::dot($this->filterValues);
 
