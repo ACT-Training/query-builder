@@ -41,8 +41,8 @@ trait WithFilters
     public function isFiltered(): bool
     {
         $filtered = false;
-        foreach($this->filters() as $filter) {
-            if ($this->filterValues[$filter->code()] !== null) {
+        foreach($this->filterValues as $filterValue) {
+            if ($filterValue !== null) {
                 $filtered = true;
                 break;
             }
