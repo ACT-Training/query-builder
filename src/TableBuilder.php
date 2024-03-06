@@ -4,6 +4,7 @@
 
 namespace ACTTraining\QueryBuilder;
 
+use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
@@ -58,6 +59,12 @@ abstract class TableBuilder extends Component
         $query = $this->query()->when($this->sortBy !== '', function ($query) {
             $query->orderBy($this->sortBy, $this->sortDirection);
         });
+
+        if ($this->searchBy && $this->searchBy !== '') {
+            foreach ($this->getSearchableColumns() as $column) {
+                $query->orWhere($column, 'like', '%' . $this->searchBy . '%');
+            }
+        }
 
         $dottedFilterValue = Arr::dot($this->filterValues);
 
