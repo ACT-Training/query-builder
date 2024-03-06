@@ -32,7 +32,7 @@ class BaseFilter
 
         return new static($key, $label);
     }
-    
+
     public function label(): string
     {
         return $this->label;

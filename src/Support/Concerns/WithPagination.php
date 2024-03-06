@@ -8,7 +8,7 @@ trait WithPagination
 
     public int $perPage = 10;
 
-    public string|null $pageName = null;
+    public ?string $pageName = null;
 
     private bool $paginate = true;
 
@@ -37,6 +37,7 @@ trait WithPagination
             if ($this->pageName) {
                 return $query->paginate($this->perPage, ['*'], $this->pageName);
             }
+
             return $query->paginate($this->perPage);
         } else {
             return $query->get();

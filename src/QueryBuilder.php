@@ -54,7 +54,7 @@ abstract class QueryBuilder extends Component
         'refreshTable' => '$refresh',
     ];
 
-//    protected array $queryString = ['perPage'];
+    //    protected array $queryString = ['perPage'];
 
     abstract public function query(): Builder;
 
@@ -116,9 +116,9 @@ abstract class QueryBuilder extends Component
      */
     public function getRowsProperty()
     {
-//        return $this->cache(function () {
-            return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
-//        });
+        //        return $this->cache(function () {
+        return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
+        //        });
     }
 
     protected function model(): Model
@@ -160,5 +160,4 @@ abstract class QueryBuilder extends Component
     {
         return 'query-builder::none-found';
     }
-
 }

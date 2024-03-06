@@ -6,7 +6,7 @@
 
     <div class="my-6">
 
-        @if($this->isSearchVisible())
+        @if($this->isSearchVisible() && $this->searchableColumnsSet())
             @if($this->isFiltered() || $this->isSearchActive() || $this->rows->count() > 0)
                 <div class="p-4 flex items-center gap-2 w-full">
                     @include('query-builder::components.search')
