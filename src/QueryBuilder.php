@@ -54,7 +54,7 @@ abstract class QueryBuilder extends Component
         'refreshTable' => '$refresh',
     ];
 
-    protected array $queryString = ['perPage'];
+//    protected array $queryString = ['perPage'];
 
     abstract public function query(): Builder;
 

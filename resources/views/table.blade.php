@@ -112,7 +112,7 @@
             @else
                 <div>
                     @if($this->messageEnabled())
-                        @include('query-builder::none-found')
+                        @includeIf($this->emptyView())
                     @endif
                 </div>
             @endif
