@@ -28,7 +28,7 @@ class BaseColumn
 
     private bool $isHidden = false;
 
-    private $subTitle = null;
+    private ?string $subTitle = null;
 
     private $reformatCallback = null;
 
