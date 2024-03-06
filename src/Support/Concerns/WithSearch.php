@@ -75,4 +75,8 @@ trait WithSearch
         $this->resetPage();
     }
 
+    public function searchableColumnsSet(): bool
+    {
+        return count($this->getSearchableColumns()) > 0;
+    }
 }
