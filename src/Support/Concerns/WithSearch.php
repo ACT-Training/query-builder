@@ -68,4 +68,11 @@ trait WithSearch
     {
         $this->resetPage();
     }
+
+    public function resetSearch(): void
+    {
+        $this->searchBy = '';
+        $this->resetPage();
+    }
+
 }
