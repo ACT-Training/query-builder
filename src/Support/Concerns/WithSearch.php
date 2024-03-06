@@ -4,13 +4,13 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithSearch
 {
-    protected $searchable = false;
+    protected bool $searchable = false;
 
-    protected $displaySearch = true;
+    protected bool $displaySearch = true;
 
-    protected $displaySearchableIcon = true;
+    protected bool $displaySearchableIcon = true;
 
-    public $searchBy = '';
+    public string $searchBy = '';
 
     public function isSearchable(): bool
     {
@@ -68,4 +68,11 @@ trait WithSearch
     {
         $this->resetPage();
     }
+
+    public function resetSearch(): void
+    {
+        $this->searchBy = '';
+        $this->resetPage();
+    }
+
 }

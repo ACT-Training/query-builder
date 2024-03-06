@@ -4,6 +4,7 @@
 
 namespace ACTTraining\QueryBuilder;
 
+use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
@@ -58,6 +59,31 @@ abstract class TableBuilder extends Component
         $query = $this->query()->when($this->sortBy !== '', function ($query) {
             $query->orderBy($this->sortBy, $this->sortDirection);
         });
+
+        if ($this->searchBy && $this->searchBy !== '') {
+            foreach ($this->getSearchableColumns() as $column) {
+                // Explode the column to separate relationships and the actual column name
+                $parts = explode('.', $column);
+
+                // Extract the actual column name from the end of the array
+                $actualColumnName = array_pop($parts);
+
+                // If there are relationships defined (implied by remaining elements in $parts)
+                if (!empty($parts)) {
+                    // Build the relationship string from the remaining $parts
+                    $relationshipPath = implode('.', $parts);
+
+                    // Use a closure to apply the search condition on the related model
+                    $query->orWhereHas($relationshipPath, function ($query) use ($actualColumnName) {
+                        $query->where($actualColumnName, 'like', '%' . $this->searchBy . '%');
+                    });
+                } else {
+                    // If there are no relationships, directly apply the search condition on the current model
+                    $query->orWhere($actualColumnName, 'like', '%' . $this->searchBy . '%');
+                }
+            }
+        }
+
 
         $dottedFilterValue = Arr::dot($this->filterValues);
 
