@@ -12,6 +12,8 @@ trait WithSearch
 
     public string $searchBy = '';
 
+    protected array $additionalSearchables = [];
+
     public function isSearchable(): bool
     {
         return $this->searchable;
@@ -29,6 +31,13 @@ trait WithSearch
     public function displaySearch(bool $displaySearch = true): static
     {
         $this->displaySearch = $displaySearch;
+
+        return $this;
+    }
+
+    public function additionalSearchables(array $additionalSearchables): static
+    {
+        $this->additionalSearchables = $additionalSearchables;
 
         return $this;
     }
@@ -61,7 +70,7 @@ trait WithSearch
             return $class->isSearchable;
         })->pluck('key');
 
-        return $searchableKeys->toArray();
+        return  array_merge($searchableKeys->toArray(), $this->additionalSearchables) ;
     }
 
     public function updatedSearchBy(): void

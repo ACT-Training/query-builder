@@ -37,6 +37,7 @@
                                 'flex items-center gap-1 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 ' . $column->justify,
                                 'cursor-pointer' => $column->isSortable(),
                             ])>
+
                                                 {{ $column->label }}
 
                                                 @if ($sortBy === $column->key)
@@ -57,6 +58,10 @@
                                                                   clip-rule="evenodd"/>
                                                         </svg>
                                                     @endif
+                                                @endif
+
+                                                @if($this->isSearchableIconVisible() && $column->isSearchable())
+                                                    <x-tabler-search class="w-4 h-4 text-gray-300"/>
                                                 @endif
 
                                             </div>
