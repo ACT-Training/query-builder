@@ -4,7 +4,7 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithRowClick
 {
-    protected $rowClickable = true;
+    protected bool $rowClickable = true;
 
     public function isClickable(): bool
     {
@@ -18,7 +18,7 @@ trait WithRowClick
         return $this;
     }
 
-    public function rowClick(int $row): void
+    public function rowClick($row): void
     {
         //
     }
