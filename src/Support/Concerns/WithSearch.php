@@ -70,7 +70,7 @@ trait WithSearch
             return $class->isSearchable;
         })->pluck('key');
 
-        return  array_merge($searchableKeys->toArray(), $this->additionalSearchables) ;
+        return array_merge($searchableKeys->toArray(), $this->additionalSearchables);
     }
 
     public function updatedSearchBy(): void
