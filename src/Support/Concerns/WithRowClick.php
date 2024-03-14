@@ -25,6 +25,11 @@ trait WithRowClick
 
     public function renderRowClick($row): string
     {
+        // Check if $row is a string and quote it appropriately
+        if (is_string($row)) {
+            $row = "'".$row."'";
+        }
+
         return 'wire:click="rowClick('.$row.')"';
     }
 }
