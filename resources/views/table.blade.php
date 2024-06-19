@@ -25,7 +25,7 @@
         <div>
             @if($this->rows->count())
                 <div class="relative overflow-x-auto">
-                    <table class="w-full text-sm text-gray-500" wire:key="table-1">
+                    <table class="w-full text-sm text-left text-gray-500" wire:key="table-1">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
 
@@ -34,7 +34,7 @@
                                     <th @if ($column->isSortable()) wire:click="sort('{{ $column->key }}')" @endif>
                                         @if ($column->showHeader)
                                             <div @class([
-                                'flex items-center gap-1 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 ' . $column->justify,
+                                'flex items-center gap-1 bg-gray-50 px-6 py-3 text-xs font-medium uppercase tracking-wider text-gray-500 ' . $column->justify,
                                 'cursor-pointer' => $column->isSortable(),
                             ])>
 
