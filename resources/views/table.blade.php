@@ -25,7 +25,7 @@
         <div>
             @if($this->rows->count())
                 <div class="relative overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-500" wire:key="table-1">
+                    <table class="w-full text-sm text-gray-500" wire:key="table-1">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
 
