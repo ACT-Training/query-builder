@@ -101,9 +101,9 @@ class BaseColumn
     public function justify($where): static
     {
         $this->justify = match ($where) {
-            'center' => 'justify-center',
-            'left' => 'justify-start',
-            'right' => 'justify-end',
+            'center' => 'justify-center text-center',
+            'left' => 'justify-start text-left',
+            'right' => 'justify-end text-right',
             default => 'justify-normal',
         };
 
