@@ -21,7 +21,7 @@
             @endif
         </div>
 
-        <div class="overflow-y-visible">
+        <div>
             @if($this->rows->count())
                 <div class="relative overflow-x-auto overflow-y-visible">
                     <table class="w-full text-sm text-left text-gray-500" wire:key="table-1">
@@ -127,7 +127,7 @@
         </div>
     </div>
 
-    <div class="overflow-y-visible">
+    <div>
 
         @includeIf($this->footerView())
 
