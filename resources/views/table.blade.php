@@ -1,5 +1,4 @@
-<div>
-
+<div class="overflow-y-visible">
     <div>
         @includeIf($this->headerView())
     </div>
@@ -24,7 +23,7 @@
 
         <div>
             @if($this->rows->count())
-                <div class="relative overflow-x-auto overflow-y-visible">
+                <div class="relative overflow-x-auto">
                     <table class="w-full text-sm text-left text-gray-500" wire:key="table-1">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
