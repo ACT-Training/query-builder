@@ -7,6 +7,7 @@ namespace ACTTraining\QueryBuilder;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
+use ACTTraining\QueryBuilder\Support\Concerns\WithLoadingIndicator;
 use ACTTraining\QueryBuilder\Support\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;

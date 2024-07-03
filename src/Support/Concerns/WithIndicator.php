@@ -4,9 +4,11 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithIndicator
 {
-    protected $useIndicator = false;
+    protected bool $useIndicator = false;
 
-    protected $loadingClass = 'opacity-50';
+    protected string $loadingClass = 'opacity-50';
+
+    protected string $spinnerColor = 'text-blue-500';
 
     public function useLoadingIndicator(): bool
     {
@@ -16,6 +18,16 @@ trait WithIndicator
     public function loadingClass(): string
     {
         return $this->loadingClass;
+    }
+
+    public function spinnerColor(): string
+    {
+        return $this->spinnerColor;
+    }
+
+    public function setSpinnerColor($color): void
+    {
+        $this->spinnerColor = $color;
     }
 
     public function loadingIndicator(bool $useIndicator = true, $loadingClass = 'opacity-50'): static
