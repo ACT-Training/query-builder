@@ -18,8 +18,7 @@ abstract class BaseAction
         protected string $label,
         protected string $key,
         protected Closure $callback
-    ) {
-    }
+    ) {}
 
     public static function make($label, $key, $callback): static
     {

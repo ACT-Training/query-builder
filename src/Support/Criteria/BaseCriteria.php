@@ -7,9 +7,7 @@ use Illuminate\Support\Str;
 
 class BaseCriteria implements CriteriaInterface
 {
-    public function apply($query): void
-    {
-    }
+    public function apply($query): void {}
 
     public function applyWhereCondition($query, $field, $condition): void
     {
