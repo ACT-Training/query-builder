@@ -44,6 +44,18 @@ abstract class TableBuilder extends Component
 
     abstract public function query(): Builder;
 
+    protected function queryString(): array
+    {
+        return [
+            'searchBy' => [
+                'as' => 'search',
+            ],
+            'filterValues' => [
+                'as' => 'filter',
+            ],
+        ];
+    }
+
     public function booted(): void
     {
         $this->config();
