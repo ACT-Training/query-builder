@@ -7,7 +7,6 @@ namespace ACTTraining\QueryBuilder;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
-use ACTTraining\QueryBuilder\Support\Concerns\WithLoadingIndicator;
 use ACTTraining\QueryBuilder\Support\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
@@ -43,6 +42,18 @@ abstract class TableBuilder extends Component
     ];
 
     abstract public function query(): Builder;
+
+    protected function queryString(): array
+    {
+        return [
+            'searchBy' => [
+                'as' => 'search',
+            ],
+            'filterValues' => [
+                'as' => 'filter',
+            ],
+        ];
+    }
 
     public function booted(): void
     {

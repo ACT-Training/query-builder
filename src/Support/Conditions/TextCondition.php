@@ -2,6 +2,4 @@
 
 namespace ACTTraining\QueryBuilder\Support\Conditions;
 
-class TextCondition extends BaseCondition
-{
-}
+class TextCondition extends BaseCondition {}

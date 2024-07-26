@@ -2,6 +2,4 @@
 
 namespace ACTTraining\QueryBuilder\Support\Columns;
 
-class Column extends BaseColumn
-{
-}
+class Column extends BaseColumn {}

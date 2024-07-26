@@ -2,6 +2,4 @@
 
 namespace ACTTraining\QueryBuilder\Support\Filters;
 
-class NumberFilter extends BaseFilter
-{
-}
+class NumberFilter extends BaseFilter {}
