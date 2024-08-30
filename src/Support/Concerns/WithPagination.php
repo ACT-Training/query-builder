@@ -21,7 +21,6 @@ trait WithPagination
         return $this;
     }
 
-
     public function scrollToTop($scrollToTop = true): static
     {
         $this->scrollToTop = $scrollToTop;
