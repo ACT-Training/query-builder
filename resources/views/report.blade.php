@@ -45,7 +45,7 @@
 
         @if($this->rows->count())
 
-            <div class="relative overflow-x-auto">
+            <div id="{{ $this->identifier() }}" class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr class="border-y border-gray-200">
@@ -166,7 +166,11 @@
 
             @if($this->isPaginated() && $this->rows->hasPages())
                 <div class="border-b border-gray-200 shadow-sm">
-                    <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->scroll()]) }}</div>
+                    @if($this->scroll() === true)
+                        <div class="py-2 px-6">{{ $this->rows->links() }}</div>
+                    @else
+                        <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->scroll()]) }}</div>
+                    @endif
                 </div>
             @endif
         @endif

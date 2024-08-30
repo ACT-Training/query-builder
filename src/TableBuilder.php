@@ -6,6 +6,7 @@ namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
 use ACTTraining\QueryBuilder\Support\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
@@ -27,6 +28,7 @@ abstract class TableBuilder extends Component
 {
     use WithColumns;
     use WithFilters;
+    use WithIdentifier;
     use WithIndicator;
     use WithMessage;
     use WithPagination;

@@ -9,6 +9,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
 use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Support\Concerns\WithQueryBuilder;
@@ -28,10 +29,12 @@ use Psr\Container\NotFoundExceptionInterface;
 
 abstract class QueryBuilder extends Component
 {
+
     use WithActions;
     use WithCaching;
     use WithColumns;
     use WithFilters;
+    use WithIdentifier;
     use WithIndicator;
     use WithPagination;
     use WithQueryBuilder;
