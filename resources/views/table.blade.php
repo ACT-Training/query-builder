@@ -21,10 +21,10 @@
             @endif
         </div>
 
-        <div>
+        <div id="{{ $this->identifier() }}">
             @if($this->rows->count())
                 <div class="relative overflow-x-auto overflow-y-auto">
-                    <table class="w-full text-sm text-left text-gray-500" wire:key="table-1">
+                    <table class="w-full text-sm text-left text-gray-500" wire:key="{{ $this->identifier() }}">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
 
@@ -110,7 +110,11 @@
                     <div>
                         @if($this->isPaginated() && $this->rows->hasPages())
                             <div class="border-b border-gray-200 shadow-sm">
-                                <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->shouldScroll()]) }}</div>
+                                @if($this->scroll() === true)
+                                <div class="py-2 px-6">{{ $this->rows->links() }}</div>
+                                @else
+                                    <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->scroll()]) }}</div>
+                                @endif
                             </div>
                         @endif
                     </div>

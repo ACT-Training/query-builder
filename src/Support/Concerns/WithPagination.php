@@ -12,7 +12,7 @@ trait WithPagination
 
     private bool $paginate = true;
 
-    private bool $scrollToTop = false;
+    private bool|string $scrollTo = false; //false disables scroll on pagination
 
     public function usePagination($usePagination = true): static
     {
@@ -21,16 +21,20 @@ trait WithPagination
         return $this;
     }
 
-    public function scrollToTop($scrollToTop = true): static
+    public function shouldScrollTo($scrollTo): static
     {
-        $this->scrollToTop = $scrollToTop;
+        $this->scrollTo = match ($scrollTo) {
+            'top' => true,
+            'none' => false,
+            default => $scrollTo,
+        };
 
         return $this;
     }
 
-    public function shouldScroll(): bool
+    public function scroll(): bool|string
     {
-        return $this->scrollToTop;
+        return $this->scrollTo;
     }
 
     public function pageName($pageName = null): static
