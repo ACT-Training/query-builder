@@ -166,7 +166,7 @@
 
             @if($this->isPaginated() && $this->rows->hasPages())
                 <div class="border-b border-gray-200 shadow-sm">
-                    <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->shouldScroll()]) }}</div>
+                    <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->scroll()]) }}</div>
                 </div>
             @endif
         @endif
