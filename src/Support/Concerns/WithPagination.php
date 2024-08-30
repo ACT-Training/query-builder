@@ -21,9 +21,13 @@ trait WithPagination
         return $this;
     }
 
-    public function scrollTo($scrollTo = true): static
+    public function shouldScrollTo($scrollTo): static
     {
-        $this->scrollTo = $scrollTo;
+        $this->scrollTo = match ($scrollTo) {
+            'top' => true,
+            'none' => false,
+            default => $scrollTo,
+        };
 
         return $this;
     }
