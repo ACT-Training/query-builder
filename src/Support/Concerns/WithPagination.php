@@ -12,11 +12,25 @@ trait WithPagination
 
     private bool $paginate = true;
 
+    private bool $scrollToTop = false;
+
     public function usePagination($usePagination = true): static
     {
         $this->paginate = $usePagination;
 
         return $this;
+    }
+
+    public function scrollToTop($scrollToTop = true): static
+    {
+        $this->scrollToTop = $scrollToTop;
+
+        return $this;
+    }
+
+    public function shouldScroll(): bool
+    {
+        return $this->scrollToTop;
     }
 
     public function pageName($pageName = null): static
