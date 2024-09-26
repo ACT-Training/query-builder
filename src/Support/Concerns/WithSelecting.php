@@ -20,7 +20,7 @@ trait WithSelecting
             $this->selectAll = false;
         }
 
-        $this->emitSelf('refreshTable');
+        $this->dispatch('refreshTable')->self();
     }
 
     public function updatedSelectedRows(): void

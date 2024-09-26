@@ -6,9 +6,9 @@ class BooleanColumn extends BaseColumn
 {
     public string $component = 'columns.boolean-column';
 
-    protected $hideCondition = null;
+    protected bool|null $hideCondition = null;
 
-    public function hideIf($condition): static
+    public function hideIf($condition = null): static
     {
         $this->hideCondition = $condition;
 

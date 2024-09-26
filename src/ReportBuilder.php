@@ -4,10 +4,10 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Support\Concerns\WithColumnsBuilder;
+use ACTTraining\QueryBuilder\Support\Concerns\WithReportBuilder;
 
 abstract class ReportBuilder extends QueryBuilder
 {
-    use WithColumnsBuilder;
+    use WithReportBuilder;
 
 }
