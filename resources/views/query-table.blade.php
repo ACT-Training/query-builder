@@ -56,14 +56,16 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr class="border-y border-gray-200">
 
-                            <th class="p-0">
-                                <div class="pl-6 flex items-center">
-                                    <input wire:model.live="selectPage" id="checkbox-select-page" type="checkbox"
-                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="checkbox-select-page"
-                                           class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
-                                </div>
-                            </th>
+                            @if($selectable)
+                                <th class="p-0">
+                                    <div class="pl-6 flex items-center">
+                                        <input wire:model.live="selectPage" id="checkbox-select-page" type="checkbox"
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="checkbox-select-page"
+                                               class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+                                    </div>
+                                </th>
+                            @endif
 
                             @foreach ($this->columns() as $column)
                                 @if(in_array($column->key, $displayColumns))
@@ -107,7 +109,7 @@
                         </tr>
                         </thead>
                         <tbody @if($this->useLoadingIndicator()) wire:loading.class="{{ $this->loadingClass }}" @endif>
-                        @if($selectPage && $this->rows->count() < $this->rows->total())
+                        @if($selectable && $selectPage && $this->rows->count() < $this->rows->total())
                             <tr class="bg-gray-100" wire:key="row-message">
                                 <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
                                     @unless($selectAll)
@@ -140,16 +142,18 @@
                                         'hover:bg-gray-50 cursor-pointer' => $this->isClickable(),
                                     ])>
 
-                                <td class="p-0">
-                                    <div class="pl-6 flex items-center">
-                                        <input wire:model.live="selectedRows" id="checkbox-{{ $row->id }}"
-                                               type="checkbox"
-                                               value="{{ $row->id }}"
-                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <label for="checkbox-{{ $row->id }}"
-                                               class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
-                                    </div>
-                                </td>
+                                @if($selectable)
+                                    <td class="p-0">
+                                        <div class="pl-6 flex items-center">
+                                            <input wire:model.live="selectedRows" id="checkbox-{{ $row->id }}"
+                                                   type="checkbox"
+                                                   value="{{ $row->id }}"
+                                                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="checkbox-{{ $row->id }}"
+                                                   class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+                                        </div>
+                                    </td>
+                                @endif
 
                                 @foreach ($this->columns() as $column)
                                     @if(in_array($column->key, $displayColumns))

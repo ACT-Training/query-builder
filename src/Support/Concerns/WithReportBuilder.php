@@ -7,16 +7,38 @@ use ACTTraining\QueryBuilder\Support\Columns\Column;
 use ACTTraining\QueryBuilder\Support\Columns\DateColumn;
 use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
+use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
 
 trait WithReportBuilder
 {
     public array $selectedColumns = [];
 
-    public function updatedSelectedColumns($value): void
+    private function findElementByKey(array $array, $targetValue): ?array
+    {
+        foreach ($array as $value) {
+            // Check if the current item is an array
+            if (is_array($value)) {
+                // Check if it contains the 'key' element with the target value
+                if (isset($value['key']) && $value['key'] === $targetValue) {
+                    return $value; // Return the found item
+                }
+
+                // Recursively search the sub-array
+                $result = $this->findElementByKey($value, $targetValue);
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+        }
+
+        return null; // Return null if no match is found
+    }
+
+    public function updatedSelectedColumns(): void
     {
         $this->resetPage();
-        ray($value);
+        $this->dispatch('refreshTable')->self();
     }
 
     public function availableColumns(): array
@@ -26,7 +48,12 @@ trait WithReportBuilder
 
     public function configuredColumns(): array
     {
-        return [];
+        $columns = [];
+
+        foreach ($this->selectedColumns as $column) {
+            $columns[] = $this->findElementByKey($this->availableColumns(), $column);
+        }
+        return $columns;
     }
 
     public function buildColumns(): array
@@ -37,6 +64,7 @@ trait WithReportBuilder
 
         foreach ($this->configuredColumns() as $column) {
             $columnToAdd = match ($column['type'] ?? null) {
+                'number' => Column::make($column['label'], $column['key'])->justify('right'),
                 'boolean' => BooleanColumn::make($column['label'], $column['key'])->justify('center')->hideIf(false),
                 'date' => DateColumn::make($column['label'], $column['key'])->format(config('settings.date.short-format'))->justify('right'),
                 default => Column::make($column['label'], $column['key'])
@@ -46,6 +74,10 @@ trait WithReportBuilder
                 $columnToAdd->component($column['view']);
             } elseif($counter === 0) {
                 $columnToAdd->component('columns.common.title');
+            }
+
+            if ($column['sortable'] ?? false) {
+                $columnToAdd->sortable();
             }
 
             $columns[] = $columnToAdd;
@@ -64,6 +96,7 @@ trait WithReportBuilder
                 continue;
             }
             $conditions[] = match ($column['type'] ?? null) {
+                'number' => NumberCondition::make($column['label'], $column['key']),
                 'boolean' => BooleanCondition::make($column['label'], $column['key']),
                 'date' => DateCondition::make($column['label'], $column['key']),
                 default => TextCondition::make($column['label'], $column['key'])

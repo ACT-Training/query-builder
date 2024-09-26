@@ -10,4 +10,6 @@ abstract class ReportBuilder extends QueryBuilder
 {
     use WithReportBuilder;
 
+    public bool $selectable = false;
+
 }

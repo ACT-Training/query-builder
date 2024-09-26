@@ -4,6 +4,8 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithSelecting
 {
+    public bool $selectable = true;
+
     public array $selectedRows = [];
 
     public bool $selectPage = false;
