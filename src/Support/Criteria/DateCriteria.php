@@ -1,21 +1,40 @@
-<?php
+<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 namespace ACTTraining\QueryBuilder\Support\Criteria;
 
 use ACTTraining\QueryBuilder\Support\Contracts\CriteriaInterface;
 use Carbon\Carbon;
+use InvalidArgumentException;
 
 class DateCriteria extends BaseCriteria implements CriteriaInterface
 {
-    private $field;
+    private string $field;
 
-    private $value;
+    private string|array $value;
 
-    private $operator;
+    private string $operator;
 
     public function __construct(string $field, string|array $value, string $operator = '=')
     {
-        $this->field = $field;
+        // Check if the date is in the 'd/m/Y' format and convert it to 'd-m-Y'
+        $date = \DateTime::createFromFormat('d/m/Y', $field);
+
+        if ($date) {
+            // If the date is successfully parsed in the 'd/m/Y' format, convert it to 'd-m-Y'
+            $this->field = $date->format('d-m-Y');
+        } else {
+            // If the date was not in 'd/m/Y', assume it's already in 'd-m-Y' format
+            // Optionally, you could check again if it's in the correct format
+            $date = \DateTime::createFromFormat('d-m-Y', $field);
+
+            if ($date) {
+                $this->field = $field; // Already in 'd-m-Y', so just assign it
+            } else {
+                // Handle the error case (e.g., throw an exception if neither format is valid)
+                throw new \InvalidArgumentException('The field must be a valid date in the format d-m-Y or d/m/Y.');
+            }
+        }
+
         $this->value = $value;
         $this->operator = $operator;
     }
