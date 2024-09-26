@@ -161,7 +161,12 @@ trait WithQueryBuilder
         }
 
         return match ($criteria['operation']) {
+            'equals' => new CompareCriteria($column, $value, '='),
             'not_equals' => new CompareCriteria($column, $value, '!='),
+            'greater_than' => new CompareCriteria($column, $value, '>'),
+            'less_than' => new CompareCriteria($column, $value, '<'),
+            'greater_than_or_equal' => new CompareCriteria($column, $value, '>='),
+            'less_than_or_equal' => new CompareCriteria($column, $value, '<='),
             'contains' => new LikeCriteria($column, '%'.$value.'%'),
             'not_contains' => new LikeCriteria($column, '%'.$value.'%', 'not like'),
             'starts_with' => new LikeCriteria($column, $value.'%'),

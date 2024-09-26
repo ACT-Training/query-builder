@@ -6,7 +6,7 @@ use Illuminate\Support\Enumerable;
 
 trait WithColumns
 {
-    public $justify = 'justify-center';
+    public string $justify = 'justify-center';
 
     public function columnOptions(): array
     {

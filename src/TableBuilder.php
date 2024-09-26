@@ -14,6 +14,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowInjection;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
+use ACTTraining\QueryBuilder\Support\Concerns\WithViews;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,6 +37,7 @@ abstract class TableBuilder extends Component
     use WithRowInjection;
     use WithSearch;
     use WithSorting;
+    use WithViews;
 
     protected string $model = Model::class;
 
@@ -141,27 +143,4 @@ abstract class TableBuilder extends Component
         return view('query-builder::table');
     }
 
-    /**
-     * The view to add markup above the table.
-     */
-    public function headerView(): ?string
-    {
-        return 'query-builder::header';
-    }
-
-    /**
-     * The view to add markup below the table.
-     */
-    public function footerView(): ?string
-    {
-        return 'query-builder::footer';
-    }
-
-    /**
-     * The view to display when there are no results.
-     */
-    public function emptyView(): ?string
-    {
-        return 'query-builder::none-found';
-    }
 }

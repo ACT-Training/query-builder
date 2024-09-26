@@ -4,6 +4,8 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithSelecting
 {
+    public bool $selectable = true;
+
     public array $selectedRows = [];
 
     public bool $selectPage = false;
@@ -20,7 +22,7 @@ trait WithSelecting
             $this->selectAll = false;
         }
 
-        $this->emitSelf('refreshTable');
+        $this->dispatch('refreshTable')->self();
     }
 
     public function updatedSelectedRows(): void
