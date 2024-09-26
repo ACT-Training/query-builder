@@ -29,9 +29,6 @@ class DateCriteria extends BaseCriteria implements CriteriaInterface
 
             if ($date) {
                 $this->field = $field; // Already in 'd-m-Y', so just assign it
-            } else {
-                // Handle the error case (e.g., throw an exception if neither format is valid)
-                throw new \InvalidArgumentException('The field must be a valid date in the format d-m-Y or d/m/Y.');
             }
         }
 
