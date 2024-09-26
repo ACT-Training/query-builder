@@ -27,8 +27,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 abstract class QueryBuilder extends Component
 {
@@ -117,10 +115,6 @@ abstract class QueryBuilder extends Component
         return $query;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public function getRowsProperty()
     {
         //        return $this->cache(function () {
