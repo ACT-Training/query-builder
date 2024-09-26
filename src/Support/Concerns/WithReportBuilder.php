@@ -11,6 +11,14 @@ use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
 
 trait WithReportBuilder
 {
+    public array $selectedColumns = [];
+
+    public function updatedSelectedColumns($value): void
+    {
+        $this->resetPage();
+        ray($value);
+    }
+
     public function availableColumns(): array
     {
         return [];
