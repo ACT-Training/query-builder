@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /** @noinspection PhpUndefinedMethodInspection */
 
 namespace ACTTraining\QueryBuilder;
@@ -19,6 +21,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
 use ACTTraining\QueryBuilder\Support\Concerns\WithToolbar;
+use ACTTraining\QueryBuilder\Support\Concerns\WithViews;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -44,6 +47,7 @@ abstract class QueryBuilder extends Component
     use WithSelecting;
     use WithSorting;
     use WithToolbar;
+    use WithViews;
 
     protected string $model = Model::class;
 
@@ -137,30 +141,6 @@ abstract class QueryBuilder extends Component
             $this->selectedRows = $this->rows->pluck('id')->toArray(); /* @phpstan-ignore-line */
         }
 
-        return view('query-builder::report');
-    }
-
-    /**
-     * The view to add markup above the table.
-     */
-    public function headerView(): ?string
-    {
-        return 'query-builder::header';
-    }
-
-    /**
-     * The view to add markup below the table.
-     */
-    public function footerView(): ?string
-    {
-        return 'query-builder::footer';
-    }
-
-    /**
-     * The view to display when there are no results.
-     */
-    public function emptyView(): ?string
-    {
-        return 'query-builder::none-found';
+        return view('query-builder::query-table');
     }
 }
