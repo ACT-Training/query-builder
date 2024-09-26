@@ -88,6 +88,11 @@ abstract class QueryBuilder extends Component
         return $this;
     }
 
+    public function showQueryBuilder(): bool
+    {
+        return $this->enableQueryBuilder && count($this->conditions());
+    }
+
     public function getRowsQueryProperty()
     {
         /* @phpstan-ignore-next-line */

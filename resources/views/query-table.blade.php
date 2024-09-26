@@ -3,7 +3,7 @@
     @includeIf($this->headerView())
 
     <div class="my-6">
-        @if ($enableQueryBuilder)
+        @if ($this->showQueryBuilder())
             <div class="m-4">
                 @include('query-builder::editor')
 
