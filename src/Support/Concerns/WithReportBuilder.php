@@ -108,7 +108,18 @@ trait WithReportBuilder
         return $conditions;
     }
 
+    public function resetReportBuilder(): void
+    {
+        $this->criteria = [];
+        $this->selectedColumns = [];
+    }
+
     public function saveReportBuilder(): void
+    {
+        //
+    }
+
+    public function loadReportBuilder($id): void
     {
         //
     }
