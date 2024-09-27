@@ -24,9 +24,9 @@
         @endforeach
     </div>
 
-    <div class="flex items-center gap-2 p-1 px-2 bg-gray-50 -mx-6 -mb-6 rounded-b-lg">
-        <span class="text-sm text-gray-600">Columns</span>
-        <button @click="open = !open">
+    <div class="flex items-center gap-2 justify-between p-1 px-2 bg-gray-50 -mx-6 -mb-6 rounded-b-lg">
+        <button @click="open = !open" class="flex items-center gap-2">
+            <span class="text-sm text-gray-600">Columns</span>
             <span x-show="!open">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      class="w-6 h-6"
@@ -45,6 +45,16 @@
             </svg>
             </span>
         </button>
+        <div class="flex items-center gap-2">
+            <button wire:click="saveReportBuilder">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600 hover:text-blue-500" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                    <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M14 4l0 4l-6 0l0 -4" />
+                </svg>
+            </button>
+        </div>
     </div>
 </div>
 
