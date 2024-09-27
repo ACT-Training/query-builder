@@ -9,9 +9,11 @@ use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
+use Livewire\Attributes\Validate;
 
 trait WithReportBuilder
 {
+    #[Validate('required|array')]
     public array $selectedColumns = [];
 
     private function findElementByKey(array $array, $targetValue): ?array
@@ -106,4 +108,19 @@ trait WithReportBuilder
         return $conditions;
     }
 
+    public function resetReportBuilder(): void
+    {
+        $this->criteria = [];
+        $this->selectedColumns = [];
+    }
+
+    public function saveReportBuilder(): void
+    {
+        //
+    }
+
+    public function loadReportBuilder($id): void
+    {
+        //
+    }
 }
