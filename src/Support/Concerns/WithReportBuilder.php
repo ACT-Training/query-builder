@@ -7,6 +7,7 @@ use ACTTraining\QueryBuilder\Support\Columns\Column;
 use ACTTraining\QueryBuilder\Support\Columns\DateColumn;
 use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
+use ACTTraining\QueryBuilder\Support\Conditions\FloatCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
 use Livewire\Attributes\Validate;
@@ -99,6 +100,7 @@ trait WithReportBuilder
             }
             $conditions[] = match ($column['type'] ?? null) {
                 'number' => NumberCondition::make($column['label'], $column['key']),
+                'float' => FloatCondition::make($column['label'], $column['key']),
                 'boolean' => BooleanCondition::make($column['label'], $column['key']),
                 'date' => DateCondition::make($column['label'], $column['key']),
                 default => TextCondition::make($column['label'], $column['key'])
@@ -120,6 +122,11 @@ trait WithReportBuilder
     }
 
     public function loadReportBuilder($id): void
+    {
+        //
+    }
+
+    public function saveToSession(): void
     {
         //
     }

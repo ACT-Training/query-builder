@@ -17,6 +17,8 @@ class BaseCondition
 
     protected bool $displayValue = true;
 
+    public ?int $factor = null;
+
     public function __construct($key, $label)
     {
         $this->key = $key;

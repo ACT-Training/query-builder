@@ -10,7 +10,6 @@ use ACTTraining\QueryBuilder\Support\Criteria\CompareCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\DateCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\LikeCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\NullCriteria;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Enumerable;
 
 trait WithQueryBuilder
@@ -19,12 +18,13 @@ trait WithQueryBuilder
 
     public string $andOr = 'and';
 
+    /** @noinspection PhpUndefinedMethodInspection */
     public function addCriteria(): void
     {
         $this->resetPage();
 
         $conditions = $this->resolveConditions();
-        $condition = Arr::first($conditions);
+        $condition = $conditions->first();
 
         $operations = $condition->toArray()['operations'];
         $firstOperationKey = array_key_first($operations);
@@ -36,7 +36,8 @@ trait WithQueryBuilder
             'extraValue' => null,
             'requiresExtra' => false,
             'displayValue' => $condition->displayValue(),
-            'inputType' => $condition->inputType(),
+            'inputType' => $condition->inputType,
+            'factor' => $condition->factor,
         ];
     }
 
@@ -63,6 +64,7 @@ trait WithQueryBuilder
                 'requiresExtra' => false,
                 'displayValue' => $this->displayValueForOperation($firstOperationKey),
                 'inputType' => $this->inputTypeForCondition($value),
+                'factor' => $this->factorForCondition($value),
             ];
         }
 
@@ -81,7 +83,11 @@ trait WithQueryBuilder
         $conditions = $this->resolveConditions();
         $condition = $conditions->firstWhere('key', $key);
 
-        return $condition->toArray()['operations'];
+        if ($condition) {
+            return $condition->toArray()['operations'];
+        }
+
+        return [];
     }
 
     public function displayValueForOperation($value): bool
@@ -94,7 +100,15 @@ trait WithQueryBuilder
         $conditions = $this->resolveConditions();
         $condition = $conditions->firstWhere('key', $key);
 
-        return $condition->inputType();
+        return $condition->inputType;
+    }
+
+    public function factorForCondition($key): string
+    {
+        $conditions = $this->resolveConditions();
+        $condition = $conditions->firstWhere('key', $key);
+
+        return $condition->factor;
     }
 
     public function displayExtraValueForOperation($value): bool
@@ -106,6 +120,8 @@ trait WithQueryBuilder
     {
         unset($this->criteria[$index]);
         $this->criteria = array_values($this->criteria);
+
+        $this->saveToSession();
     }
 
     public function setAndOr($condition): void
@@ -155,9 +171,14 @@ trait WithQueryBuilder
         $column = $criteria['column'];
         $value = $criteria['value'] ?? null;
         $extraValue = $criteria['extraValue'] ?? null;
+        $factor = $criteria['factor'] ?? null;
 
         if (is_null($value) && $criteria['displayValue']) {
             return null;
+        }
+
+        if ($factor) {
+            $value = $value * $factor;
         }
 
         return match ($criteria['operation']) {
@@ -167,10 +188,10 @@ trait WithQueryBuilder
             'less_than' => new CompareCriteria($column, $value, '<'),
             'greater_than_or_equal' => new CompareCriteria($column, $value, '>='),
             'less_than_or_equal' => new CompareCriteria($column, $value, '<='),
-            'contains' => new LikeCriteria($column, '%'.$value.'%'),
-            'not_contains' => new LikeCriteria($column, '%'.$value.'%', 'not like'),
-            'starts_with' => new LikeCriteria($column, $value.'%'),
-            'ends_with' => new LikeCriteria($column, '%'.$value),
+            'contains' => new LikeCriteria($column, '%' . $value . '%'),
+            'not_contains' => new LikeCriteria($column, '%' . $value . '%', 'not like'),
+            'starts_with' => new LikeCriteria($column, $value . '%'),
+            'ends_with' => new LikeCriteria($column, '%' . $value),
             'is_true' => new BooleanCriteria($column, true),
             'is_false' => new BooleanCriteria($column, false),
             'is' => new DateCriteria($column, $value, '='),

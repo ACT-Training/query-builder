@@ -28,6 +28,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
+/**
+ * @method saveToSession()
+ */
 abstract class QueryBuilder extends Component
 {
 
