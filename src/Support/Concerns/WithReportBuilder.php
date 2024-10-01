@@ -113,6 +113,14 @@ trait WithReportBuilder
         return $conditions;
     }
 
+    public function removeCriteria($index): void
+    {
+        unset($this->criteria[$index]);
+        $this->criteria = array_values($this->criteria);
+
+        $this->saveToSession();
+    }
+
     public function resetReportBuilder(): void
     {
         $this->criteria = [];

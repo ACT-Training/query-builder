@@ -131,7 +131,6 @@ trait WithQueryBuilder
         unset($this->criteria[$index]);
         $this->criteria = array_values($this->criteria);
 
-        $this->saveToSession();
     }
 
     public function setAndOr($condition): void
