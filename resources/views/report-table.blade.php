@@ -2,6 +2,10 @@
 
     @includeIf($this->headerView())
 
+    @if($this->availableColumns())
+        @include('query-builder::report-editor')
+    @endif
+
     @if($this->columns())
 
         <div class="my-6">
