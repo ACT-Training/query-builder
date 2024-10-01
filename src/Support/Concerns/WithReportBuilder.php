@@ -7,6 +7,7 @@ use ACTTraining\QueryBuilder\Support\Columns\Column;
 use ACTTraining\QueryBuilder\Support\Columns\DateColumn;
 use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
+use ACTTraining\QueryBuilder\Support\Conditions\EnumCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\FloatCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
@@ -98,8 +99,10 @@ trait WithReportBuilder
             if ($column['skipCondition'] ?? false) {
                 continue;
             }
+
             $conditions[] = match ($column['type'] ?? null) {
                 'number' => NumberCondition::make($column['label'], $column['key']),
+                'enum' => EnumCondition::make($column['label'], $column['key'], $column['options'] ?? []),
                 'float' => FloatCondition::make($column['label'], $column['key']),
                 'boolean' => BooleanCondition::make($column['label'], $column['key']),
                 'date' => DateCondition::make($column['label'], $column['key']),
