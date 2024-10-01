@@ -38,6 +38,7 @@ trait WithQueryBuilder
             'displayValue' => $condition->displayValue(),
             'inputType' => $condition->inputType,
             'factor' => $condition->factor,
+            'options' => $condition->options ?? [],
         ];
     }
 
@@ -65,6 +66,7 @@ trait WithQueryBuilder
                 'displayValue' => $this->displayValueForOperation($firstOperationKey),
                 'inputType' => $this->inputTypeForCondition($value),
                 'factor' => $this->factorForCondition($value),
+                'options' => $this->optionsForCondition($value),
             ];
         }
 
@@ -103,12 +105,20 @@ trait WithQueryBuilder
         return $condition->inputType;
     }
 
-    public function factorForCondition($key): string
+    public function factorForCondition($key): int
     {
         $conditions = $this->resolveConditions();
         $condition = $conditions->firstWhere('key', $key);
 
-        return $condition->factor;
+        return $condition->factor ?? 1;
+    }
+
+    public function optionsForCondition($key): array
+    {
+        $conditions = $this->resolveConditions();
+        $condition = $conditions->firstWhere('key', $key);
+
+        return $condition->options ?? [];
     }
 
     public function displayExtraValueForOperation($value): bool
@@ -177,7 +187,7 @@ trait WithQueryBuilder
             return null;
         }
 
-        if ($factor) {
+        if ($factor && is_numeric($value) && $factor !== 1) {
             $value = $value * $factor;
         }
 
