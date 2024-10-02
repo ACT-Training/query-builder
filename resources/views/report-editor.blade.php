@@ -98,25 +98,20 @@
                 </svg>
             </button>
 
-            <x-popover wire:key="load-button">
-                <x-slot name="trigger">
-                    <div
-                            x-data
-                            x-tooltip.raw="Reports"
-                            class="mt-2 p-2 text-gray-600 hover:bg-gray-100 rounded"
-                    >
-                        <x-tabler-file-download/>
-                    </div>
-                </x-slot>
-
-                <x-slot name="panel">
-                    @foreach($this->reports as $report)
-                        <x-popover.menu-item wire:click="loadReportBuilder('{{ $report->uuid }}')">
-                            {{ $report->name }}
-                        </x-popover.menu-item>
-                    @endforeach
-                </x-slot>
-            </x-popover>
+            <button
+                    type="button"
+                    x-data
+                    x-tooltip.raw="Load"
+                    wire:key="load-button"
+                    wire:click="loadReportBuilder" class="p-2 text-gray-600 hover:bg-gray-100 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                    <path d="M12 17v-6" />
+                    <path d="M9.5 14.5l2.5 2.5l2.5 -2.5" />
+                </svg>
+            </button>
 
         </div>
     </div>

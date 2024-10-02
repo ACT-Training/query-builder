@@ -139,7 +139,7 @@ trait WithReportBuilder
         //
     }
 
-    public function loadReportBuilder($id): void
+    public function loadReportBuilder(): void
     {
         //
     }
