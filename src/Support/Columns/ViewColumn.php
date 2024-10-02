@@ -8,7 +8,7 @@ class ViewColumn extends BaseColumn
 {
     public string $component = 'columns.view-column';
 
-    public function getValue($row)
+    public function getValue($row): null
     {
         return null;
     }

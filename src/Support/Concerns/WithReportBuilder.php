@@ -11,7 +11,9 @@ use ACTTraining\QueryBuilder\Support\Conditions\EnumCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\FloatCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
+use Illuminate\Http\Response;
 use Livewire\Attributes\Validate;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 trait WithReportBuilder
 {
@@ -125,6 +127,11 @@ trait WithReportBuilder
     {
         $this->criteria = [];
         $this->selectedColumns = [];
+    }
+
+    public function exportReportBuilder(): Response|BinaryFileResponse|null
+    {
+        return null;
     }
 
     public function saveReportBuilder(): void
