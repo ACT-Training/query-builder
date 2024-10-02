@@ -78,7 +78,7 @@
                     wire:key="export-button"
                     wire:click="exportReportBuilder"
             >
-                <x-tabler-table-export class="text-gray-300 group-hover:text-red-500 cursor-pointer"/>
+                <x-tabler-table-export class="p-2 text-gray-600 hover:bg-gray-100 rounded"/>
             </button>
 
             <button
