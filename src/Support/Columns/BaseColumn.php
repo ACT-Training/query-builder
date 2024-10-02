@@ -119,6 +119,8 @@ class BaseColumn
 
     public function getValue($row)
     {
+        ray($row);
+
         $value = data_get($row, $this->key);
         if (is_callable($this->reformatCallback)) {
             return call_user_func($this->reformatCallback, $value, $row, $this);
