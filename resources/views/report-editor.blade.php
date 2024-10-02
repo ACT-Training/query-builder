@@ -25,7 +25,7 @@
     </div>
 
     <div wire:ignore class="flex items-center gap-2 justify-between p-1 px-2 bg-gray-50 -mx-6 -mb-6 rounded-b-lg border-t border-gray-200">
-        <button @click="open = !open" class="p-2 flex items-center gap-2 text-gray-600 hover:bg-gray-100 rounded">
+        <button type="button" @click="open = !open" class="p-2 flex items-center gap-2 text-gray-600 hover:bg-gray-100 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M4 6l5.5 0" />
@@ -57,6 +57,7 @@
         </button>
         <div class="flex items-center">
             <button
+                    type="button"
                     x-data
                     x-tooltip.raw="Reset"
                     wire:key="reset-button"
@@ -73,6 +74,7 @@
             </button>
 
             <button
+                    type="button"
                     x-data
                     x-tooltip.raw="Export"
                     wire:key="export-button"
@@ -83,6 +85,7 @@
             </button>
 
             <button
+                    type="button"
                     x-data
                     x-tooltip.raw="Save"
                     wire:key="save-button"
