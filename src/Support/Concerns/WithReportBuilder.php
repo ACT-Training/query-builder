@@ -127,6 +127,11 @@ trait WithReportBuilder
         $this->selectedColumns = [];
     }
 
+    public function exportReportBuilder(): void
+    {
+        //
+    }
+
     public function saveReportBuilder(): void
     {
         //

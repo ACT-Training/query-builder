@@ -71,6 +71,16 @@
                     <path d="M19.94 11l0 .01" />
                 </svg>
             </button>
+
+            <button
+                    x-data
+                    x-tooltip.raw="Export"
+                    wire:key="export-button"
+                    wire:click="exportReportBuilder"
+            >
+                <x-tabler-table-export class="text-gray-300 group-hover:text-red-500 cursor-pointer"/>
+            </button>
+
             <button
                     x-data
                     x-tooltip.raw="Save"
