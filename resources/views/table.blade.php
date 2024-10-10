@@ -111,7 +111,7 @@
                         @if($this->isPaginated() && $this->rows->hasPages())
                             <div class="border-b border-gray-200 shadow-sm">
                                 @if($this->scroll() === true)
-                                <div class="py-2 px-6">{{ $this->rows->links() }}</div>
+                                    <div class="py-2 px-6">{{ $this->rows->links() }}</div>
                                 @else
                                     <div class="py-2 px-6">{{ $this->rows->links(data: ['scrollTo' => $this->scroll()]) }}</div>
                                 @endif
@@ -121,18 +121,21 @@
 
                     @if($this->useLoadingIndicator())
                         {{-- Table loading spinners... --}}
-                        <div
-                                wire:loading
-                                class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
-                        >
-                            {{--  --}}
-                        </div>
+                        @if($this->showOverlay)
+                            <div
+                                    wire:loading
+                                    class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
+                            >
+                                {{--  --}}
+                            </div>
+                        @endif
 
                         <div
                                 wire:loading.flex
                                 class="flex justify-center items-center absolute inset-0"
                         >
-                            <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}"
+                                 xmlns="http://www.w3.org/2000/svg"
                                  fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                         stroke-width="4"></circle>

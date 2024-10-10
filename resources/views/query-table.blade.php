@@ -185,12 +185,14 @@
 
             @if($this->useLoadingIndicator())
                 {{-- Table loading spinners... --}}
-                <div
-                        wire:loading
-                        class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
-                >
-                    {{--  --}}
-                </div>
+                @if($this->showOverlay)
+                    <div
+                            wire:loading
+                            class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
+                    >
+                        {{--  --}}
+                    </div>
+                @endif
 
                 <div
                         wire:loading.flex
