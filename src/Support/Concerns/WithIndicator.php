@@ -6,6 +6,8 @@ trait WithIndicator
 {
     protected bool $useIndicator = false;
 
+    protected bool $showOverlay = true;
+
     protected string $loadingClass = 'opacity-50';
 
     protected string $spinnerColor = 'text-blue-500';
@@ -30,10 +32,16 @@ trait WithIndicator
         $this->spinnerColor = $color;
     }
 
-    public function loadingIndicator(bool $useIndicator = true, $loadingClass = 'opacity-50'): static
+    public function showOverlay(): bool
+    {
+        return $this->showOverlay;
+    }
+
+    public function loadingIndicator(bool $useIndicator = true, $loadingClass = 'opacity-50', $showOverlay = true): static
     {
         $this->useIndicator = $useIndicator;
         $this->loadingClass = $loadingClass;
+        $this->showOverlay = $showOverlay;
 
         return $this;
     }

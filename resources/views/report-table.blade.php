@@ -108,7 +108,8 @@
                             @endforeach
                         </tr>
                         </thead>
-                        <tbody @if($this->useLoadingIndicator()) wire:loading.delay.longest.class="{{ $this->loadingClass }}" wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder" @endif>
+                        <tbody @if($this->useLoadingIndicator()) wire:loading.delay.longest.class="{{ $this->loadingClass }}"
+                               wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder" @endif>
                         @if($selectable && $selectPage && $this->rows->count() < $this->rows->total())
                             <tr class="bg-gray-100" wire:key="row-message">
                                 <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
@@ -189,11 +190,13 @@
 
             @if($this->useLoadingIndicator())
                 {{-- Table loading spinners... --}}
-                <div
-                        wire:loading wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
-                        class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
-                >
-                </div>
+                @if($this->showOverlay)
+                    <div
+                            wire:loading wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
+                            class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
+                    >
+                    </div>
+                @endif
 
                 <div
                         wire:loading.flex wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
