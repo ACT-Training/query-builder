@@ -108,7 +108,7 @@
                             @endforeach
                         </tr>
                         </thead>
-                        <tbody @if($this->useLoadingIndicator()) wire:loading.delay.longest.class="{{ $this->loadingClass }}" @endif>
+                        <tbody @if($this->useLoadingIndicator()) wire:loading.delay.longest.class="{{ $this->loadingClass }}" wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder" @endif>
                         @if($selectable && $selectPage && $this->rows->count() < $this->rows->total())
                             <tr class="bg-gray-100" wire:key="row-message">
                                 <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
