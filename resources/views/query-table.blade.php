@@ -190,7 +190,6 @@
                             wire:loading
                             class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
                     >
-                        {{--  --}}
                     </div>
                 @endif
 
