@@ -127,6 +127,7 @@ trait WithReportBuilder
     {
         $this->criteria = [];
         $this->selectedColumns = [];
+        $this->saveToSession();
     }
 
     public function exportReportBuilder(): Response|BinaryFileResponse|null
