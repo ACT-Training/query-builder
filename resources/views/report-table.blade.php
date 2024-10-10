@@ -193,14 +193,14 @@
                 @if($this->showOverlay)
                     <div
                             wire:loading wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
-                            class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
+                            class="relative inset-0 bg-white {{ $this->loadingClass() }}"
                     >
                     </div>
                 @endif
 
                 <div
                         wire:loading.flex wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
-                        class="flex justify-center items-center absolute inset-0"
+                        class="flex justify-center items-center relative inset-0"
                 >
                     <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}" xmlns="http://www.w3.org/2000/svg"
                          fill="none" viewBox="0 0 24 24">
