@@ -190,14 +190,13 @@
             @if($this->useLoadingIndicator())
                 {{-- Table loading spinners... --}}
                 <div
-                        wire:loading wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
+                        wire:loading.delay.longest wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
                         class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
                 >
-                    {{--  --}}
                 </div>
 
                 <div
-                        wire:loading.flex wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
+                        wire:loading.delay.longest.flex wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
                         class="flex justify-center items-center absolute inset-0"
                 >
                     <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}" xmlns="http://www.w3.org/2000/svg"
