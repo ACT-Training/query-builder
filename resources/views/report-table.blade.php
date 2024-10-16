@@ -192,14 +192,14 @@
                 {{-- Table loading spinners... --}}
                 @if($this->showOverlay)
                     <div
-                            wire:loading wire:target.except="rowClick, exportReportBuilder, saveReportBuilder, loadReportBuilder"
+                            wire:loading wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
                             class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
                     >
                     </div>
                 @endif
 
                 <div
-                        wire:loading.flex wire:target.except="rowClick, exportReportBuilder, saveReportBuilder, loadReportBuilder"
+                        wire:loading.flex wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder"
                         class="flex justify-center items-center absolute inset-0"
                 >
                     <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}" xmlns="http://www.w3.org/2000/svg"

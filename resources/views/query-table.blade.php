@@ -187,14 +187,14 @@
                 {{-- Table loading spinners... --}}
                 @if($this->showOverlay)
                     <div
-                            wire:loading wire:target.except="rowClick"
+                            wire:loading
                             class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
                     >
                     </div>
                 @endif
 
                 <div
-                        wire:loading.flex wire:target.except="rowClick"
+                        wire:loading.flex
                         class="flex justify-center items-center absolute inset-0"
                 >
                     <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}" xmlns="http://www.w3.org/2000/svg"
