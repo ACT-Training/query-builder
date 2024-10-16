@@ -123,7 +123,7 @@
                         {{-- Table loading spinners... --}}
                         @if($this->showOverlay)
                             <div
-                                    wire:loading
+                                    wire:loading wire:target.except="rowClick"
                                     class="absolute inset-0 bg-white {{ $this->loadingClass() }}"
                             >
                                 {{--  --}}
@@ -131,7 +131,7 @@
                         @endif
 
                         <div
-                                wire:loading.flex
+                                wire:loading.flex wire:target.except="rowClick"
                                 class="flex justify-center items-center absolute inset-0"
                         >
                             <svg class="animate-spin h-10 w-10 {{ $this->spinnerColor() }}"
