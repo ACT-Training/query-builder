@@ -68,7 +68,7 @@
                                     <th @if ($column->isSortable()) wire:click="sort('{{ $column->key }}')" @endif>
                                         @if ($column->showHeader)
                                             <div @class([
-                            'flex items-center gap-1 bg-gray-50 px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 ' . $column->justify,
+                            'flex items-center gap-1 bg-gray-50 px-6 py-3 text-left text-xs uppercase font-medium tracking-wider text-gray-500 ' . $column->justify,
                             'cursor-pointer' => $column->isSortable(),
                         ])>
                                                 {{ $column->label }}
