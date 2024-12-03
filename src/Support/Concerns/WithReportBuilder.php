@@ -86,6 +86,10 @@ trait WithReportBuilder
                 $columnToAdd->sortable();
             }
 
+            if ($column['justify'] ?? false) {
+                $columnToAdd->justify($column['justify']);
+            }
+
             $columns[] = $columnToAdd;
 
             $counter++;
