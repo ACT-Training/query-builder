@@ -126,5 +126,4 @@ class BaseColumn
 
         return $value;
     }
-
 }

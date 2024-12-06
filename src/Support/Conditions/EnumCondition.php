@@ -13,8 +13,6 @@ class EnumCondition extends BaseCondition
 
     /**
      * The options available for the enum condition.
-     *
-     * @var array
      */
     public array $options;
 
@@ -22,9 +20,8 @@ class EnumCondition extends BaseCondition
      * Constructor for EnumCondition
      * It initializes the $options property along with the properties inherited from BaseCondition.
      *
-     * @param string $key
-     * @param string $label
-     * @param array $options
+     * @param  string  $key
+     * @param  string  $label
      */
     public function __construct($key, $label, array $options = [])
     {
@@ -35,10 +32,8 @@ class EnumCondition extends BaseCondition
     /**
      * Static make method to create an instance of EnumCondition.
      *
-     * @param string $label
-     * @param string|null $key
-     * @param  array  $options
-     * @return static
+     * @param  string  $label
+     * @param  string|null  $key
      */
     public static function make($label, $key = null, array $options = []): static
     {
@@ -59,8 +54,6 @@ class EnumCondition extends BaseCondition
 
     /**
      * Get the option array.
-     *
-     * @return array
      */
     public function options(): array
     {
@@ -70,8 +63,6 @@ class EnumCondition extends BaseCondition
     /**
      * Convert the EnumCondition instance to an array.
      * This overrides the toArray method to include options in the array.
-     *
-     * @return array
      */
     public function toArray(): array
     {

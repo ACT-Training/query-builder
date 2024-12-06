@@ -22,7 +22,6 @@ class SelectFilter extends BaseFilter
         return $this->optionsInGroups;
     }
 
-
     public function prompt(): string
     {
         return $this->prompt;
