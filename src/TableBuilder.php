@@ -148,5 +148,4 @@ abstract class TableBuilder extends Component
     {
         return view('query-builder::table');
     }
-
 }

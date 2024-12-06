@@ -1,10 +1,11 @@
-<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
+<?php
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 namespace ACTTraining\QueryBuilder\Support\Criteria;
 
 use ACTTraining\QueryBuilder\Support\Contracts\CriteriaInterface;
 use Carbon\Carbon;
-use InvalidArgumentException;
 
 class DateCriteria extends BaseCriteria implements CriteriaInterface
 {

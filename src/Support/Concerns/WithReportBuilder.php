@@ -59,6 +59,7 @@ trait WithReportBuilder
         foreach ($this->selectedColumns as $column) {
             $columns[] = $this->findElementByKey($this->availableColumns(), $column);
         }
+
         return $columns;
     }
 
@@ -78,7 +79,7 @@ trait WithReportBuilder
 
             if ($column['view'] ?? false) {
                 $columnToAdd->component($column['view']);
-            } elseif($counter === 0) {
+            } elseif ($counter === 0) {
                 $columnToAdd->component('columns.common.title');
             }
 
@@ -94,6 +95,7 @@ trait WithReportBuilder
 
             $counter++;
         }
+
         return $columns;
     }
 
@@ -116,6 +118,7 @@ trait WithReportBuilder
             };
 
         }
+
         return $conditions;
     }
 

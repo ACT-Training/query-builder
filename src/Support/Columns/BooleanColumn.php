@@ -6,7 +6,7 @@ class BooleanColumn extends BaseColumn
 {
     public string $component = 'columns.boolean-column';
 
-    protected bool|null $hideCondition = null;
+    protected ?bool $hideCondition = null;
 
     public function hideIf($condition = null): static
     {
