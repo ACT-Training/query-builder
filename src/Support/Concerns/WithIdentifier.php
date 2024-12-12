@@ -2,9 +2,6 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
-use ACTTraining\QueryBuilder\Support\Actions\BaseAction;
-use Illuminate\Support\Enumerable;
-
 trait WithIdentifier
 {
     protected string $identifier = 'table-builder';
@@ -20,5 +17,4 @@ trait WithIdentifier
 
         return $this;
     }
-
 }

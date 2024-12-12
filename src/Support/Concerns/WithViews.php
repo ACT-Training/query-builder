@@ -4,7 +4,6 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 trait WithViews
 {
-
     /**
      * The view to add markup above the table.
      */
@@ -28,5 +27,4 @@ trait WithViews
     {
         return 'query-builder::none-found';
     }
-
 }

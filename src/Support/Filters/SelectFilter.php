@@ -6,6 +6,8 @@ class SelectFilter extends BaseFilter
 {
     public $options = [];
 
+    public $optionsInGroups = [];
+
     public string $component = 'select';
 
     private string $prompt = 'Select an option';
@@ -13,6 +15,11 @@ class SelectFilter extends BaseFilter
     public function options()
     {
         return $this->options;
+    }
+
+    public function optionsInGroups()
+    {
+        return $this->optionsInGroups;
     }
 
     public function prompt(): string
@@ -23,6 +30,13 @@ class SelectFilter extends BaseFilter
     public function withOptions(array $options = []): static
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    public function withOptionGroups(array $optionsInGroups = []): static
+    {
+        $this->optionsInGroups = $optionsInGroups;
 
         return $this;
     }

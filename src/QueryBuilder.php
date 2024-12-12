@@ -33,7 +33,6 @@ use Livewire\Component;
  */
 abstract class QueryBuilder extends Component
 {
-
     use WithActions;
     use WithCaching;
     use WithColumns;
