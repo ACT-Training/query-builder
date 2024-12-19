@@ -54,7 +54,7 @@
             <ul>
                 @foreach($rowOptions as $rowOption)
                     <li @click="open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2 text-left text-sm hover:bg-gray-50 disabled:text-gray-500">
-                        <input id="row-{{ $rowOption }}" type="radio" wire:model="perPage" value="{{ $rowOption }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="row-{{ $rowOption }}" type="radio" wire:model.live.debounce.500ms="perPage" value="{{ $rowOption }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <label for="row-{{ $rowOption }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $rowOption }}</label>
                     </li>
                 @endforeach

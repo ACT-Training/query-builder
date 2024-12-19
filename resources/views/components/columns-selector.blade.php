@@ -57,7 +57,7 @@
             <ul>
                 @foreach ($this->columnsForSelector() as $key => $value)
                     <li class="flex items-center gap-1 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-1 text-left text-sm hover:bg-gray-50 disabled:text-gray-500">
-                        <input id="{{ $key }}" type="checkbox" wire:model="displayColumns"
+                        <input id="{{ $key }}" type="checkbox" wire:model.live.debounce.500ms="displayColumns"
                                value="{{ $key }}"
                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <label for="{{ $key }}"

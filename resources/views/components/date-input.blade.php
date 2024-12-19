@@ -3,7 +3,7 @@
         <div>
             <label class="sr-only" for="{{ $loop->index }}-start-date">Date</label>
             <input  type="date"
-                    wire:model.lazy="criteria.{{ $loop->index }}.value"
+                    wire:model.blur="criteria.{{ $loop->index }}.value"
                     wire:key="criteria.{{ $loop->index }}.value"
                     class="col-span-1"
                     id="{{ $loop->index }}-start-date"
@@ -13,7 +13,7 @@
         <div class="flex items-center gap-1 col-span-2">
             <label class="sr-only" for="{{ $loop->index }}-start-date">Start date</label>
             <input  type="date"
-                    wire:model.lazy="criteria.{{ $loop->index }}.value"
+                    wire:model.blur="criteria.{{ $loop->index }}.value"
                     wire:key="criteria.{{ $loop->index }}.value"
                     class="col-span-1"
                     id="{{ $loop->index }}-start-date"
@@ -22,7 +22,7 @@
 
             <label class="sr-only" for="{{ $loop->index }}-end-date">End date</label>
             <input  type="date"
-                    wire:model.lazy="criteria.{{ $loop->index }}.value"
+                    wire:model.blur="criteria.{{ $loop->index }}.value"
                     wire:key="criteria.{{ $loop->index }}.value"
                     class="col-span-1"
                     id="{{ $loop->index }}-end-date"

@@ -1,4 +1,4 @@
-<div x-data="{show: false}">
+<div x-data="{show: false}" wire:key="filters-panel">
 
     <button x-show="!show" @click="show = true" class="p-2 flex items-center gap-1 text-gray-500 hover:text-blue-500 text-sm">
         <x-tabler-filter class="w-4 h-auto"/>

@@ -1,36 +1,44 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 /** @noinspection PhpUndefinedMethodInspection */
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Collection\CriteriaCollection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithActions;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithCaching;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithColumns;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithFilters;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithPagination;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithQueryBuilder;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowClick;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithRowInjection;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSearch;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSelecting;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithSorting;
-use ACTTraining\QueryBuilder\Http\Livewire\QueryBuilder\Concerns\WithToolbar;
+use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
+use ACTTraining\QueryBuilder\Support\Concerns\WithCaching;
+use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
+use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
+use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
+use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
+use ACTTraining\QueryBuilder\Support\Concerns\WithQueryBuilder;
+use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
+use ACTTraining\QueryBuilder\Support\Concerns\WithRowInjection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
+use ACTTraining\QueryBuilder\Support\Concerns\WithToolbar;
+use ACTTraining\QueryBuilder\Support\Concerns\WithViews;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
+/**
+ * @method saveToSession()
+ */
 abstract class QueryBuilder extends Component
 {
     use WithActions;
     use WithCaching;
     use WithColumns;
     use WithFilters;
+    use WithIdentifier;
+    use WithIndicator;
     use WithPagination;
     use WithQueryBuilder;
     use WithRowClick;
@@ -39,6 +47,7 @@ abstract class QueryBuilder extends Component
     use WithSelecting;
     use WithSorting;
     use WithToolbar;
+    use WithViews;
 
     protected string $model = Model::class;
 
@@ -52,7 +61,7 @@ abstract class QueryBuilder extends Component
         'refreshTable' => '$refresh',
     ];
 
-    protected $queryString = ['perPage'];
+    //    protected array $queryString = ['perPage'];
 
     abstract public function query(): Builder;
 
@@ -79,6 +88,11 @@ abstract class QueryBuilder extends Component
         $this->enableQueryBuilder = $enableQueryBuilder;
 
         return $this;
+    }
+
+    public function showQueryBuilder(): bool
+    {
+        return $this->enableQueryBuilder && count($this->conditions());
     }
 
     public function getRowsQueryProperty()
@@ -108,15 +122,11 @@ abstract class QueryBuilder extends Component
         return $query;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public function getRowsProperty()
     {
-        return $this->cache(function () {
-            return $this->applyPagination($this->rowsQuery);
-        });
+        //        return $this->cache(function () {
+        return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
+        //        });
     }
 
     protected function model(): Model
@@ -129,9 +139,9 @@ abstract class QueryBuilder extends Component
     public function render(): Factory|View
     {
         if ($this->selectAll) {
-            $this->selectedRows = $this->rows->pluck('id')->toArray();
+            $this->selectedRows = $this->rows->pluck('id')->toArray(); /* @phpstan-ignore-line */
         }
 
-        return view('query-builder::report');
+        return view('query-builder::query-table');
     }
 }
