@@ -12,7 +12,6 @@ trait WithSearch
 
     protected bool $displaySearchableIcon = true;
 
-    #[Session]
     public string $searchBy = '';
 
     protected array $additionalSearchables = [];

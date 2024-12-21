@@ -8,7 +8,6 @@ trait WithFilters
 {
     protected bool $displayFilters = false;
 
-    #[Session]
     public array $filterValues = [];
 
     public function areFiltersAvailable(): bool
