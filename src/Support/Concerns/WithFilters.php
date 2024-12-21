@@ -2,10 +2,13 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
+use Livewire\Attributes\Session;
+
 trait WithFilters
 {
     protected bool $displayFilters = false;
 
+    #[Session]
     public array $filterValues = [];
 
     public function areFiltersAvailable(): bool

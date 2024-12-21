@@ -2,6 +2,8 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
+use Livewire\Attributes\Session;
+
 trait WithSearch
 {
     protected bool $searchable = false;
@@ -10,6 +12,7 @@ trait WithSearch
 
     protected bool $displaySearchableIcon = true;
 
+    #[Session]
     public string $searchBy = '';
 
     protected array $additionalSearchables = [];
