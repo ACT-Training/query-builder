@@ -57,10 +57,10 @@ abstract class TableBuilder extends Component
     {
         return [
             'searchBy' => [
-                'as' => 'search',
+                'as' => 's',
             ],
             'filterValues' => [
-                'as' => 'filter',
+                'as' => 'f',
             ],
         ];
     }
