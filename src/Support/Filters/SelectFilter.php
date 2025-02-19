@@ -4,20 +4,20 @@ namespace ACTTraining\QueryBuilder\Support\Filters;
 
 class SelectFilter extends BaseFilter
 {
-    public $options = [];
+    public array $options = [];
 
-    public $optionsInGroups = [];
+    public array $optionsInGroups = [];
 
     public string $component = 'select';
 
     private string $prompt = 'Select an option';
 
-    public function options()
+    public function options(): array
     {
         return $this->options;
     }
 
-    public function optionsInGroups()
+    public function optionsInGroups(): array
     {
         return $this->optionsInGroups;
     }
