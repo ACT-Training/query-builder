@@ -126,10 +126,4 @@ class BaseColumn
 
         return $value;
     }
-
-    public function initialSort($direction = 'asc'): static
-    {
-        $this->setSort($this->key, $direction);
-        return $this;
-    }
 }
