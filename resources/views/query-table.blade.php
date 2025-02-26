@@ -74,7 +74,7 @@
                                                 {{ $column->label }}
 
                                                 @if ($sortBy === $column->key)
-                                                    @if ($sortDirection === 'asc')
+                                                    @if ($sortDirection === 'desc')
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                                              viewBox="0 0 20 20"
                                                              fill="currentColor">
