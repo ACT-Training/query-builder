@@ -2,6 +2,8 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
+use Illuminate\Database\Eloquent\Builder;
+
 trait WithSorting
 {
     use WithPagination;
@@ -56,4 +58,22 @@ trait WithSorting
         $this->sortBy = $key;
         $this->sortDirection = 'asc';
     }
+
+    protected function orderByRelated(Builder $query, string $relationColumn, string $direction = 'asc'): Builder
+    {
+        [$relation, $column] = explode('.', $relationColumn, 2);
+
+        $relatedModel = app($query->getModel()->$relation()->getRelated());
+
+        return $query->orderBy(
+            $relatedModel::select($column)
+                ->whereColumn(
+                    $query->getModel()->$relation()->getForeignKeyName(),
+                    "{$relatedModel->getTable()}.id"
+                ),
+            $direction
+        );
+    }
+
+
 }

@@ -78,7 +78,13 @@ abstract class TableBuilder extends Component
     public function getRowsQueryProperty()
     {
         $query = $this->query()->when($this->sortBy !== '', function ($query) {
-            $query->orderBy($this->sortBy, $this->sortDirection);
+            if (Str::contains($this->sortBy, '.')) {
+                // If it's a relationship, use orderByRelated
+                $this->orderByRelated($query, $this->sortBy, $this->sortDirection);
+            } else {
+                // Otherwise, use regular orderBy
+                $query->orderBy($this->sortBy, $this->sortDirection);
+            }
         });
 
         if ($this->searchBy && $this->searchBy !== '') {
