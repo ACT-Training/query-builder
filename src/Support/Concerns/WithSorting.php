@@ -3,6 +3,7 @@
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use InvalidArgumentException;
 
 trait WithSorting
 {
@@ -42,7 +43,7 @@ trait WithSorting
 
             $direction = match ($this->sortDirection) {
                 'asc' => 'desc',
-                'desc' ,=> null,
+                'desc' , => null,
                 default => 'asc',
             };
 
@@ -52,6 +53,7 @@ trait WithSorting
             } else {
                 $this->sortDirection = $direction;
             }
+
             return;
         }
 
@@ -59,21 +61,25 @@ trait WithSorting
         $this->sortDirection = 'asc';
     }
 
-    protected function orderByRelated(Builder $query, string $relationColumn, string $direction = 'asc'): Builder
+    protected function orderByRelated(Builder $query, string $relationColumn, string $direction = 'asc'): void
     {
+        // Ensure only one dot is present
+        if (substr_count($relationColumn, '.') !== 1) {
+            throw new InvalidArgumentException("Invalid relation column: '{$relationColumn}'. Only single-level relationships are supported.");
+        }
+
         [$relation, $column] = explode('.', $relationColumn, 2);
 
-        $relatedModel = app($query->getModel()->$relation()->getRelated());
+        // Get the related model instance correctly
+        $relatedModel = $query->getModel()->{$relation}()->getRelated();
 
-        return $query->orderBy(
+        $query->orderBy(
             $relatedModel::select($column)
                 ->whereColumn(
-                    $query->getModel()->$relation()->getForeignKeyName(),
-                    "{$relatedModel->getTable()}.id"
+                    "{$relatedModel->getTable()}.id",
+                    $query->getModel()->{$relation}()->getForeignKeyName()
                 ),
             $direction
         );
     }
-
-
 }
