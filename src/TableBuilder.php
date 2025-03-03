@@ -54,7 +54,6 @@ abstract class TableBuilder extends Component
 
     abstract public function query(): Builder;
 
-    #[Url]
     protected function queryString(): array
     {
         return [
