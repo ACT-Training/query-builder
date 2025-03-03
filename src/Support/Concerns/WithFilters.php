@@ -9,7 +9,6 @@ trait WithFilters
 {
     protected bool $displayFilters = false;
 
-    #[Url]
     public array $filterValues = [];
 
     public function areFiltersAvailable(): bool
