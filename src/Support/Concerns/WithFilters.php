@@ -3,11 +3,13 @@
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
 use Livewire\Attributes\Session;
+use Livewire\Attributes\Url;
 
 trait WithFilters
 {
     protected bool $displayFilters = false;
 
+    #[Url]
     public array $filterValues = [];
 
     public function areFiltersAvailable(): bool
