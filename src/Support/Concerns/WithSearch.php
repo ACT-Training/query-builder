@@ -13,6 +13,7 @@ trait WithSearch
 
     protected bool $displaySearchableIcon = true;
 
+    #[Url(as: 's')]
     public string $searchBy = '';
 
     protected array $additionalSearchables = [];
