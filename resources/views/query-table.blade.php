@@ -1,6 +1,8 @@
 <div>
 
-    @includeIf($this->headerView())
+    <div>
+        @includeIf($this->headerView())
+    </div>
 
     @if($this->columns())
 
@@ -210,6 +212,9 @@
 
         </div>
 
+    <div>
         @includeIf($this->footerView())
+    </div>
+
     @endif
 </div>
