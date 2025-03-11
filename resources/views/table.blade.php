@@ -110,7 +110,7 @@
                                         <div>
                                     <span>You have selected <span
                                                 class="font-bold">{{ count($selectedRows) }} {{ Str::of('row')->plural(count($selectedRows))  }}</span>. Do you want to select all {{ $this->rows->total() }}?</span>
-                                            <button wire:click="selectAll"
+                                            <button wire:click.stop="selectAll"
                                                     class="ml-2 text-blue-500 hover:text-blue-600">
                                                 Select all
                                             </button>
@@ -142,6 +142,7 @@
                                     <td class="p-0">
                                         <div class="pl-6 flex items-center">
                                             <input wire:model.live="selectedRows" id="checkbox-{{ $row->id }}"
+                                                   wire:click.stop
                                                    type="checkbox"
                                                    value="{{ $row->id }}"
                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
