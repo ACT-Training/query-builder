@@ -5,6 +5,7 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 use ACTTraining\QueryBuilder\Support\Columns\BooleanColumn;
 use ACTTraining\QueryBuilder\Support\Columns\Column;
 use ACTTraining\QueryBuilder\Support\Columns\DateColumn;
+use ACTTraining\QueryBuilder\Support\Columns\ViewColumn;
 use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\EnumCondition;
@@ -78,6 +79,7 @@ trait WithGroupBuilder
                 'number' => Column::make($column['label'], $column['key'])->justify('right'),
                 'boolean' => BooleanColumn::make($column['label'], $column['key'])->justify('center')->hideIf(false),
                 'date' => DateColumn::make($column['label'], $column['key'])->format(config('settings.date.short-format'))->justify('right'),
+                'view' => ViewColumn::make($column['label'])->justify($column['justify'] ?? 'left'),
                 default => Column::make($column['label'], $column['key'])
             };
 
