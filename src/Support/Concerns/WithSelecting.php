@@ -29,11 +29,13 @@ trait WithSelecting
     {
         $this->selectAll = false;
         $this->selectPage = false;
+        $this->dispatch('refreshTable')->self();
     }
 
     public function selectAll(): void
     {
         $this->selectAll = ! $this->selectAll;
+        $this->dispatch('refreshTable')->self();
     }
 
     public function clearSelection(): void
@@ -41,5 +43,8 @@ trait WithSelecting
         $this->selectAll = false;
         $this->selectPage = false;
         $this->selectedRows = [];
+
+        $this->dispatch('refreshTable')->self();
+
     }
 }
