@@ -70,7 +70,7 @@
                     </button>
                     @else
                         <button
-                                :disabled="{{ $selectedRows && ! count($selectedRows) }}"
+                                disabled="{{ $selectedRows && ! count($selectedRows) }}"
                                 wire:click="executeAction('{{ $action->key() }}')"
                                 wire:key="action-{{ $action->key() }}"
                                 @click="close($refs.button)"
