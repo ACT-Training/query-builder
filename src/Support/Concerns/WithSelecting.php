@@ -23,6 +23,7 @@ trait WithSelecting
         }
 
         $this->dispatch('refreshTable')->self();
+
     }
 
     public function updatedSelectedRows(): void
@@ -45,6 +46,5 @@ trait WithSelecting
         $this->selectedRows = [];
 
         $this->dispatch('refreshTable')->self();
-
     }
 }

@@ -46,31 +46,30 @@
 
         <!-- Panel -->
         <div
-{{--                wire:model.live.debounce.500ms="updatePanel"--}}
-                wire:key="panel"
+                wire:ignore
+                wire:key="panel-{{ count($selectedRows) }}"
                 x-ref="panel"
                 x-show="open"
+                x-cloak
                 x-transition.origin.top.left
                 x-on:click.outside="close($refs.button)"
                 :id="$id('dropdown-button')"
-                style="display: none;"
                 class="absolute right-0 mt-2 py-2 w-40 rounded-md bg-white shadow-md z-50"
         >
             <div class="space-y-2">
                 @foreach ($this->actions() as $action)
                     @if($action->isStandalone())
-                    <button
-                            wire:click="executeAction('{{ $action->key() }}')"
-                            wire:key="action-{{ $action->key() }}"
-                            @click="close($refs.button)"
-                            type="button"
-                            class="flex items-center gap-1 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-1 text-left text-sm hover:bg-gray-50 disabled:text-gray-400 cursor-pointer disabled:cursor-not-allowed"
-                    >
-                        {{ $action->label() }}
-                    </button>
+                        <button
+                                wire:click="executeAction('{{ $action->key() }}')"
+                                wire:key="action-{{ $action->key() }}"
+                                @click="close($refs.button)"
+                                type="button"
+                                class="flex items-center gap-1 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-1 text-left text-sm hover:bg-gray-50 disabled:text-gray-400 cursor-pointer disabled:cursor-not-allowed"
+                        >
+                            {{ $action->label() }}
+                        </button>
                     @else
                         <button
-                                disabled="{{ $selectedRows && ! count($selectedRows) }}"
                                 wire:click="executeAction('{{ $action->key() }}')"
                                 wire:key="action-{{ $action->key() }}"
                                 @click="close($refs.button)"
