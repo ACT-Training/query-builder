@@ -108,7 +108,7 @@
                         </thead>
                         <tbody @if($this->useLoadingIndicator()) wire:loading.delay.longest.class="{{ $this->loadingClass }}" @endif>
                         @if($selectable && $selectPage && $this->rows->count() < $this->rows->total())
-                            <tr class="bg-gray-100" wire:key="row-message">
+                            <tr class="bg-gray-100" wire:key="{{ $this->identifier() }}-row-message">
                                 <td colspan="20" class="px-6 py-4">
                                     @unless($selectAll)
                                         <div>
@@ -134,7 +134,7 @@
                             <tr @if($this->isClickable())
                                     {!! $this->renderRowClick($row->id)  !!}
                                 @endif
-                                wire:key="row-{{ $row->id }}"
+                                wire:key="{{ $this->identifier() }}-row-{{ $row->id }}"
                                     @class([
                                         'bg-white border-b',
                                         'hover:bg-gray-50 cursor-pointer' => $this->isClickable(),
