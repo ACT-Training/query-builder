@@ -18,7 +18,7 @@ class DateCriteria extends BaseCriteria implements CriteriaInterface
     public function __construct(string $field, string|array $value, string $operator = '=')
     {
 		$this->field = $field;
-        $this->value = $value;
+        $this->value = Carbon::parse($value)->format('d-m-Y');
         $this->operator = $operator;
     }
 
