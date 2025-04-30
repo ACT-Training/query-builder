@@ -27,7 +27,7 @@ class NullCriteria extends BaseCriteria implements CriteriaInterface
                     ->orWhereEmpty($field);
             } else {
                 $query->whereNotNull($field)
-                    ->where($field, '!=', '')
+                    ->orWhere($field, '!=', '')
                     ->orWhereNotEmpty($field);
             }
         });
