@@ -24,11 +24,11 @@ class NullCriteria extends BaseCriteria implements CriteriaInterface
             if ($this->operation === 'is_not_set') {
                 $query->whereNull($field)
                     ->orWhere($field, '')
-                    ->orWhereJsonLength($field, 0);
+                    ->orWhereEmpty($field);
             } else {
                 $query->whereNotNull($field)
                     ->where($field, '!=', '')
-                    ->whereJsonLength($field, '>', 0);
+                    ->orWhereNotEmpty($field);
             }
         });
     }
