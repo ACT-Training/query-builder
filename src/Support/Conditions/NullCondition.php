@@ -4,7 +4,7 @@ namespace ACTTraining\QueryBuilder\Support\Conditions;
 
 class NullCondition extends BaseCondition
 {
-    public string $inputType = 'number';
+    public string $inputType = 'enum';
 
     public function operations(): array
     {

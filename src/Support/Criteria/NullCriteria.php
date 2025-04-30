@@ -8,9 +8,9 @@ class NullCriteria extends BaseCriteria implements CriteriaInterface
 {
     public string $inputType = 'boolean';
 
-    private $field;
+    private string $field;
 
-    private $operation;
+    private string $operation;
 
     public function __construct(string $field, string $operation)
     {
@@ -22,9 +22,13 @@ class NullCriteria extends BaseCriteria implements CriteriaInterface
     {
         $this->applyWhereCondition($query, $this->field, function ($query, $field) {
             if ($this->operation === 'is_not_set') {
-                $query->whereNull($field);
+                $query->whereNull($field)
+                    ->orWhere($field, '')
+                    ->orWhereJsonLength($field, 0);
             } else {
-                $query->whereNotNull($field);
+                $query->whereNotNull($field)
+                    ->where($field, '!=', '')
+                    ->whereJsonLength($field, '>', 0);
             }
         });
     }
