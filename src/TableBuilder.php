@@ -17,6 +17,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
 use ACTTraining\QueryBuilder\Support\Concerns\WithViews;
+use ACTTraining\QueryBuilder\Support\Filters\NullFilter;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -118,13 +119,55 @@ abstract class TableBuilder extends Component
             $value = $dottedFilterValue[$filter->code()] ?? null;
 
             $query->when($value !== null, function ($query) use ($filter, $value) {
+                // Special case for NullFilter with isSet / isNotSet values
+                if ($filter instanceof NullFilter && in_array($value, ['isSet', 'isNotSet'])) {
+                    $isNegation = $value === 'isNotSet';
+
+                    if (Str::contains($filter->key(), '.')) {
+                        $relation = Str::beforeLast($filter->key(), '.');
+                        $column = Str::afterLast($filter->key(), '.');
+
+                        $query->whereHas($relation, function ($q) use ($column, $isNegation) {
+                            $q->where(function ($q) use ($column, $isNegation) {
+                                if ($isNegation) {
+                                    $q->whereNull($column)
+                                        ->orWhere($column, '')
+                                        ->orWhereJsonLength($column, 0);
+                                } else {
+                                    $q->whereNotNull($column)
+                                        ->where($column, '!=', '')
+                                        ->whereJsonLength($column, '>', 0);
+                                }
+                            });
+                        });
+                    } else {
+                        $query->where(function ($q) use ($filter, $isNegation) {
+                            $key = $filter->key();
+
+                            if ($isNegation) {
+                                $q->whereNull($key)
+                                    ->orWhere($key, '')
+                                    ->orWhereJsonLength($key, 0);
+                            } else {
+                                $q->whereNotNull($key)
+                                    ->where($key, '!=', '')
+                                    ->whereJsonLength($key, '>', 0);
+                            }
+                        });
+                    }
+
+                    return;
+                }
+
+                // Normal filters
                 $value = $filter->parseValue($value);
+
                 if (Str::contains($filter->key(), '.')) {
                     $relation = Str::beforeLast($filter->key(), '.');
                     $column = Str::afterLast($filter->key(), '.');
 
-                    $query->whereHas($relation, function ($query) use ($filter, $value, $column) {
-                        $query->where($column, $filter->operator(), $value);
+                    $query->whereHas($relation, function ($q) use ($filter, $value, $column) {
+                        $q->where($column, $filter->operator(), $value);
                     });
                 } else {
                     $query->where($filter->key(), $filter->operator(), $value);
