@@ -6,7 +6,7 @@ class NullFilter extends BaseFilter
 {
     public string $operator = '';
 
-    public string $component = 'select';
+    public string $component = 'null';
 
     private string $prompt = 'Select an option';
 
