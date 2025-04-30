@@ -23,12 +23,10 @@ class NullCriteria extends BaseCriteria implements CriteriaInterface
         $this->applyWhereCondition($query, $this->field, function ($query, $field) {
             if ($this->operation === 'is_not_set') {
                 $query->whereNull($field)
-                    ->orWhere($field, '')
-                    ->orWhereEmpty($field);
+                    ->orWhere($field, '');
             } else {
                 $query->whereNotNull($field)
-                    ->orWhere($field, '!=', '')
-                    ->orWhereNotEmpty($field);
+                    ->orWhere($field, '!=', '');
             }
         });
     }
