@@ -2,8 +2,6 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
-use Livewire\Attributes\Session;
-
 trait WithSearch
 {
     protected bool $searchable = false;
