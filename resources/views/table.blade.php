@@ -110,7 +110,7 @@
                                         <div>
                                     <span>You have selected <span
                                                 class="font-bold">{{ count($selectedRows) }} {{ Str::of('row')->plural(count($selectedRows))  }}</span>. Do you want to select all {{ $this->rows->total() }}?</span>
-                                            <button wire:click.stop="selectAll"
+                                            <button type="button" wire:click="selectAll()"
                                                     class="ml-2 text-blue-500 hover:text-blue-600">
                                                 Select all
                                             </button>

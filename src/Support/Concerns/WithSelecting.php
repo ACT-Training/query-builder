@@ -33,7 +33,7 @@ trait WithSelecting
         $this->dispatch('refreshTable')->self();
     }
 
-    public function selectAll(): void
+    public function toggleSelectAll(): void
     {
         $this->selectAll = ! $this->selectAll;
         $this->dispatch('refreshTable')->self();
