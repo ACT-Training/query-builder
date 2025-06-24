@@ -10,6 +10,7 @@ use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\EnumCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\FloatCondition;
+use ACTTraining\QueryBuilder\Support\Conditions\NullCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
 use Illuminate\Http\Response;
@@ -116,6 +117,7 @@ trait WithReportBuilder
                 'float' => FloatCondition::make($column['label'], $column['key']),
                 'boolean' => BooleanCondition::make($column['label'], $column['key']),
                 'date' => DateCondition::make($column['label'], $column['key']),
+                'null' => NullCondition::make($column['label'], $column['key']),
                 default => TextCondition::make($column['label'], $column['key'])
             };
 
