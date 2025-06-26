@@ -38,7 +38,7 @@ trait WithSelecting
         $this->selectAll = ! $this->selectAll;
 
         $this->selectedRows = $this->selectAll
-            ? $this->rows->pluck('id')->toArray()
+            ? $this->rowsQuery->pluck('id')->toArray()
             : [];
         $this->dispatch('refreshTable')->self();
     }
