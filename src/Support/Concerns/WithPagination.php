@@ -12,7 +12,7 @@ trait WithPagination
 
     private bool $paginate = true;
 
-    private bool|string $scrollTo = false; //false disables scroll on pagination
+    private bool|string $scrollTo = false; // false disables scroll on pagination
 
     public function usePagination($usePagination = true): static
     {
