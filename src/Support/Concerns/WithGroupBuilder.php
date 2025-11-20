@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 trait WithGroupBuilder
 {
     public string $aggregateColumn = 'id';  // Default column to aggregate
+
     public string $aggregateFunction = 'COUNT'; // Default function (COUNT, SUM, AVG)
 
     // Default group by column

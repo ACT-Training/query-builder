@@ -40,6 +40,4 @@ class NullFilter extends BaseFilter
             }
         });
     }
-
-
 }

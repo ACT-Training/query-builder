@@ -72,33 +72,33 @@ trait WithReportBuilder
 
         foreach (($this->configuredColumns() ?? []) as $column) {
             // Skip nulls/invalid items early
-            if (!is_array($column) || !isset($column['label'], $column['key'])) {
+            if (! is_array($column) || ! isset($column['label'], $column['key'])) {
                 continue;
             }
 
             $type = $column['type'] ?? null;
 
             $columnToAdd = match ($type) {
-                'number'  => Column::make($column['label'], $column['key'])->justify('right'),
+                'number' => Column::make($column['label'], $column['key'])->justify('right'),
                 'boolean' => BooleanColumn::make($column['label'], $column['key'])->justify('center')->hideIf(false),
-                'date'    => DateColumn::make($column['label'], $column['key'])
+                'date' => DateColumn::make($column['label'], $column['key'])
                     ->format(config('settings.date.short-format'))
                     ->justify('right'),
-                'view'    => ViewColumn::make($column['label']),
-                default   => Column::make($column['label'], $column['key']),
+                'view' => ViewColumn::make($column['label']),
+                default => Column::make($column['label'], $column['key']),
             };
 
-            if (!empty($column['view'])) {
+            if (! empty($column['view'])) {
                 $columnToAdd->component($column['view']);
             } elseif ($counter === 0) {
                 $columnToAdd->component('columns.common.title');
             }
 
-            if (!empty($column['sortable'])) {
+            if (! empty($column['sortable'])) {
                 $columnToAdd->sortable();
             }
 
-            if (!empty($column['justify'])) {
+            if (! empty($column['justify'])) {
                 $columnToAdd->justify($column['justify']);
             }
 
@@ -115,11 +115,11 @@ trait WithReportBuilder
 
         foreach (($this->configuredColumns() ?? []) as $column) {
             // Skip nulls/garbage early
-            if (!is_array($column) || !isset($column['label'], $column['key'])) {
+            if (! is_array($column) || ! isset($column['label'], $column['key'])) {
                 continue;
             }
 
-            if (!empty($column['skipCondition'])) {
+            if (! empty($column['skipCondition'])) {
                 continue;
             }
 
@@ -127,18 +127,18 @@ trait WithReportBuilder
 
             // Normalise enum options
             $options = $column['options'] ?? [];
-            if (!is_array($options)) {
+            if (! is_array($options)) {
                 $options = [];
             }
 
             $conditions[] = match ($type) {
-                'number'  => NumberCondition::make($column['label'], $column['key']),
-                'enum'    => EnumCondition::make($column['label'], $column['key'], $options),
-                'float'   => FloatCondition::make($column['label'], $column['key']),
+                'number' => NumberCondition::make($column['label'], $column['key']),
+                'enum' => EnumCondition::make($column['label'], $column['key'], $options),
+                'float' => FloatCondition::make($column['label'], $column['key']),
                 'boolean' => BooleanCondition::make($column['label'], $column['key']),
-                'date'    => DateCondition::make($column['label'], $column['key']),
-                'null'    => NullCondition::make($column['label'], $column['key']),
-                default   => TextCondition::make($column['label'], $column['key']),
+                'date' => DateCondition::make($column['label'], $column['key']),
+                'null' => NullCondition::make($column['label'], $column['key']),
+                default => TextCondition::make($column['label'], $column['key']),
             };
         }
 
