@@ -10,17 +10,21 @@ use ACTTraining\QueryBuilder\Support\Conditions\BooleanCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\DateCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\EnumCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\FloatCondition;
-use ACTTraining\QueryBuilder\Support\Conditions\NullCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
 use Illuminate\Http\Response;
 use Livewire\Attributes\Validate;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-trait WithReportBuilder
+trait WithGroupBuilder
 {
-    #[Validate('required|array')]
-    public array $selectedColumns = [];
+    public string $aggregateColumn = 'id';  // Default column to aggregate
+
+    public string $aggregateFunction = 'COUNT'; // Default function (COUNT, SUM, AVG)
+
+    // Default group by column
+    #[Validate('required|string')]
+    public string $groupBy;
 
     private function findElementByKey(array $array, $targetValue): ?array
     {
@@ -43,7 +47,7 @@ trait WithReportBuilder
         return null; // Return null if no match is found
     }
 
-    public function updatedSelectedColumns(): void
+    public function updatedGroupBy(): void
     {
         $this->resetPage();
         $this->dispatch('refreshTable')->self();
@@ -68,41 +72,34 @@ trait WithReportBuilder
     public function buildColumns(): array
     {
         $columns = [];
+
         $counter = 0;
 
-        foreach (($this->configuredColumns() ?? []) as $column) {
-            // Skip nulls/invalid items early
-            if (! is_array($column) || ! isset($column['label'], $column['key'])) {
-                continue;
-            }
-
-            $type = $column['type'] ?? null;
-
-            $columnToAdd = match ($type) {
+        foreach ($this->configuredColumns() as $column) {
+            $columnToAdd = match ($column['type'] ?? null) {
                 'number' => Column::make($column['label'], $column['key'])->justify('right'),
                 'boolean' => BooleanColumn::make($column['label'], $column['key'])->justify('center')->hideIf(false),
-                'date' => DateColumn::make($column['label'], $column['key'])
-                    ->format(config('settings.date.short-format'))
-                    ->justify('right'),
-                'view' => ViewColumn::make($column['label']),
-                default => Column::make($column['label'], $column['key']),
+                'date' => DateColumn::make($column['label'], $column['key'])->format(config('settings.date.short-format'))->justify('right'),
+                'view' => ViewColumn::make($column['label'])->justify($column['justify'] ?? 'left'),
+                default => Column::make($column['label'], $column['key'])
             };
 
-            if (! empty($column['view'])) {
+            if ($column['view'] ?? false) {
                 $columnToAdd->component($column['view']);
             } elseif ($counter === 0) {
                 $columnToAdd->component('columns.common.title');
             }
 
-            if (! empty($column['sortable'])) {
+            if ($column['sortable'] ?? false) {
                 $columnToAdd->sortable();
             }
 
-            if (! empty($column['justify'])) {
+            if ($column['justify'] ?? false) {
                 $columnToAdd->justify($column['justify']);
             }
 
             $columns[] = $columnToAdd;
+
             $counter++;
         }
 
@@ -113,33 +110,20 @@ trait WithReportBuilder
     {
         $conditions = [];
 
-        foreach (($this->configuredColumns() ?? []) as $column) {
-            // Skip nulls/garbage early
-            if (! is_array($column) || ! isset($column['label'], $column['key'])) {
+        foreach ($this->configuredColumns() as $column) {
+            if ($column['skipCondition'] ?? false) {
                 continue;
             }
 
-            if (! empty($column['skipCondition'])) {
-                continue;
-            }
-
-            $type = $column['type'] ?? null;
-
-            // Normalise enum options
-            $options = $column['options'] ?? [];
-            if (! is_array($options)) {
-                $options = [];
-            }
-
-            $conditions[] = match ($type) {
+            $conditions[] = match ($column['type'] ?? null) {
                 'number' => NumberCondition::make($column['label'], $column['key']),
-                'enum' => EnumCondition::make($column['label'], $column['key'], $options),
+                'enum' => EnumCondition::make($column['label'], $column['key'], $column['options'] ?? []),
                 'float' => FloatCondition::make($column['label'], $column['key']),
                 'boolean' => BooleanCondition::make($column['label'], $column['key']),
                 'date' => DateCondition::make($column['label'], $column['key']),
-                'null' => NullCondition::make($column['label'], $column['key']),
-                default => TextCondition::make($column['label'], $column['key']),
+                default => TextCondition::make($column['label'], $column['key'])
             };
+
         }
 
         return $conditions;

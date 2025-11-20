@@ -23,17 +23,24 @@ trait WithSelecting
         }
 
         $this->dispatch('refreshTable')->self();
+
     }
 
     public function updatedSelectedRows(): void
     {
         $this->selectAll = false;
         $this->selectPage = false;
+        $this->dispatch('refreshTable')->self();
     }
 
-    public function selectAll(): void
+    public function toggleSelectAll(): void
     {
         $this->selectAll = ! $this->selectAll;
+
+        $this->selectedRows = $this->selectAll
+            ? $this->rowsQuery->pluck('id')->toArray()
+            : [];
+        $this->dispatch('refreshTable')->self();
     }
 
     public function clearSelection(): void
@@ -41,5 +48,7 @@ trait WithSelecting
         $this->selectAll = false;
         $this->selectPage = false;
         $this->selectedRows = [];
+
+        $this->dispatch('refreshTable')->self();
     }
 }

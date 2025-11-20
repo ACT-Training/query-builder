@@ -26,6 +26,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 /**
@@ -117,6 +118,16 @@ abstract class QueryBuilder extends Component
 
         $query->when($this->sortBy !== '', function ($query) {
             $query->orderBy($this->sortBy, $this->sortDirection);
+        });
+
+        $query->when($this->sortBy !== '', function ($query) {
+            if (Str::contains($this->sortBy, '.')) {
+                // If it's a relationship, use orderByRelated
+                $this->orderByRelated($query, $this->sortBy, $this->sortDirection);
+            } else {
+                // Otherwise, use regular orderBy
+                $query->orderBy($this->sortBy, $this->sortDirection);
+            }
         });
 
         return $query;

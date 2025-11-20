@@ -2,10 +2,13 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
+use Livewire\Attributes\Url;
+
 trait WithFilters
 {
     protected bool $displayFilters = false;
 
+    #[Url(as: 'f')]
     public array $filterValues = [];
 
     public function areFiltersAvailable(): bool
