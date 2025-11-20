@@ -2,6 +2,8 @@
 
 namespace ACTTraining\QueryBuilder\Support\Concerns;
 
+use Livewire\Attributes\Url;
+
 trait WithSearch
 {
     protected bool $searchable = false;
@@ -10,6 +12,7 @@ trait WithSearch
 
     protected bool $displaySearchableIcon = true;
 
+    #[Url(as: 's')]
     public string $searchBy = '';
 
     protected array $additionalSearchables = [];

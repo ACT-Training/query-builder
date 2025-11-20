@@ -17,23 +17,8 @@ class DateCriteria extends BaseCriteria implements CriteriaInterface
 
     public function __construct(string $field, string|array $value, string $operator = '=')
     {
-        // Check if the date is in the 'd/m/Y' format and convert it to 'd-m-Y'
-        $date = \DateTime::createFromFormat('d/m/Y', $field);
-
-        if ($date) {
-            // If the date is successfully parsed in the 'd/m/Y' format, convert it to 'd-m-Y'
-            $this->field = $date->format('d-m-Y');
-        } else {
-            // If the date was not in 'd/m/Y', assume it's already in 'd-m-Y' format
-            // Optionally, you could check again if it's in the correct format
-            $date = \DateTime::createFromFormat('d-m-Y', $field);
-
-            if ($date) {
-                $this->field = $field; // Already in 'd-m-Y', so just assign it
-            }
-        }
-
-        $this->value = $value;
+        $this->field = $field;
+        $this->value = Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y');
         $this->operator = $operator;
     }
 
