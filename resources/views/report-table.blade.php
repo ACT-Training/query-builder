@@ -112,7 +112,7 @@
                                wire:target.except="exportReportBuilder, saveReportBuilder, loadReportBuilder" @endif>
                         @if($selectable && $selectPage && $this->rows->count() < $this->rows->total())
                             <tr class="bg-gray-100" wire:key="{{ $this->identifier() }}-row-message">
-                                <td colspan="20" class="px-6 py-4">
+                                <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
                                     @unless($selectAll)
                                         <div>
                                     <span>You have selected <span
