@@ -1,6 +1,8 @@
 <div>
 
-    @includeIf($this->headerView())
+    <div>
+        @includeIf($this->headerView())
+    </div>
 
     @if($this->columns())
 
@@ -74,7 +76,7 @@
                                                 {{ $column->label }}
 
                                                 @if ($sortBy === $column->key)
-                                                    @if ($sortDirection === 'asc')
+                                                    @if ($sortDirection === 'desc')
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                                              viewBox="0 0 20 20"
                                                              fill="currentColor">
@@ -112,7 +114,7 @@
                                         <div>
                                     <span>You have selected <span
                                                 class="font-bold">{{ count($selectedRows) }} {{ Str::of('row')->plural(count($selectedRows))  }}</span>. Do you want to select all {{ $this->rows->total() }}?</span>
-                                            <button wire:click="selectAll"
+                                            <button type="button" wire:click="toggleSelectAll()"
                                                     class="ml-2 text-blue-500 hover:text-blue-600">
                                                 Select all
                                             </button>
@@ -210,6 +212,9 @@
 
         </div>
 
-        @includeIf($this->footerView())
+        <div>
+            @includeIf($this->footerView())
+        </div>
+
     @endif
 </div>
