@@ -21,7 +21,7 @@ class BaseFilter
     {
         $this->key = $key;
         $this->label = $label;
-        $this->code = $label.':'.$this->operator;
+        $this->code = $this->buildCode();
     }
 
     public static function make($label, $key = null): static
@@ -61,9 +61,28 @@ class BaseFilter
     public function useOperator(string $operator): static
     {
         $this->operator = $operator;
-        $this->code = $this->label.':'.$this->operator;
+        $this->code = $this->buildCode();
 
         return $this;
+    }
+
+    /**
+     * Build the filter code from the label and a Blade-safe operator alias.
+     *
+     * Operators like >= and <= are mapped to gte/lte so that Blade's {{ }}
+     * HTML-encoding does not break wire:model bindings.
+     */
+    private function buildCode(): string
+    {
+        $operator = match ($this->operator) {
+            '>=' => 'gte',
+            '<=' => 'lte',
+            '>' => 'gt',
+            '<' => 'lt',
+            default => $this->operator,
+        };
+
+        return $this->label.':'.$operator;
     }
 
     public function useComponent(string $component): static
