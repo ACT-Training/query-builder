@@ -13,7 +13,7 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                 @foreach($columns as $columnKey => $column)
                     <div class="flex items-center mb-4">
-                        <input wire:model.live.debounce.500ms="selectedColumns" id="{{$column['key']}}" type="checkbox"
+                        <input wire:model.live.debounce.1000ms="selectedColumns" id="{{$column['key']}}" type="checkbox"
                                value="{{ $column['key'] }}"
                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <label for="{{$column['key']}}"

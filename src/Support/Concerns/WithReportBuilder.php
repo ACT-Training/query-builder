@@ -46,6 +46,7 @@ trait WithReportBuilder
     public function updatedSelectedColumns(): void
     {
         $this->resetPage();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
 
     public function availableColumns(): array
