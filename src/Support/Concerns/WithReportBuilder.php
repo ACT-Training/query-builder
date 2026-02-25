@@ -46,7 +46,6 @@ trait WithReportBuilder
     public function updatedSelectedColumns(): void
     {
         $this->resetPage();
-        $this->dispatch('refreshTable')->self();
     }
 
     public function availableColumns(): array
