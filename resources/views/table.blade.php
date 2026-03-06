@@ -8,6 +8,10 @@
         @if($this->isSearchVisible() && $this->searchableColumnsSet() && ! $this->areActionsVisible())
             @if($this->isFiltered() || $this->isSearchActive() || $this->rows->count() > 0)
                 <div class="p-4 flex items-center gap-2 w-full">
+                    @if($this->isCardViewEnabled())
+                        @include('query-builder::components.view-toggle')
+                    @endif
+
                     @include('query-builder::components.search')
                 </div>
             @endif
@@ -43,6 +47,10 @@
 
         <div id="{{ $this->identifier() }}">
             @if($this->rows->count())
+
+                @if($this->isCardMode())
+                    @include('query-builder::card-grid')
+                @else
                 <div class="relative overflow-x-auto overflow-y-auto">
                     <table class="w-full text-sm text-left text-gray-500" wire:key="{{ $this->identifier() }}">
                         <thead class="text-xs text-gray-700 bg-gray-50">
@@ -210,6 +218,7 @@
                     @endif
 
                 </div>
+                @endif
 
             @else
                 <div>

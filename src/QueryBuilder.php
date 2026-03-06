@@ -9,6 +9,7 @@ namespace ACTTraining\QueryBuilder;
 use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
 use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCaching;
+use ACTTraining\QueryBuilder\Support\Concerns\WithCardView;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
@@ -36,6 +37,7 @@ abstract class QueryBuilder extends Component
 {
     use WithActions;
     use WithCaching;
+    use WithCardView;
     use WithColumns;
     use WithFilters;
     use WithIdentifier;
