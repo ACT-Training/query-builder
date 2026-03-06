@@ -13,6 +13,18 @@ trait WithCardView
         return null;
     }
 
+    public function isCardOnly(): bool
+    {
+        return false;
+    }
+
+    public function mountWithCardView(): void
+    {
+        if ($this->isCardOnly() && $this->isCardViewEnabled()) {
+            $this->viewMode = 'cards';
+        }
+    }
+
     public function toggleViewMode(): void
     {
         $this->viewMode = $this->viewMode === 'table' ? 'cards' : 'table';
