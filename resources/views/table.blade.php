@@ -50,6 +50,16 @@
 
                 @if($this->isCardMode())
                     @include('query-builder::card-grid')
+
+                    @if($this->isPaginated() && $this->rows->hasPages())
+                        <div class="px-6 py-2">
+                            @if($this->scroll() === true)
+                                {{ $this->rows->links() }}
+                            @else
+                                {{ $this->rows->links(data: ['scrollTo' => $this->scroll()]) }}
+                            @endif
+                        </div>
+                    @endif
                 @else
                 <div class="relative overflow-x-auto overflow-y-auto">
                     <table class="w-full text-sm text-left text-gray-500" wire:key="{{ $this->identifier() }}">

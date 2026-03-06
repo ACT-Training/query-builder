@@ -14,7 +14,9 @@
             wire:key="{{ $this->identifier() }}-card-{{ $row->id }}"
             @if($this->isClickable())
                 {!! $this->renderRowClick($row->id) !!}
-                class="cursor-pointer"
+                class="cursor-pointer h-full"
+            @else
+                class="h-full"
             @endif
         >
             @include($cardView, ['row' => $row, 'imageUrl' => $imageUrl])
