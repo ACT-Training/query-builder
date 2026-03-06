@@ -25,6 +25,10 @@
                 <div class="p-4 flex items-center gap-2 justify-between bg-gray-50">
 
                     <div class="p-4 flex items-center gap-2">
+                        @if($this->isCardViewEnabled())
+                            @include('query-builder::components.view-toggle')
+                        @endif
+
                         @if($this->isSearchVisible())
                             @include('query-builder::components.search')
                         @endif
@@ -49,6 +53,9 @@
 
             @if($this->rows->count())
 
+                @if($this->isCardMode())
+                    @include('query-builder::card-grid')
+                @else
                 <div id="{{ $this->identifier() }}" class="relative overflow-x-auto">
                     <table class="w-full text-sm text-left text-gray-500">
                         <thead class="text-xs text-gray-700 bg-gray-50">
@@ -173,6 +180,7 @@
                         </tbody>
                     </table>
                 </div>
+                @endif
 
                 @if($this->isPaginated() && $this->rows->hasPages())
                     <div class="border-b border-gray-200 shadow-sm">

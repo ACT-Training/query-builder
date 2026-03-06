@@ -5,6 +5,7 @@
 namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
+use ACTTraining\QueryBuilder\Support\Concerns\WithCardView;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
@@ -31,6 +32,7 @@ use Psr\Container\NotFoundExceptionInterface;
 abstract class TableBuilder extends Component
 {
     use WithActions;
+    use WithCardView;
     use WithColumns;
     use WithFilters;
     use WithIdentifier;
