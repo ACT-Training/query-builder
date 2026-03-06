@@ -12,7 +12,7 @@ class CardLayout
 
     protected string $cardView = 'query-builder::card';
 
-    public static function make(): static
+    public static function make(): self
     {
         return new self;
     }
