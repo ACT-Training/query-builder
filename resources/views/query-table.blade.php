@@ -25,7 +25,7 @@
                 <div class="p-4 flex items-center gap-2 justify-between bg-gray-50">
 
                     <div class="p-4 flex items-center gap-2">
-                        @if($this->isCardViewEnabled())
+                        @if($this->isCardViewEnabled() && ! $this->isCardOnly())
                             @include('query-builder::components.view-toggle')
                         @endif
 
