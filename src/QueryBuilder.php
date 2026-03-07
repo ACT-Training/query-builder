@@ -28,6 +28,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 /**
@@ -60,13 +62,10 @@ abstract class QueryBuilder extends Component
 
     public array $rowOptions = [10, 25, 50];
 
-    protected $listeners = [
-        'refreshTable' => '$refresh',
-    ];
-
-    //    protected array $queryString = ['perPage'];
-
     abstract public function query(): Builder;
+
+    #[On('refreshTable')]
+    public function refreshTable(): void {}
 
     public function booted(): void
     {
@@ -98,7 +97,8 @@ abstract class QueryBuilder extends Component
         return $this->enableQueryBuilder && count($this->conditions());
     }
 
-    public function getRowsQueryProperty()
+    #[Computed]
+    public function rowsQuery()
     {
         /* @phpstan-ignore-next-line */
         $query = $this
@@ -135,7 +135,8 @@ abstract class QueryBuilder extends Component
         return $query;
     }
 
-    public function getRowsProperty()
+    #[Computed]
+    public function rows()
     {
         //        return $this->cache(function () {
         return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
