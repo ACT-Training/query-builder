@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -50,11 +52,10 @@ abstract class TableBuilder extends Component
 
     public array $rowOptions = [10, 25, 50];
 
-    protected $listeners = [
-        'refreshTable' => '$refresh',
-    ];
-
     abstract public function query(): Builder;
+
+    #[On('refreshTable')]
+    public function refreshTable(): void {}
 
     protected function queryString(): array
     {
@@ -78,7 +79,8 @@ abstract class TableBuilder extends Component
         //
     }
 
-    public function getRowsQueryProperty()
+    #[Computed]
+    public function rowsQuery()
     {
         $query = $this->query()->when($this->sortBy !== '', function ($query) {
             if (Str::contains($this->sortBy, '.')) {
@@ -183,7 +185,8 @@ abstract class TableBuilder extends Component
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function getRowsProperty()
+    #[Computed]
+    public function rows()
     {
         return $this->applyPagination($this->rowsQuery); /* @phpstan-ignore-line */
     }
