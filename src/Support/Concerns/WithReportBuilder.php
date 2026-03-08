@@ -185,11 +185,22 @@ trait WithReportBuilder
         }
 
         if ($this->hasGroupBy()) {
-            $groupByLabel = $this->findElementByKey($this->availableColumns(), $this->groupBy)['label'] ?? $this->groupBy;
+            $groupByConfig = $this->findElementByKey($this->availableColumns(), $this->groupBy);
+            $groupByLabel = $groupByConfig['label'] ?? $this->groupBy;
+
+            $groupColumn = Column::make($groupByLabel, 'group_value')->sortable();
+
+            if (! empty($groupByConfig['view'])) {
+                $groupColumn->component($groupByConfig['view']);
+            }
+
+            $aggregateLabel = $this->aggregateFunction === 'COUNT'
+                ? 'Count'
+                : "{$this->aggregateFunction}({$this->aggregateColumn})";
 
             return [
-                Column::make($groupByLabel, 'group_value')->sortable(),
-                Column::make("{$this->aggregateFunction}({$this->aggregateColumn})", 'aggregate')
+                $groupColumn,
+                Column::make($aggregateLabel, 'aggregate')
                     ->justify('right')
                     ->sortable(),
             ];
