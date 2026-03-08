@@ -56,6 +56,11 @@ trait WithReportBuilder
 
     public function updatedGroupBy(): void
     {
+        if (! $this->hasGroupBy() && in_array($this->sortBy, ['aggregate', 'group_value'], true)) {
+            $this->sortBy = '';
+            $this->sortDirection = 'asc';
+        }
+
         $this->resetPage();
         $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
