@@ -22,7 +22,7 @@ trait WithReportBuilder
     #[Validate('required|array')]
     public array $selectedColumns = [];
 
-    public string $groupBy = '';
+    public ?string $groupBy = null;
 
     public string $aggregateColumn = 'id';
 
@@ -74,7 +74,7 @@ trait WithReportBuilder
 
     public function hasGroupBy(): bool
     {
-        return $this->enableGroupBy && $this->groupBy !== '';
+        return $this->enableGroupBy && $this->groupBy !== null;
     }
 
     public function aggregateFunctions(): array
@@ -235,7 +235,7 @@ trait WithReportBuilder
     {
         $this->criteria = [];
         $this->selectedColumns = [];
-        $this->groupBy = '';
+        $this->groupBy = null;
         $this->aggregateColumn = 'id';
         $this->aggregateFunction = 'COUNT';
         $this->saveToSession();
