@@ -4,15 +4,15 @@
 
 namespace ACTTraining\QueryBuilder;
 
-use ACTTraining\QueryBuilder\Support\Concerns\WithGroupBuilder;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 
-abstract class GroupsBuilder extends QueryBuilder
+/**
+ * @deprecated Use ReportBuilder with $enableGroupBy = true instead.
+ */
+abstract class GroupsBuilder extends ReportBuilder
 {
-    use WithGroupBuilder;
-
-    public bool $selectable = false;
+    public bool $enableGroupBy = true;
 
     public function render(): Factory|View
     {

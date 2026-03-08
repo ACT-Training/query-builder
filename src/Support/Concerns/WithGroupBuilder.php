@@ -16,6 +16,9 @@ use Illuminate\Http\Response;
 use Livewire\Attributes\Validate;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+/**
+ * @deprecated Use WithReportBuilder with $enableGroupBy = true instead.
+ */
 trait WithGroupBuilder
 {
     public string $aggregateColumn = 'id';  // Default column to aggregate

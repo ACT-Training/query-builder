@@ -22,6 +22,44 @@
                 @endforeach
             </div>
         @endforeach
+
+        @if($this->enableGroupBy)
+            <h6 class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">Group By</h6>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label for="groupBy" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Group By Column</label>
+                    <select wire:model.live="groupBy" id="groupBy"
+                            class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="">None</option>
+                        @foreach($this->groupableColumns() as $column)
+                            <option value="{{ $column['key'] }}">{{ $column['label'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                @if($this->groupBy)
+                    <div>
+                        <label for="aggregateFunction" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Function</label>
+                        <select wire:model.live="aggregateFunction" id="aggregateFunction"
+                                class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            @foreach($this->aggregateFunctions() as $fn)
+                                <option value="{{ $fn }}">{{ $fn }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="aggregateColumn" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Aggregate Column</label>
+                        <select wire:model.live="aggregateColumn" id="aggregateColumn"
+                                class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            @foreach($this->aggregatableColumns() as $column)
+                                <option value="{{ $column['key'] }}">{{ $column['label'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
+            </div>
+        @endif
     </div>
 
     <div wire:ignore class="flex items-center gap-2 justify-between p-1 px-2 bg-gray-50 -mx-6 -mb-6 rounded-b-lg border-t border-gray-200">
