@@ -194,6 +194,11 @@ trait WithReportBuilder
                 $groupColumn->component($groupByConfig['view']);
             }
 
+            $options = $groupByConfig['options'] ?? [];
+            if (! empty($options)) {
+                $groupColumn->reformatUsing(fn ($value) => $options[$value] ?? $value);
+            }
+
             $aggregateLabel = $this->aggregateFunction === 'COUNT'
                 ? 'Count'
                 : "{$this->aggregateFunction}({$this->aggregateColumn})";

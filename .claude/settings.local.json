@@ -9,7 +9,12 @@
       "Bash(vendor/bin/pest:*)",
       "Bash(vendor/bin/pint:*)",
       "Bash(git push:*)",
-      "Bash(gh pr:*)"
+      "Bash(gh pr:*)",
+      "Bash(composer analyse:*)",
+      "Bash(composer test:*)",
+      "Bash(composer format:*)",
+      "Bash(git stash:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
