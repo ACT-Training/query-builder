@@ -22,17 +22,22 @@ trait WithReportBuilder
     #[Validate('required|array')]
     public array $selectedColumns = [];
 
+    public ?string $groupBy = null;
+
+    public string $aggregateColumn = 'id';
+
+    public string $aggregateFunction = 'COUNT';
+
+    public bool $enableGroupBy = false;
+
     private function findElementByKey(array $array, $targetValue): ?array
     {
         foreach ($array as $value) {
-            // Check if the current item is an array
             if (is_array($value)) {
-                // Check if it contains the 'key' element with the target value
                 if (isset($value['key']) && $value['key'] === $targetValue) {
-                    return $value; // Return the found item
+                    return $value;
                 }
 
-                // Recursively search the sub-array
                 $result = $this->findElementByKey($value, $targetValue);
                 if ($result !== null) {
                     return $result;
@@ -40,13 +45,93 @@ trait WithReportBuilder
             }
         }
 
-        return null; // Return null if no match is found
+        return null;
     }
 
     public function updatedSelectedColumns(): void
     {
         $this->resetPage();
         $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
+    }
+
+    public function updatedGroupBy(): void
+    {
+        $this->resetPage();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
+    }
+
+    public function updatedAggregateFunction(): void
+    {
+        if ($this->aggregateFunction === 'COUNT') {
+            $this->aggregateColumn = 'id';
+        }
+
+        $this->resetPage();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
+    }
+
+    public function updatedAggregateColumn(): void
+    {
+        $this->resetPage();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
+    }
+
+    public function hasGroupBy(): bool
+    {
+        return $this->enableGroupBy && filled($this->groupBy);
+    }
+
+    public function aggregateFunctions(): array
+    {
+        return [
+            'COUNT' => 'Count',
+            'SUM' => 'Sum',
+            'AVG' => 'Average',
+            'MIN' => 'Minimum',
+            'MAX' => 'Maximum',
+        ];
+    }
+
+    public function availableGroupByColumns(): array
+    {
+        return $this->availableColumns();
+    }
+
+    public function groupableColumns(): array
+    {
+        $columns = [];
+
+        foreach ($this->availableGroupByColumns() as $section => $sectionColumns) {
+            foreach ($sectionColumns as $column) {
+                if (! is_array($column) || ! isset($column['label'], $column['key'])) {
+                    continue;
+                }
+
+                $columns[] = $column;
+            }
+        }
+
+        return $columns;
+    }
+
+    public function aggregatableColumns(): array
+    {
+        $columns = [];
+
+        foreach ($this->availableColumns() as $section => $sectionColumns) {
+            foreach ($sectionColumns as $column) {
+                if (! is_array($column) || ! isset($column['label'], $column['key'])) {
+                    continue;
+                }
+
+                $type = $column['type'] ?? null;
+                if (in_array($type, ['number', 'float'], true)) {
+                    $columns[] = $column;
+                }
+            }
+        }
+
+        return $columns;
     }
 
     public function availableColumns(): array
@@ -71,7 +156,6 @@ trait WithReportBuilder
         $counter = 0;
 
         foreach (($this->configuredColumns() ?? []) as $column) {
-            // Skip nulls/invalid items early
             if (! is_array($column) || ! isset($column['label'], $column['key'])) {
                 continue;
             }
@@ -106,6 +190,45 @@ trait WithReportBuilder
             $counter++;
         }
 
+        if ($this->hasGroupBy()) {
+            $groupByConfig = $this->findElementByKey($this->availableGroupByColumns(), $this->groupBy);
+            $groupByLabel = $groupByConfig['label'] ?? $this->groupBy;
+
+            $groupColumn = Column::make($groupByLabel, 'group_value')->sortable();
+
+            if (! empty($groupByConfig['view'])) {
+                $groupColumn->component($groupByConfig['view']);
+            }
+
+            $options = $groupByConfig['options'] ?? [];
+            if (! empty($options)) {
+                $groupColumn->reformatUsing(fn ($value) => $options[$value] ?? $value);
+            }
+
+            $functionLabel = $this->aggregateFunctions()[$this->aggregateFunction] ?? $this->aggregateFunction;
+            $aggregateConfig = $this->aggregateFunction !== 'COUNT'
+                ? $this->findElementByKey($this->availableColumns(), $this->aggregateColumn)
+                : null;
+            $aggregateColumnLabel = $aggregateConfig['label'] ?? $this->aggregateColumn;
+
+            $aggregateLabel = $this->aggregateFunction === 'COUNT'
+                ? $functionLabel
+                : "{$functionLabel} of {$aggregateColumnLabel}";
+
+            $aggregateCol = Column::make($aggregateLabel, 'aggregate')
+                ->justify('right')
+                ->sortable();
+
+            if ($aggregateConfig && ! empty($aggregateConfig['view'])) {
+                $aggregateCol->component($aggregateConfig['view']);
+            }
+
+            return [
+                $groupColumn,
+                $aggregateCol,
+            ];
+        }
+
         return $columns;
     }
 
@@ -114,7 +237,6 @@ trait WithReportBuilder
         $conditions = [];
 
         foreach (($this->configuredColumns() ?? []) as $column) {
-            // Skip nulls/garbage early
             if (! is_array($column) || ! isset($column['label'], $column['key'])) {
                 continue;
             }
@@ -125,7 +247,6 @@ trait WithReportBuilder
 
             $type = $column['type'] ?? null;
 
-            // Normalise enum options
             $options = $column['options'] ?? [];
             if (! is_array($options)) {
                 $options = [];
@@ -157,6 +278,9 @@ trait WithReportBuilder
     {
         $this->criteria = [];
         $this->selectedColumns = [];
+        $this->groupBy = null;
+        $this->aggregateColumn = 'id';
+        $this->aggregateFunction = 'COUNT';
         $this->saveToSession();
     }
 
