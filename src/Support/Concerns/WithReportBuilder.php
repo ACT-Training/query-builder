@@ -82,11 +82,16 @@ trait WithReportBuilder
         return ['COUNT', 'SUM', 'AVG', 'MIN', 'MAX'];
     }
 
+    public function availableGroupByColumns(): array
+    {
+        return $this->availableColumns();
+    }
+
     public function groupableColumns(): array
     {
         $columns = [];
 
-        foreach ($this->availableColumns() as $section => $sectionColumns) {
+        foreach ($this->availableGroupByColumns() as $section => $sectionColumns) {
             foreach ($sectionColumns as $column) {
                 if (! is_array($column) || ! isset($column['label'], $column['key'])) {
                     continue;
