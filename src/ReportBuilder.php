@@ -38,8 +38,10 @@ abstract class ReportBuilder extends QueryBuilder
             ? $this->resolveColumnWithJoins($query, $this->aggregateColumn)
             : "{$baseTable}.{$this->aggregateColumn}";
 
-        $query->selectRaw("{$groupByColumn} as group_value, {$this->aggregateFunction}({$aggregateColumn}) as aggregate")
-            ->groupBy($groupByColumn);
+        $query->reorder()
+            ->selectRaw("{$groupByColumn} as group_value, {$this->aggregateFunction}({$aggregateColumn}) as aggregate")
+            ->groupBy($groupByColumn)
+            ->orderBy($groupByColumn);
 
         return $query;
     }
