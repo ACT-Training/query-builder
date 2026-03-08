@@ -62,6 +62,10 @@ trait WithReportBuilder
 
     public function updatedAggregateFunction(): void
     {
+        if ($this->aggregateFunction === 'COUNT') {
+            $this->aggregateColumn = 'id';
+        }
+
         $this->resetPage();
         $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
