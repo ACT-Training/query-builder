@@ -34,9 +34,14 @@ abstract class ReportBuilder extends QueryBuilder
 
         $groupByColumn = $this->resolveColumnWithJoins($query, $this->groupBy);
         $baseTable = $query->getModel()->getTable();
-        $aggregateColumn = str_contains($this->aggregateColumn, '.')
-            ? $this->resolveColumnWithJoins($query, $this->aggregateColumn)
-            : "{$baseTable}.{$this->aggregateColumn}";
+
+        if ($this->aggregateFunction === 'COUNT') {
+            $aggregateColumn = "{$baseTable}.id";
+        } else {
+            $aggregateColumn = str_contains($this->aggregateColumn, '.')
+                ? $this->resolveColumnWithJoins($query, $this->aggregateColumn)
+                : "{$baseTable}.{$this->aggregateColumn}";
+        }
 
         $query->withoutGlobalScope('order')
             ->reorder()

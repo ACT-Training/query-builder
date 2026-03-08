@@ -110,7 +110,7 @@ trait WithReportBuilder
 
     public function aggregatableColumns(): array
     {
-        $columns = [['label' => 'ID', 'key' => 'id']];
+        $columns = [];
 
         foreach ($this->availableColumns() as $section => $sectionColumns) {
             foreach ($sectionColumns as $column) {
