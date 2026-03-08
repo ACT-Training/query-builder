@@ -61,7 +61,9 @@ abstract class ReportBuilder extends QueryBuilder
         $parts = explode('.', $key);
         $columnName = array_pop($parts);
         $currentModel = $query->getModel();
-        $joined = [];
+        $existingJoins = collect($query->getQuery()->joins ?? [])
+            ->pluck('table')
+            ->all();
 
         foreach ($parts as $relationName) {
             if (! method_exists($currentModel, $relationName)) {
@@ -71,7 +73,7 @@ abstract class ReportBuilder extends QueryBuilder
             $relation = $currentModel->{$relationName}();
             $relatedTable = $relation->getRelated()->getTable();
 
-            if (in_array($relatedTable, $joined, true)) {
+            if (in_array($relatedTable, $existingJoins, true)) {
                 $currentModel = $relation->getRelated();
 
                 continue;
@@ -93,7 +95,7 @@ abstract class ReportBuilder extends QueryBuilder
                 );
             }
 
-            $joined[] = $relatedTable;
+            $existingJoins[] = $relatedTable;
             $currentModel = $relation->getRelated();
         }
 
