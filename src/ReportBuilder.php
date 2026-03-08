@@ -43,11 +43,19 @@ abstract class ReportBuilder extends QueryBuilder
                 : "{$baseTable}.{$this->aggregateColumn}";
         }
 
+        $sortColumn = in_array($this->sortBy, ['aggregate', 'group_value'], true)
+            ? $this->sortBy
+            : $groupByColumn;
+
+        $sortDirection = in_array($this->sortBy, ['aggregate', 'group_value'], true)
+            ? $this->sortDirection
+            : 'asc';
+
         $query->withoutGlobalScope('order')
             ->reorder()
             ->selectRaw("{$groupByColumn} as group_value, {$this->aggregateFunction}({$aggregateColumn}) as aggregate")
             ->groupBy($groupByColumn)
-            ->orderBy($groupByColumn);
+            ->orderBy($sortColumn, $sortDirection);
 
         return $query;
     }
