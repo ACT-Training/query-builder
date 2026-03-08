@@ -185,7 +185,7 @@ trait WithReportBuilder
         }
 
         if ($this->hasGroupBy()) {
-            $groupByConfig = $this->findElementByKey($this->availableColumns(), $this->groupBy);
+            $groupByConfig = $this->findElementByKey($this->availableGroupByColumns(), $this->groupBy);
             $groupByLabel = $groupByConfig['label'] ?? $this->groupBy;
 
             $groupColumn = Column::make($groupByLabel, 'group_value')->sortable();
