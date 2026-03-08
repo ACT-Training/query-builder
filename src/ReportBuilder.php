@@ -25,6 +25,11 @@ abstract class ReportBuilder extends QueryBuilder
         $query = parent::rowsQuery();
 
         if (! $this->hasGroupBy()) {
+            if (in_array($this->sortBy, ['aggregate', 'group_value'], true)) {
+                $this->sortBy = '';
+                $query->reorder();
+            }
+
             return $query;
         }
 
