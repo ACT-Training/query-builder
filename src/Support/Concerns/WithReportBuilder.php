@@ -57,19 +57,19 @@ trait WithReportBuilder
     public function updatedGroupBy(): void
     {
         $this->resetPage();
-        $this->dispatch('refreshTable')->self();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
 
     public function updatedAggregateFunction(): void
     {
         $this->resetPage();
-        $this->dispatch('refreshTable')->self();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
 
     public function updatedAggregateColumn(): void
     {
         $this->resetPage();
-        $this->dispatch('refreshTable')->self();
+        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
     }
 
     public function hasGroupBy(): bool
@@ -176,9 +176,14 @@ trait WithReportBuilder
         }
 
         if ($this->hasGroupBy()) {
-            $columns[] = Column::make('Aggregate', 'aggregate')
-                ->justify('right')
-                ->sortable();
+            $groupByLabel = $this->findElementByKey($this->availableColumns(), $this->groupBy)['label'] ?? $this->groupBy;
+
+            return [
+                Column::make($groupByLabel, 'group_value')->sortable(),
+                Column::make("{$this->aggregateFunction}({$this->aggregateColumn})", 'aggregate')
+                    ->justify('right')
+                    ->sortable(),
+            ];
         }
 
         return $columns;
