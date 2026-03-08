@@ -203,11 +203,21 @@ trait WithReportBuilder
                 ? 'Count'
                 : "{$this->aggregateFunction}({$this->aggregateColumn})";
 
+            $aggregateCol = Column::make($aggregateLabel, 'aggregate')
+                ->justify('right')
+                ->sortable();
+
+            if ($this->aggregateFunction !== 'COUNT') {
+                $aggregateConfig = $this->findElementByKey($this->availableColumns(), $this->aggregateColumn);
+
+                if (! empty($aggregateConfig['view'])) {
+                    $aggregateCol->component($aggregateConfig['view']);
+                }
+            }
+
             return [
                 $groupColumn,
-                Column::make($aggregateLabel, 'aggregate')
-                    ->justify('right')
-                    ->sortable(),
+                $aggregateCol,
             ];
         }
 
