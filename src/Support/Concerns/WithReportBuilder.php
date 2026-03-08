@@ -78,7 +78,7 @@ trait WithReportBuilder
 
     public function hasGroupBy(): bool
     {
-        return $this->enableGroupBy && $this->groupBy !== null;
+        return $this->enableGroupBy && filled($this->groupBy);
     }
 
     public function aggregateFunctions(): array
