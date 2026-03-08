@@ -28,7 +28,7 @@ abstract class ReportBuilder extends QueryBuilder
             return $query;
         }
 
-        if (! in_array($this->aggregateFunction, $this->aggregateFunctions(), true)) {
+        if (! array_key_exists($this->aggregateFunction, $this->aggregateFunctions())) {
             return $query;
         }
 

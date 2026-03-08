@@ -83,7 +83,13 @@ trait WithReportBuilder
 
     public function aggregateFunctions(): array
     {
-        return ['COUNT', 'SUM', 'AVG', 'MIN', 'MAX'];
+        return [
+            'COUNT' => 'Count',
+            'SUM' => 'Sum',
+            'AVG' => 'Average',
+            'MIN' => 'Minimum',
+            'MAX' => 'Maximum',
+        ];
     }
 
     public function availableGroupByColumns(): array
@@ -199,20 +205,22 @@ trait WithReportBuilder
                 $groupColumn->reformatUsing(fn ($value) => $options[$value] ?? $value);
             }
 
+            $functionLabel = $this->aggregateFunctions()[$this->aggregateFunction] ?? $this->aggregateFunction;
+            $aggregateConfig = $this->aggregateFunction !== 'COUNT'
+                ? $this->findElementByKey($this->availableColumns(), $this->aggregateColumn)
+                : null;
+            $aggregateColumnLabel = $aggregateConfig['label'] ?? $this->aggregateColumn;
+
             $aggregateLabel = $this->aggregateFunction === 'COUNT'
-                ? 'Count'
-                : "{$this->aggregateFunction}({$this->aggregateColumn})";
+                ? $functionLabel
+                : "{$functionLabel} of {$aggregateColumnLabel}";
 
             $aggregateCol = Column::make($aggregateLabel, 'aggregate')
                 ->justify('right')
                 ->sortable();
 
-            if ($this->aggregateFunction !== 'COUNT') {
-                $aggregateConfig = $this->findElementByKey($this->availableColumns(), $this->aggregateColumn);
-
-                if (! empty($aggregateConfig['view'])) {
-                    $aggregateCol->component($aggregateConfig['view']);
-                }
+            if ($aggregateConfig && ! empty($aggregateConfig['view'])) {
+                $aggregateCol->component($aggregateConfig['view']);
             }
 
             return [
