@@ -30,6 +30,8 @@ trait WithReportBuilder
 
     public bool $enableGroupBy = false;
 
+    public bool $enableColumnSearch = true;
+
     private function findElementByKey(array $array, $targetValue): ?array
     {
         foreach ($array as $value) {
