@@ -1,4 +1,4 @@
-<div x-data="{open: true }" x-cloak
+<div x-data="{open: true, search: '' }" x-cloak
      class="m-4 block p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
     @if(!$selectedColumns)
@@ -8,18 +8,27 @@
     @endif
 
     <div x-show="open">
+        @if($this->enableColumnSearch)
+            <div class="mb-4">
+                <input type="text" x-model="search" placeholder="Search columns..."
+                       class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            </div>
+        @endif
+
         @foreach($this->availableColumns() as $section => $columns)
-            <h6 class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">{{ $section }}</h6>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                @foreach($columns as $columnKey => $column)
-                    <div class="flex items-center mb-4">
-                        <input wire:model.live.debounce.1000ms="selectedColumns" id="{{$column['key']}}" type="checkbox"
-                               value="{{ $column['key'] }}"
-                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                        <label for="{{$column['key']}}"
-                               class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{$column['label']}}</label>
-                    </div>
-                @endforeach
+            <div x-show="[{!! collect($columns)->map(fn ($column) => "'" . e($column['label']) . "'")->implode(',') !!}].some(label => label.toLowerCase().includes(search.toLowerCase()))">
+                <h6 class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">{{ $section }}</h6>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+                    @foreach($columns as $columnKey => $column)
+                        <div class="flex items-center mb-4" x-show="'{{ e($column['label']) }}'.toLowerCase().includes(search.toLowerCase())">
+                            <input wire:model.live.debounce.1000ms="selectedColumns" id="{{$column['key']}}" type="checkbox"
+                                   value="{{ $column['key'] }}"
+                                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="{{$column['key']}}"
+                                   class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{$column['label']}}</label>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @endforeach
 
