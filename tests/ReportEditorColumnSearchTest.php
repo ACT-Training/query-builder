@@ -1,9 +1,11 @@
 <?php
 
+use ACTTraining\QueryBuilder\Support\Concerns\WithReportBuilder;
+
 it('has enableColumnSearch property defaulting to true on WithReportBuilder trait', function () {
     $trait = new class
     {
-        use ACTTraining\QueryBuilder\Support\Concerns\WithReportBuilder;
+        use WithReportBuilder;
     };
 
     expect($trait->enableColumnSearch)->toBeTrue();
