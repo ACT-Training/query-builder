@@ -93,27 +93,34 @@ abstract class TableBuilder extends Component
         });
 
         if ($this->searchBy && $this->searchBy !== '') {
-            foreach ($this->getSearchableColumns() as $column) {
-                // Explode the column to separate relationships and the actual column name
-                $parts = explode('.', $column);
+            // Grouped, so the searchable columns OR against each other and AND against
+            // everything else. Left ungrouped these were bare top-level orWheres applied
+            // after query(), which meant any report with real constraints discarded them
+            // as soon as someone typed — search widened the result set instead of
+            // narrowing it, and no report could defend against it from inside query().
+            $query->where(function ($query) {
+                foreach ($this->getSearchableColumns() as $column) {
+                    // Explode the column to separate relationships and the actual column name
+                    $parts = explode('.', $column);
 
-                // Extract the actual column name from the end of the array
-                $actualColumnName = array_pop($parts);
+                    // Extract the actual column name from the end of the array
+                    $actualColumnName = array_pop($parts);
 
-                // If there are relationships defined (implied by remaining elements in $parts)
-                if (! empty($parts)) {
-                    // Build the relationship string from the remaining $parts
-                    $relationshipPath = implode('.', $parts);
+                    // If there are relationships defined (implied by remaining elements in $parts)
+                    if (! empty($parts)) {
+                        // Build the relationship string from the remaining $parts
+                        $relationshipPath = implode('.', $parts);
 
-                    // Use a closure to apply the search condition on the related model
-                    $query->orWhereHas($relationshipPath, function ($query) use ($actualColumnName) {
-                        $query->where($actualColumnName, 'like', '%'.$this->searchBy.'%');
-                    });
-                } else {
-                    // If there are no relationships, directly apply the search condition on the current model
-                    $query->orWhere($actualColumnName, 'like', '%'.$this->searchBy.'%');
+                        // Use a closure to apply the search condition on the related model
+                        $query->orWhereHas($relationshipPath, function ($query) use ($actualColumnName) {
+                            $query->where($actualColumnName, 'like', '%'.$this->searchBy.'%');
+                        });
+                    } else {
+                        // If there are no relationships, directly apply the search condition on the current model
+                        $query->orWhere($actualColumnName, 'like', '%'.$this->searchBy.'%');
+                    }
                 }
-            }
+            });
         }
 
         $dottedFilterValue = Arr::dot($this->filterValues);
