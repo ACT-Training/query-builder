@@ -196,6 +196,22 @@ Column definitions in `availableColumns()` support these keys:
 | `footer` | Footer aggregate: `sum`, `avg`, `min`, `max` or `count` (see [Footer Totals](#footer-totals)) |
 | `footerLabel` | Fixed footer text for this column, e.g. `Total` |
 
+#### Report editor layout
+
+Set `$columnLayout` to choose how the report editor lays out the groups from `availableColumns()`:
+
+```php
+public string $columnLayout = 'tabs'; // 'sections' (default), 'tabs' or 'accordion'
+```
+
+| Layout | Behaviour |
+|---|---|
+| `sections` | Every group listed under its own heading (the default) |
+| `tabs` | One tab per group, plus a Group By tab when grouping is enabled |
+| `accordion` | One collapsible panel per group, plus Group By; the first panel starts open |
+
+Tabs and accordion panels show how many of their columns are selected. While someone types in the column search, both switch to showing every group that has a match. A report with only one section always uses `sections`.
+
 ### ReportBuilder with GroupBy
 
 Enable groupBy to allow users to group results by a column with aggregate functions (COUNT, SUM, AVG, MIN, MAX). Set `$enableGroupBy = true`:

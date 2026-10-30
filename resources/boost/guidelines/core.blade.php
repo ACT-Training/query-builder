@@ -8,6 +8,7 @@
 - `ACTTraining\QueryBuilder\TableBuilder`: a simple table with search and URL-persisted filters. Implement `query()`, `columns()` and `filters()`.
 - `ACTTraining\QueryBuilder\QueryBuilder`: a table with a user-editable AND/OR criteria builder. Implement `query()`, `columns()` and `conditions()`.
 - `ACTTraining\QueryBuilder\ReportBuilder`: extends `QueryBuilder`. Users pick columns at runtime, so implement `query()` and `availableColumns()` instead of `columns()`/`conditions()`. Set `public bool $enableGroupBy = true;` for grouping with aggregates (COUNT, SUM, AVG, MIN, MAX).
+- Choose the report editor layout with `public string $columnLayout = 'sections';` (`'sections'`, `'tabs'` or `'accordion'`). Don't restyle the editor view to get tabs or an accordion.
 - `ACTTraining\QueryBuilder\GroupsBuilder` is deprecated. Use `ReportBuilder` with `$enableGroupBy = true` instead.
 - `query()` must return an `Illuminate\Database\Eloquent\Builder`. Eager load every relationship referenced by a column key with `->with([...])` to avoid N+1 queries.
 - Configure behaviour in a `config(): void` method using the fluent setters, e.g. `$this->enableQueryBuilder()->rowClickable(false);`.
