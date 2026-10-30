@@ -24,6 +24,7 @@
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.10",
         "laravel/pint": "^v1.12.0",
         "nunomaduro/collision": "^v8.4.0",
         "orchestra/testbench": "^10.0 || ^11.0",
