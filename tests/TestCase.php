@@ -3,8 +3,11 @@
 namespace ACTTraining\QueryBuilder\Tests;
 
 use ACTTraining\QueryBuilder\QueryBuilderServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use secondnetwork\TablerIcons\BladeTablerIconsServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -20,6 +23,9 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            LivewireServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            BladeTablerIconsServiceProvider::class,
             QueryBuilderServiceProvider::class,
         ];
     }

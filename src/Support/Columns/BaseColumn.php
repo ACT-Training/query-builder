@@ -2,6 +2,7 @@
 
 namespace ACTTraining\QueryBuilder\Support\Columns;
 
+use ACTTraining\QueryBuilder\Support\Concerns\WithFooter;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
 use Illuminate\Support\Str;
@@ -9,6 +10,7 @@ use Illuminate\Support\Str;
 /** @phpstan-consistent-constructor */
 class BaseColumn
 {
+    use WithFooter;
     use WithSearch;
     use WithSorting;
 

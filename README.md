@@ -193,6 +193,8 @@ Column definitions in `availableColumns()` support these keys:
 | `view` | Custom Blade component for rendering |
 | `options` | Options array for `enum` type |
 | `skipCondition` | Exclude from query builder conditions |
+| `footer` | Footer aggregate: `sum`, `avg`, `min`, `max` or `count` (see [Footer Totals](#footer-totals)) |
+| `footerLabel` | Fixed footer text for this column, e.g. `Total` |
 
 ### ReportBuilder with GroupBy
 
@@ -239,7 +241,7 @@ When `enableGroupBy` is true, the report editor UI shows additional controls:
 - **Function** - aggregate function (COUNT, SUM, AVG, MIN, MAX)
 - **Aggregate Column** - which column to aggregate (defaults to `id`, numeric columns from `availableColumns()` are included automatically)
 
-An "Aggregate" column is automatically appended to the table when grouping is active.
+An "Aggregate" column is automatically appended to the table when grouping is active. For COUNT and SUM, a footer row shows the grand total across all groups.
 
 You can customise the available aggregate functions and groupable/aggregatable columns by overriding:
 
@@ -279,6 +281,40 @@ All column types use a fluent `make($label, $key)` constructor. If `$key` is omi
 | `ViewColumn` | Custom Blade view rendering |
 
 Columns support: `->sortable()`, `->searchable()`, `->justify('right')`, `->component('view.name')`, `->reformatUsing(callable)`, `->withSubTitle(callable)`, `->hideIf(condition)`, `->hideHeader()`.
+
+## Footer Totals
+
+Any column can show a value in a footer row at the bottom of the table. Footer values come from their own query over **every row matching the current search, filters and criteria**, not just the page on screen. This works in `TableBuilder`, `QueryBuilder` and `ReportBuilder`.
+
+```php
+public function columns(): array
+{
+    return [
+        Column::make('Name', 'full_name')->footerLabel('Total'),
+        Column::make('Salary', 'salary')->sum(fn ($value) => '£'.number_format($value)),
+        Column::make('Hours', 'contract.hours')->avg(fn ($value) => round($value, 1)),
+        Column::make('Headcount', 'id')->count(),
+        Column::make('Leavers', 'id')->footer(
+            fn (Builder $query) => $query->whereNotNull('left_at')->count()
+        ),
+    ];
+}
+```
+
+| Method | Footer shows |
+|---|---|
+| `footerLabel('Total')` | Fixed text |
+| `sum()`, `avg()`, `min()`, `max()` | That aggregate of the column, optionally passed through a formatting closure |
+| `count()` | The number of matching rows |
+| `footer(fn (Builder $query, $column) => ...)` | Whatever the closure returns. `$query` is a fresh copy of the table's filtered query with ordering removed |
+
+Notes:
+
+- Aggregates work on the model's own columns and on columns one `belongsTo`, `hasOne` or `morphOne` relationship away (`contract.hours`). For anything deeper, or for `hasMany`, use `footer()`.
+- Footer values are plain text. They are not passed through `reformatUsing()` or the column's component, so format them in the closure.
+- Only displayed columns are calculated, and a table with no footer columns runs no extra queries.
+- There is no footer in card view.
+- A grouped `ReportBuilder` shows a grand total automatically when the function is COUNT or SUM. Grouped AVG, MIN and MAX have no footer, because adding those up would mislead.
 
 ## Conditions (QueryBuilder)
 
