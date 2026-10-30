@@ -57,6 +57,11 @@ Dot-notation keys (e.g., `contract.job.name`) are used throughout columns, condi
 
 Uses Pest with Orchestra Testbench. Tests are in `tests/`. The `TestCase` base class registers the service provider and configures factory resolution. Architecture tests enforce no debugging functions (`dd`, `dump`, `ray`).
 
+## Laravel Boost
+
+- Boost is a dev dependency. `.mcp.json` runs its MCP server via `vendor/bin/testbench boost:mcp` (no `artisan` in a package repo). Don't run `boost:install` here: under Testbench it writes to the skeleton in `vendor/` and selects every detected agent.
+- `resources/boost/guidelines/core.blade.php` ships AI guidelines to consuming apps that use Boost. Keep it in sync when the public API (builders, columns, conditions, filters) changes.
+
 ## Views
 
 Blade views in `resources/views/`. Four Blade components registered in the service provider for column rendering. View prefix is `query-builder::`.
