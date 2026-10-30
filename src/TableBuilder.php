@@ -8,6 +8,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCardView;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithFooterRow;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
 use ACTTraining\QueryBuilder\Support\Concerns\WithMessage;
@@ -37,6 +38,7 @@ abstract class TableBuilder extends Component
     use WithCardView;
     use WithColumns;
     use WithFilters;
+    use WithFooterRow;
     use WithIdentifier;
     use WithIndicator;
     use WithMessage;

@@ -3,8 +3,11 @@
 namespace ACTTraining\QueryBuilder\Tests;
 
 use ACTTraining\QueryBuilder\QueryBuilderServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use secondnetwork\TablerIcons\BladeTablerIconsServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -20,6 +23,9 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            LivewireServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            BladeTablerIconsServiceProvider::class,
             QueryBuilderServiceProvider::class,
         ];
     }
@@ -27,6 +33,8 @@ class TestCase extends Orchestra
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'testing');
+        // Rendering components needs an encryption key; CI has no .env to provide one.
+        config()->set('app.key', 'base64:'.base64_encode(str_repeat('a', 32)));
 
         /*
         $migration = include __DIR__.'/../database/migrations/create_query-builder_table.php.stub';

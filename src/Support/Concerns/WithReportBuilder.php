@@ -13,6 +13,7 @@ use ACTTraining\QueryBuilder\Support\Conditions\FloatCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NullCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\NumberCondition;
 use ACTTraining\QueryBuilder\Support\Conditions\TextCondition;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Livewire\Attributes\Validate;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -193,6 +194,12 @@ trait WithReportBuilder
                 $columnToAdd->justify($column['justify']);
             }
 
+            if (! empty($column['footerLabel'])) {
+                $columnToAdd->footerLabel($column['footerLabel']);
+            } elseif (in_array($column['footer'] ?? null, ['sum', 'avg', 'min', 'max', 'count'], true)) {
+                $columnToAdd->{$column['footer']}();
+            }
+
             $columns[] = $columnToAdd;
             $counter++;
         }
@@ -228,6 +235,21 @@ trait WithReportBuilder
 
             if ($aggregateConfig && ! empty($aggregateConfig['view'])) {
                 $aggregateCol->component($aggregateConfig['view']);
+            }
+
+            // A grand total only makes sense for counts and sums: adding up averages,
+            // minimums or maximums would mislead, so those groupings have no footer.
+            if (in_array($this->aggregateFunction, ['COUNT', 'SUM'], true)) {
+                $groupColumn->footerLabel('Total');
+                $aggregateCol->footer(function (Builder $groups) {
+                    $total = $groups->getModel()->getConnection()
+                        ->query()
+                        ->fromSub($groups, 'groups')
+                        ->sum('aggregate');
+
+                    // MySQL and Postgres return SUM as a decimal string.
+                    return is_string($total) ? $total + 0 : $total;
+                });
             }
 
             return [

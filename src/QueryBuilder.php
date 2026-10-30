@@ -7,11 +7,13 @@
 namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
+use ACTTraining\QueryBuilder\Support\Columns\BaseColumn;
 use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCardView;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
 use ACTTraining\QueryBuilder\Support\Concerns\WithFilters;
+use ACTTraining\QueryBuilder\Support\Concerns\WithFooterRow;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIdentifier;
 use ACTTraining\QueryBuilder\Support\Concerns\WithIndicator;
 use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
@@ -42,6 +44,7 @@ abstract class QueryBuilder extends Component
     use WithCardView;
     use WithColumns;
     use WithFilters;
+    use WithFooterRow;
     use WithIdentifier;
     use WithIndicator;
     use WithPagination;
@@ -95,6 +98,11 @@ abstract class QueryBuilder extends Component
     public function showQueryBuilder(): bool
     {
         return $this->enableQueryBuilder && count($this->conditions());
+    }
+
+    protected function isColumnDisplayed(BaseColumn $column): bool
+    {
+        return in_array($column->key, $this->displayColumns, true);
     }
 
     #[Computed]

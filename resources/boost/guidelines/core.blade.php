@@ -25,9 +25,17 @@
 - Filters (`ACTTraining\QueryBuilder\Support\Filters`, for `TableBuilder`): `TextFilter`, `NumberFilter`, `DateFilter`, `BooleanFilter`, `SelectFilter` (use `->options([...])`), `NullFilter`.
 - Do not mix the two systems: conditions belong to `QueryBuilder`/`ReportBuilder`, filters belong to `TableBuilder`.
 
+## Footer Totals
+
+- For totals, give columns a footer rather than calculating values in the view: `->footerLabel('Total')`, `->sum()`, `->avg()`, `->min()`, `->max()`, `->count()`, or `->footer(fn (Builder $query, $column) => ...)` for anything custom. The aggregate methods accept an optional formatting closure, e.g. `->sum(fn ($value) => number_format($value))`.
+- Footer values cover every row matching the current search, filters and criteria, not just the current page. `footer()` callbacks receive a fresh copy of that query with ordering removed, scoped to the base model.
+- Aggregates support the model's own columns and keys one `belongsTo`/`hasOne`/`morphOne` relationship away. Use `footer()` for deeper or `hasMany` relationships.
+- A grouped `ReportBuilder` adds a grand-total footer by itself for COUNT and SUM (none for AVG, MIN or MAX). Don't add one by hand.
+- In `ReportBuilder::availableColumns()`, set `'footer' => 'sum'` (or `avg`, `min`, `max`, `count`) or `'footerLabel' => 'Total'` on a column definition.
+
 ## ReportBuilder Columns
 
-- `availableColumns()` returns an array of groups, each a list of column definitions keyed by `label` and `key` (both required). Optional keys: `type` (`text` default, `number`, `float`, `boolean`, `date`, `enum`, `null`, `view`), `sortable`, `justify`, `view`, `options` (for `enum`) and `skipCondition`.
+- `availableColumns()` returns an array of groups, each a list of column definitions keyed by `label` and `key` (both required). Optional keys: `type` (`text` default, `number`, `float`, `boolean`, `date`, `enum`, `null`, `view`), `sortable`, `justify`, `view`, `options` (for `enum`), `skipCondition`, `footer` and `footerLabel`.
 
 @boostsnippet("TableBuilder component", "php")
 <?php

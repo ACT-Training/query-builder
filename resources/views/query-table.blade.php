@@ -178,6 +178,25 @@
                             </tr>
                         @endforeach
                         </tbody>
+                        @if($this->hasFooterRow())
+                            <tfoot class="text-sm font-semibold text-gray-900 bg-gray-50">
+                            <tr class="border-b border-gray-200">
+                                @if($selectable)
+                                    <td></td>
+                                @endif
+
+                                @foreach ($this->columns() as $column)
+                                    @if(in_array($column->key, $displayColumns))
+                                        <td>
+                                            <div class="py-3 px-6 flex items-center {{ $column->justify }}">
+                                                {{ $this->footerValues[$loop->index] ?? '' }}
+                                            </div>
+                                        </td>
+                                    @endif
+                                @endforeach
+                            </tr>
+                            </tfoot>
+                        @endif
                     </table>
                 </div>
                 @endif
