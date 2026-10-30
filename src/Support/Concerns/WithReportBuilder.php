@@ -33,6 +33,12 @@ trait WithReportBuilder
 
     public bool $enableColumnSearch = true;
 
+    /**
+     * How the report editor lays out column groups: 'sections' (each group under a
+     * heading), 'tabs' or 'accordion'.
+     */
+    public string $columnLayout = 'sections';
+
     private function findElementByKey(array $array, $targetValue): ?array
     {
         foreach ($array as $value) {

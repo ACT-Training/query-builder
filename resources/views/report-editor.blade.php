@@ -1,4 +1,14 @@
-<div x-data="{open: true, search: '' }" x-cloak
+@php
+    // 'sections' (default), 'tabs' or 'accordion'. A single section needs neither tabs nor an accordion.
+    $sectionCount = count($this->availableColumns()) + ($this->enableGroupBy ? 1 : 0);
+    $layout = in_array($this->columnLayout, ['tabs', 'accordion'], true) && $sectionCount > 1
+        ? $this->columnLayout
+        : 'sections';
+    $tabClasses = "tab === %s ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400'";
+    $badgeClasses = 'ms-1 px-1.5 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+    $accordionClasses = 'mb-4 pb-1 w-full flex items-center justify-between text-base font-bold text-gray-600 dark:text-white border-b border-dashed';
+@endphp
+<div x-data="{open: true, search: '', tab: 0, expanded: [0], toggle(section) { this.expanded = this.expanded.includes(section) ? this.expanded.filter(s => s !== section) : [...this.expanded, section] } }" x-cloak
      class="m-4 block p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
     @if(!$selectedColumns)
@@ -15,10 +25,67 @@
             </div>
         @endif
 
+        @if($layout === 'tabs')
+            {{-- Tabs give way to a flat list of matches from every group while searching. --}}
+            <div x-show="search === ''" role="tablist" class="flex flex-wrap gap-1 mb-4 border-b border-gray-200 dark:border-gray-700">
+                @foreach($this->availableColumns() as $section => $columns)
+                    @php
+                        $selectedInSection = count(array_intersect(array_column($columns, 'key'), $selectedColumns ?? []));
+                    @endphp
+                    <button type="button" role="tab" wire:key="report-tab-{{ $loop->index }}"
+                            @click="tab = {{ $loop->index }}"
+                            :aria-selected="tab === {{ $loop->index }}"
+                            :class="{{ sprintf($tabClasses, $loop->index) }}"
+                            class="-mb-px px-4 py-2 text-sm font-medium border-b-2">
+                        {{ $section }}
+                        @if($selectedInSection)
+                            <span class="{{ $badgeClasses }}">{{ $selectedInSection }}</span>
+                        @endif
+                    </button>
+                @endforeach
+
+                @if($this->enableGroupBy)
+                    <button type="button" role="tab" wire:key="report-tab-group-by"
+                            @click="tab = 'group-by'"
+                            :aria-selected="tab === 'group-by'"
+                            :class="{{ sprintf($tabClasses, "'group-by'") }}"
+                            class="-mb-px px-4 py-2 text-sm font-medium border-b-2">
+                        Group By
+                    </button>
+                @endif
+            </div>
+        @endif
+
         @foreach($this->availableColumns() as $section => $columns)
-            <div x-show="[{!! collect($columns)->map(fn ($column) => "'" . e($column['label']) . "'")->implode(',') !!}].some(label => label.toLowerCase().includes(search.toLowerCase()))">
-                <h6 class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">{{ $section }}</h6>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            @php
+                $selectedInSection = count(array_intersect(array_column($columns, 'key'), $selectedColumns ?? []));
+                $matchesSearch = '['.collect($columns)->map(fn ($column) => "'".e($column['label'])."'")->implode(',').'].some(label => label.toLowerCase().includes(search.toLowerCase()))';
+                $index = $loop->index;
+            @endphp
+            <div @if($layout === 'tabs') role="tabpanel" @endif
+                 x-show="{!! match ($layout) {
+                     'tabs' => "(search === '' && tab === {$index}) || (search !== '' && {$matchesSearch})",
+                     'accordion' => "search === '' || {$matchesSearch}",
+                     default => $matchesSearch,
+                 } !!}">
+                @if($layout === 'accordion')
+                    {{-- Every panel with a match opens while searching. --}}
+                    <button type="button" @click="toggle({{ $index }})"
+                            :aria-expanded="search !== '' || expanded.includes({{ $index }})"
+                            class="{{ $accordionClasses }}">
+                        <span>
+                            {{ $section }}
+                            @if($selectedInSection)
+                                <span class="{{ $badgeClasses }}">{{ $selectedInSection }}</span>
+                            @endif
+                        </span>
+                        <x-tabler-chevron-down class="w-5 h-5 transition-transform" ::class="(search !== '' || expanded.includes({{ $index }})) && 'rotate-180'"/>
+                    </button>
+                @else
+                    <h6 @if($layout === 'tabs') x-show="search !== ''" @endif class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">{{ $section }}</h6>
+                @endif
+                <div @if($layout === 'accordion') x-show="search !== '' || expanded.includes({{ $index }})" @endif
+                     class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                     @foreach($columns as $columnKey => $column)
                         <div class="flex items-center mb-4" x-show="'{{ e($column['label']) }}'.toLowerCase().includes(search.toLowerCase())">
                             <input wire:model.live.debounce.1000ms="selectedColumns" id="{{$column['key']}}" type="checkbox"
@@ -33,40 +100,52 @@
         @endforeach
 
         @if($this->enableGroupBy)
-            <h6 class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">Group By</h6>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                    <label for="groupBy" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Group By Column</label>
-                    <select wire:model.live="groupBy" id="groupBy"
-                            class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option value="">None</option>
-                        @foreach($this->groupableColumns() as $column)
-                            <option value="{{ $column['key'] }}">{{ $column['label'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                @if($this->groupBy)
+            <div @if($layout === 'tabs') role="tabpanel" x-show="search === '' && tab === 'group-by'" @elseif($layout === 'accordion') x-show="search === ''" @endif>
+                @if($layout === 'accordion')
+                    <button type="button" @click="toggle('group-by')"
+                            :aria-expanded="expanded.includes('group-by')"
+                            class="{{ $accordionClasses }}">
+                        <span>Group By</span>
+                        <x-tabler-chevron-down class="w-5 h-5 transition-transform" ::class="expanded.includes('group-by') && 'rotate-180'"/>
+                    </button>
+                @elseif($layout === 'sections')
+                    <h6 class="mb-4 pb-1 text-base font-bold text-gray-600 dark:text-white border-b border-dashed">Group By</h6>
+                @endif
+                <div @if($layout === 'accordion') x-show="expanded.includes('group-by')" @endif
+                     class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label for="aggregateFunction" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Function</label>
-                        <select wire:model.live="aggregateFunction" id="aggregateFunction"
+                        <label for="groupBy" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Group By Column</label>
+                        <select wire:model.live="groupBy" id="groupBy"
                                 class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            @foreach($this->aggregateFunctions() as $fn)
-                                <option value="{{ $fn }}">{{ $fn }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="aggregateColumn" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Aggregate Column</label>
-                        <select wire:model.live="aggregateColumn" id="aggregateColumn"
-                                class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            @foreach($this->aggregatableColumns() as $column)
+                            <option value="">None</option>
+                            @foreach($this->groupableColumns() as $column)
                                 <option value="{{ $column['key'] }}">{{ $column['label'] }}</option>
                             @endforeach
                         </select>
                     </div>
-                @endif
+
+                    @if($this->groupBy)
+                        <div>
+                            <label for="aggregateFunction" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Function</label>
+                            <select wire:model.live="aggregateFunction" id="aggregateFunction"
+                                    class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                @foreach($this->aggregateFunctions() as $fn)
+                                    <option value="{{ $fn }}">{{ $fn }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="aggregateColumn" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Aggregate Column</label>
+                            <select wire:model.live="aggregateColumn" id="aggregateColumn"
+                                    class="w-full text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                @foreach($this->aggregatableColumns() as $column)
+                                    <option value="{{ $column['key'] }}">{{ $column['label'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                </div>
             </div>
         @endif
     </div>
