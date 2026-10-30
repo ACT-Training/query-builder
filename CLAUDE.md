@@ -57,6 +57,10 @@ Dot-notation keys (e.g., `contract.job.name`) are used throughout columns, condi
 
 Uses Pest with Orchestra Testbench. Tests are in `tests/`. The `TestCase` base class registers the service provider and configures factory resolution. Architecture tests enforce no debugging functions (`dd`, `dump`, `ray`).
 
+## Releases
+
+`main` only accepts changes through pull requests, and the ACT-Training organisation doesn't allow GitHub Actions to open them, so the changelog is updated by hand. For each release, add a `## X.Y.Z - YYYY-MM-DD` entry with the release notes to the top of `CHANGELOG.md` in a PR. Dropping support for a Laravel version is a breaking change: bump the major version.
+
 ## Laravel Boost
 
 - Boost is a dev dependency. `.mcp.json` runs its MCP server via `vendor/bin/testbench boost:mcp` (no `artisan` in a package repo). Don't run `boost:install` here: under Testbench it writes to the skeleton in `vendor/` and selects every detected agent.
