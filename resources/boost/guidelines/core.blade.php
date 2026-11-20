@@ -34,6 +34,12 @@
 - A grouped `ReportBuilder` adds a grand-total footer by itself for COUNT and SUM (none for AVG, MIN or MAX). Don't add one by hand.
 - In `ReportBuilder::availableColumns()`, set `'footer' => 'sum'` (or `avg`, `min`, `max`, `count`) or `'footerLabel' => 'Total'` on a column definition.
 
+## Bulk Actions
+
+- Return `Action::make($label, $key, fn (Enumerable $models) => ...)` from `actions()`. The callback receives only the selected rows within the current search, filters and criteria; after "Select all" that's every matching row on every page. Don't re-query or re-apply the filters yourself.
+- Add `->lazy()` to an action that may run on thousands of rows: the callback then gets a `LazyCollection` loaded 500 rows at a time in key order (not the table's sort order), so type its parameter as `Enumerable`. `->standalone()` actions run without a selection and get an empty collection.
+- Changing the search, filters, criteria or saved view clears the selection. `selectedRowsCount()` gives the number of rows an action would act on.
+
 ## Saved Views
 
 - `TableBuilder` and `QueryBuilder` support per-user saved views (save, update, rename, delete, share, favourite, default). Turn them on in `config()` with `$this->enableSavedViews('a-unique-table-key')`. Don't change the key once people have saved views. `ReportBuilder` doesn't support them.

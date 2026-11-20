@@ -22,6 +22,7 @@ trait WithQueryBuilder
     public function addCriteria(): void
     {
         $this->resetPage();
+        $this->resetSelection();
 
         $conditions = $this->resolveConditions();
         $condition = $conditions->first();
@@ -130,18 +131,20 @@ trait WithQueryBuilder
     {
         unset($this->criteria[$index]);
         $this->criteria = array_values($this->criteria);
-
+        $this->resetSelection();
     }
 
     public function setAndOr($condition): void
     {
         $this->andOr = $condition;
+        $this->resetSelection();
     }
 
     public function resetQuery(): void
     {
         $this->resetPage();
         $this->criteria = [];
+        $this->resetSelection();
     }
 
     protected function resolveConditions(): Enumerable

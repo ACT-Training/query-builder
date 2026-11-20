@@ -5,6 +5,7 @@
 namespace ACTTraining\QueryBuilder\Support\Actions;
 
 use ACTTraining\QueryBuilder\Support\Actions\Concerns\CanBeStandalone;
+use ACTTraining\QueryBuilder\Support\Actions\Concerns\CanLoadLazily;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
 use Closure;
 use Illuminate\Support\Enumerable;
@@ -12,6 +13,7 @@ use Illuminate\Support\Enumerable;
 abstract class BaseAction
 {
     use CanBeStandalone;
+    use CanLoadLazily;
     use WithSelecting;
 
     public function __construct(

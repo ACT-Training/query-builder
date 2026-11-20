@@ -272,6 +272,7 @@ trait WithSavedViews
 
         $this->applySavedViewFilterState($state);
         $this->resetPage();
+        $this->resetSelection();
     }
 
     /**

@@ -143,7 +143,7 @@
 
                         @if($this->areActionsVisible() && $selectable && $selectPage && $this->rows->count() < $this->rows->total())
                             <tr class="bg-gray-100" wire:key="{{ $this->identifier() }}-row-message">
-                                <td colspan="{{ count($displayColumns) + 1 }}" class="px-6 py-4">
+                                <td colspan="{{ count($this->columns()) + 1 }}" class="px-6 py-4">
                                     @unless($selectAll)
                                         <div>
                                     <span>You have selected <span
@@ -154,7 +154,7 @@
                                             </button>
                                         </div>
                                     @else
-                                        <span>You have selected all {{ $this->rows->total() }} {{ Str::of('row')->plural(count($selectedRows))  }}.</span>
+                                        <span>All {{ $this->rows->total() }} matching rows are selected.</span>
                                     @endif
                                 </td>
                             </tr>
@@ -170,7 +170,7 @@
                                     {!! $this->renderRowClick($row->id)  !!}
                                 @endif
 
-                                wire:key="{{ $this->identifier() }}-row-{{ $row->id }}"
+                                wire:key="{{ $this->identifier() }}-row-{{ $row->getKey() }}"
                                     @class([
                                         'bg-white border-b group',
                                         'hover:bg-gray-50 cursor-pointer' => $this->isClickable(),
@@ -179,12 +179,12 @@
                                 @if($this->areActionsVisible() && $selectable)
                                     <td class="p-0">
                                         <div class="pl-6 flex items-center">
-                                            <input wire:model.live="selectedRows" id="checkbox-{{ $row->id }}"
+                                            <input wire:model.live="selectedRows" id="checkbox-{{ $row->getKey() }}"
                                                    wire:click.stop
                                                    type="checkbox"
-                                                   value="{{ $row->id }}"
+                                                   value="{{ $row->getKey() }}"
                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-{{ $row->id }}"
+                                            <label for="checkbox-{{ $row->getKey() }}"
                                                    class="sr-only ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
                                         </div>
                                     </td>

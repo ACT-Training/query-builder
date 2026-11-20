@@ -2,6 +2,25 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
+## 3.1.2 - Unreleased
+
+### "Select all" acts only on the matching rows (#127)
+
+- **Fixed:** after a search, filter or criteria, "Select all" followed by a bulk action ran the action on every record behind the table, not just the matching rows. The action now gets exactly the rows the table says are selected, on every page.
+- **Fixed:** a bulk action on a table that doesn't set `$model` failed with "Target [Illuminate\Database\Eloquent\Model] is not instantiable". Actions now take the key from the table's own query, so `$model` isn't needed.
+- **Fixed:** tables whose model has a primary key other than `id` selected the wrong rows, or none.
+- **Fixed:** in a `TableBuilder`, the "Select all" prompt crashed the table (`count(): Argument #1 ($value) must be of type Countable|array`).
+- Changing the search, a filter, the criteria or the saved view now clears the selection, so a selection can't carry over to a different set of rows. Sorting and paging keep it.
+- With every matching row selected, the table now says "All N matching rows are selected."
+- **New:** `->lazy()` on an action hands its callback a `LazyCollection` that loads the rows 500 at a time (or `->lazy($chunkSize)`), for actions that may run on thousands of rows. Without it, the callback still gets an Eloquent collection.
+- **New:** `selectedRowsCount()` returns how many rows an action would act on.
+
+### Upgrading
+
+Bulk actions after "Select all" now act only on the rows that match the table's search, filters and criteria, not on every record of the table's base query. If an app relied on the old behaviour to act on everything, use a `->standalone()` action that runs its own query.
+
+Apps that override `table.blade.php`, `query-table.blade.php` or `report-table.blade.php` should copy the new "Select all" message and use `$row->getKey()` instead of `$row->id` for the row checkboxes.
+
 ## 3.1.1 - 2026-11-20
 
 ### Saved views fit the table and the style guide (pipeline2#33)
