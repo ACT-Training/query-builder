@@ -153,6 +153,7 @@ it('can be run again without duplicating views', function () {
 
     expect($report->created)->toBe(0)
         ->and($report->updated)->toBe(1)
+        ->and($report->favourites)->toBe(0)
         ->and(SavedViewRecord::sole())
         ->name->toBe('Renamed')
         ->is_shared->toBeFalse();

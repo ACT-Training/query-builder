@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\DB;
  * translate into its own filters or criteria, so the app supplies that mapping.
  * The importer carries across the owner, name, search, sort, sharing and
  * favourites. Running it again updates the views it imported before rather
- * than duplicating them.
+ * than duplicating them, overwriting their name, state and sharing with the
+ * Advanced Tables data, so run it before people start using the new tables.
+ * Favourites are only added to views a run creates, so a re-run never brings
+ * back a favourite someone removed.
  */
 class AdvancedTablesImporter
 {
@@ -67,8 +70,8 @@ class AdvancedTablesImporter
     {
         $report = new ImportReport;
 
-        /** @var array<string, int|string> $imported Advanced Tables id => saved view id */
-        $imported = [];
+        /** @var array<string, int|string> $created Advanced Tables id => saved view id, for views this run created */
+        $created = [];
 
         foreach ($filterSets as $row) {
             $row = (array) $row;
@@ -108,20 +111,19 @@ class AdvancedTablesImporter
                 $this->repository->rename($existing->id, $name);
                 $this->repository->updateState($existing->id, $state);
                 $this->repository->share($existing->id, $shared);
-                $imported[(string) $id] = $existing->id;
                 $report->updated++;
 
                 continue;
             }
 
             $view = $this->repository->create($row['user_id'], $tableKey, $name, $state, $shared, $source);
-            $imported[(string) $id] = $view->id;
+            $created[(string) $id] = $view->id;
             $report->created++;
         }
 
         foreach ($filterSetUsers as $pivot) {
             $pivot = (array) $pivot;
-            $viewId = $imported[(string) $pivot['filter_set_id']] ?? null;
+            $viewId = $created[(string) $pivot['filter_set_id']] ?? null;
 
             // A hidden row means someone removed a global favourite from their list.
             if ($viewId === null || ! ($pivot['is_visible'] ?? true)) {

@@ -17,6 +17,7 @@ use Illuminate\Auth\GenericUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 
 /**
@@ -71,6 +72,14 @@ class OtherSavedViewsTable extends SavedViewsTable
     public function config(): void
     {
         $this->enableSavedViews('other-employees');
+    }
+}
+
+class DottedFilterTable extends SavedViewsTable
+{
+    public function filters(): array
+    {
+        return [TextFilter::make('No. of staff', 'name')];
     }
 }
 
@@ -254,6 +263,41 @@ describe('a TableBuilder', function () {
             ->assertSet('filterValues', ['Department:=' => 'IT', 'Name:like' => null]);
     });
 
+    it('saves and applies filters whose label has a dot in it', function () {
+        signInAs(1);
+
+        Livewire::test(DottedFilterTable::class)
+            ->set('filterValues.No. of staff:like', 'Al')
+            ->set('savedViewName', 'Dotted')
+            ->call('saveView');
+
+        $view = SavedViewRecord::sole();
+
+        expect($view->state['filters'])->toBe(['No. of staff:like' => 'Al']);
+
+        Livewire::test(DottedFilterTable::class)
+            ->call('applySavedView', $view->id)
+            ->assertSet('filterValues.No. of staff:like', 'Al');
+    });
+
+    it('clears the name error once a view is saved', function () {
+        signInAs(1);
+
+        Livewire::test(SavedViewsTable::class)
+            ->call('saveView')
+            ->assertHasErrors('savedViewName')
+            ->set('savedViewName', 'Named')
+            ->call('saveView')
+            ->assertHasNoErrors();
+    });
+
+    it('does not let the browser change which view is active', function () {
+        signInAs(1);
+
+        expect(fn () => Livewire::test(SavedViewsTable::class)->set('activeSavedViewId', 5))
+            ->toThrow(CannotUpdateLockedPropertyException::class);
+    });
+
     it('updates a view with the current state', function () {
         signInAs(1);
 
@@ -270,10 +314,12 @@ describe('a TableBuilder', function () {
     it('only applies views saved for the same table', function () {
         signInAs(1);
 
-        $view = repository()->create(1, 'other-employees', 'Elsewhere', []);
+        $view = repository()->create(1, 'other-employees', 'Elsewhere', ['search' => 'Elsewhere']);
 
-        expect(fn () => Livewire::test(SavedViewsTable::class)->instance()->applySavedView($view->id))
-            ->toThrow(AuthorizationException::class);
+        Livewire::test(SavedViewsTable::class)
+            ->call('applySavedView', $view->id)
+            ->assertSet('activeSavedViewId', null)
+            ->assertSet('searchBy', '');
     });
 });
 
@@ -377,6 +423,17 @@ describe('default views', function () {
             ->assertSet('displayColumns', ['name']);
     });
 
+    it('do not overwrite filters the component was given', function () {
+        signInAs(1);
+
+        $view = repository()->create(1, 'employees', 'Everyone', ['filters' => []]);
+        repository()->setDefault(1, 'employees', $view->id);
+
+        Livewire::test(SavedViewsTable::class, ['filterValues' => ['Department:=' => 'IT']])
+            ->assertSet('activeSavedViewId', null)
+            ->assertSet('filterValues', ['Department:=' => 'IT']);
+    });
+
     it('do not apply when the URL has filters or a search', function () {
         signInAs(1);
 
@@ -449,14 +506,19 @@ describe('owners', function () {
 
 describe('other people', function () {
     it('cannot see a view that is not shared', function () {
-        $view = repository()->create(1, 'employees', 'Private', []);
+        $view = repository()->create(1, 'employees', 'Private', ['search' => 'secret']);
 
         signInAs(2);
 
-        $component = Livewire::test(SavedViewsTable::class);
+        $component = Livewire::test(SavedViewsTable::class)
+            ->call('applySavedView', $view->id)
+            ->call('toggleSavedViewFavourite', $view->id)
+            ->call('toggleDefaultSavedView', $view->id)
+            ->assertSet('searchBy', '')
+            ->assertSet('activeSavedViewId', null);
 
         expect($component->instance()->savedViews())->toBe([])
-            ->and(fn () => $component->instance()->applySavedView($view->id))->toThrow(AuthorizationException::class);
+            ->and(SavedViewPreference::count())->toBe(0);
     });
 
     it('can apply, favourite and default a shared view', function () {
@@ -499,6 +561,22 @@ describe('other people', function () {
         'update' => ['updateSavedView', []],
         'delete' => ['deleteSavedView', []],
     ]);
+
+    it('see the list refresh, not an error, when a view goes while the page is open', function () {
+        $view = repository()->create(1, 'employees', 'Team view', [], shared: true);
+
+        signInAs(2);
+
+        $component = Livewire::test(SavedViewsTable::class)
+            ->call('applySavedView', $view->id)
+            ->assertSee('Team view');
+
+        repository()->share($view->id, false);
+
+        $component->call('toggleSavedViewFavourite', $view->id)
+            ->assertSet('activeSavedViewId', null)
+            ->assertDontSee('Team view');
+    });
 
     it('lose a view from their lists when its owner stops sharing it', function () {
         $view = repository()->create(1, 'employees', 'Team view', [], shared: true);

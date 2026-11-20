@@ -374,6 +374,8 @@ Only a view's owner can rename, update, share or delete it. When an owner stops 
     php artisan migrate
     ```
 
+    The migration stores user ids as big integers. If your users have UUID or ULID keys, change the two `user_id` columns in the published migration first.
+
 3. Turn saved views on in the table's `config()`, with a key that's unique to the table. Views are stored against this key, so don't change it later.
 
     ```php
@@ -424,7 +426,7 @@ collect($report->warnings)->each(fn ($warning) => $this->warn($warning));
 - Public views stay shared. Rejected views come across as private.
 - A global favourite becomes a shared view, but people have to favourite it themselves.
 - Views based on a preset view, grouping or per-column searches are imported with a warning, because saved views can't do those.
-- It's safe to run more than once (for a rehearsal and then the real switchover): it updates the views it imported before. Use `import()` instead of `importFromDatabase()` to pass in rows you've read yourself, for example from another connection.
+- It's safe to run more than once (for a rehearsal and then the real switchover): it updates the views it imported before instead of duplicating them. A re-run overwrites an imported view's name, filters and sharing with the Advanced Tables data, so run it before people start using the new table. It only adds favourites to views it creates, so it never brings back a favourite someone removed. Use `import()` instead of `importFromDatabase()` to pass in rows you've read yourself, for example from another connection.
 
 ## Relationship Support
 

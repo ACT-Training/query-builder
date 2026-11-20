@@ -8,6 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // user_id holds the app's user key. If your users have UUID or ULID keys,
+        // change both user_id columns to $table->uuid() / $table->ulid() here.
         Schema::create('query_builder_saved_views', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
@@ -15,7 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->json('state');
             $table->boolean('is_shared')->default(false);
-            $table->string('source')->nullable()->unique();
+            // Where an imported view came from, e.g. advanced-tables:12. Indexed, not
+            // unique: SQL Server allows only one null in a unique index.
+            $table->string('source')->nullable()->index();
             $table->timestamps();
 
             $table->index(['table_key', 'user_id']);

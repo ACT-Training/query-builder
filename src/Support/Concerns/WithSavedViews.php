@@ -5,6 +5,8 @@ namespace ACTTraining\QueryBuilder\Support\Concerns;
 use ACTTraining\QueryBuilder\Support\Contracts\SavedViewRepository;
 use ACTTraining\QueryBuilder\Support\SavedViews\SavedView;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Arr;
+use Livewire\Attributes\Locked;
 
 /**
  * Lets people save the table's current filters, search, sort, columns and rows
@@ -16,8 +18,10 @@ trait WithSavedViews
 {
     protected ?string $savedViewsKey = null;
 
+    #[Locked]
     public int|string|null $activeSavedViewId = null;
 
+    #[Locked]
     public bool $savedViewsBooted = false;
 
     public string $savedViewName = '';
@@ -50,8 +54,8 @@ trait WithSavedViews
 
     /**
      * Runs after the component's own `booted()`, so `config()` has already run.
-     * On the first request only, apply the user's default view unless the URL
-     * already carries a search or filters.
+     * On the first request only, apply the user's default view unless the table
+     * already has a search, filters or criteria (from the URL, mount or props).
      */
     public function bootedWithSavedViews(): void
     {
@@ -61,7 +65,7 @@ trait WithSavedViews
 
         $this->savedViewsBooted = true;
 
-        if (! $this->hasSavedViews() || $this->requestHasTableState()) {
+        if (! $this->hasSavedViews() || $this->tableAlreadyHasState()) {
             return;
         }
 
@@ -111,7 +115,9 @@ trait WithSavedViews
 
     public function applySavedView(int|string $id): void
     {
-        $view = $this->visibleSavedView($id);
+        if (! $view = $this->visibleSavedView($id)) {
+            return;
+        }
 
         $this->applySavedViewState($view->state);
         $this->activeSavedViewId = $view->id;
@@ -120,6 +126,7 @@ trait WithSavedViews
     public function saveView(): void
     {
         $this->ensureSavedViewsEnabled();
+        $this->resetErrorBag('savedViewName');
 
         $name = $this->cleanSavedViewName($this->savedViewName);
 
@@ -148,7 +155,9 @@ trait WithSavedViews
      */
     public function updateSavedView(int|string $id): void
     {
-        $view = $this->ownedSavedView($id);
+        if (! $view = $this->ownedSavedView($id)) {
+            return;
+        }
 
         $this->savedViewRepository()->updateState($view->id, $this->currentSavedViewState());
         $this->activeSavedViewId = $view->id;
@@ -157,7 +166,10 @@ trait WithSavedViews
 
     public function renameSavedView(int|string $id, string $name): void
     {
-        $view = $this->ownedSavedView($id);
+        if (! $view = $this->ownedSavedView($id)) {
+            return;
+        }
+
         $name = $this->cleanSavedViewName($name);
 
         if ($name === '') {
@@ -170,7 +182,9 @@ trait WithSavedViews
 
     public function deleteSavedView(int|string $id): void
     {
-        $view = $this->ownedSavedView($id);
+        if (! $view = $this->ownedSavedView($id)) {
+            return;
+        }
 
         $this->savedViewRepository()->delete($view->id);
 
@@ -183,7 +197,9 @@ trait WithSavedViews
 
     public function toggleSavedViewShared(int|string $id): void
     {
-        $view = $this->ownedSavedView($id);
+        if (! $view = $this->ownedSavedView($id)) {
+            return;
+        }
 
         $this->savedViewRepository()->share($view->id, ! $view->isShared);
         $this->savedViewsChanged();
@@ -191,7 +207,9 @@ trait WithSavedViews
 
     public function toggleSavedViewFavourite(int|string $id): void
     {
-        $view = $this->visibleSavedView($id);
+        if (! $view = $this->visibleSavedView($id)) {
+            return;
+        }
 
         $this->savedViewRepository()->favourite($view->id, $this->savedViewsUserId(), ! $view->isFavourite);
         $this->savedViewsChanged();
@@ -202,7 +220,9 @@ trait WithSavedViews
      */
     public function toggleDefaultSavedView(int|string $id): void
     {
-        $view = $this->visibleSavedView($id);
+        if (! $view = $this->visibleSavedView($id)) {
+            return;
+        }
 
         $this->savedViewRepository()->setDefault(
             $this->savedViewsUserId(),
@@ -260,16 +280,25 @@ trait WithSavedViews
      */
     protected function savedViewFilterState(): array
     {
-        return ['filters' => array_filter($this->filterValues, fn ($value) => $value !== null && $value !== '')];
+        return ['filters' => $this->filledFilterValues()];
+    }
+
+    /**
+     * The filter values that are set, keyed by filter code. Flattened, because
+     * wire:model nests a filter whose code has a dot in it.
+     */
+    protected function filledFilterValues(): array
+    {
+        return array_filter(Arr::dot($this->filterValues), fn ($value) => $value !== null && $value !== '');
     }
 
     protected function applySavedViewFilterState(array $state): void
     {
-        $saved = is_array($state['filters'] ?? null) ? $state['filters'] : [];
+        $saved = Arr::dot(is_array($state['filters'] ?? null) ? $state['filters'] : []);
         $values = [];
 
         foreach ($this->filters() as $filter) {
-            $values[$filter->code()] = $saved[$filter->code()] ?? null;
+            Arr::set($values, $filter->code(), $saved[$filter->code()] ?? null);
         }
 
         $this->filterValues = $values;
@@ -309,13 +338,23 @@ trait WithSavedViews
     }
 
     /**
-     * True when the page was opened with a search or filters in its URL.
+     * True when the table already has a search, filters or criteria, whether
+     * from the URL, the component's mount() or the props it was given. A
+     * default view must not overwrite them.
      */
-    protected function requestHasTableState(): bool
+    protected function tableAlreadyHasState(): bool
     {
         $query = request()->query();
 
-        return filled($query['s'] ?? null) || filled($query['f'] ?? null);
+        if (filled($query['s'] ?? null) || filled($query['f'] ?? null) || $this->searchBy !== '') {
+            return true;
+        }
+
+        if ($this->filledFilterValues() !== []) {
+            return true;
+        }
+
+        return property_exists($this, 'criteria') && $this->criteria !== [];
     }
 
     protected function ensureSavedViewsEnabled(): void
@@ -325,24 +364,35 @@ trait WithSavedViews
         }
     }
 
-    protected function visibleSavedView(int|string $id): SavedView
+    /**
+     * The view, if this user can still see it on this table. A view can go
+     * while the page is open (its owner deletes or stops sharing it), so a
+     * missing one refreshes the list rather than showing an error.
+     */
+    protected function visibleSavedView(int|string $id): ?SavedView
     {
         $this->ensureSavedViewsEnabled();
 
         $view = $this->savedViewRepository()->find($id, $this->savedViewsUserId());
 
-        if (! $view || $view->tableKey !== $this->savedViewsKey) {
-            throw new AuthorizationException('That view is not available.');
+        if ($view && $view->tableKey === $this->savedViewsKey) {
+            return $view;
         }
 
-        return $view;
+        if ((string) $id === (string) $this->activeSavedViewId) {
+            $this->activeSavedViewId = null;
+        }
+
+        $this->savedViewsChanged();
+
+        return null;
     }
 
-    protected function ownedSavedView(int|string $id): SavedView
+    protected function ownedSavedView(int|string $id): ?SavedView
     {
         $view = $this->visibleSavedView($id);
 
-        if (! $this->ownsSavedView($view)) {
+        if ($view && ! $this->ownsSavedView($view)) {
             throw new AuthorizationException('Only the person who saved a view can change it.');
         }
 
