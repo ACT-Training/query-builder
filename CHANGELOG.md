@@ -9,6 +9,7 @@ All notable changes to `query-builder` will be documented in this file.
 - **Placement.** The saved views menu now sits at the right of the search row, or of the toolbar or actions row when there is one, instead of a separate row above the table. Its menu opens from its right edge. With no search, toolbar or actions row, it gets a right-aligned row of its own.
 - **Deleting a view** is confirmed in a Flux modal, not the browser's own dialog. When the last view is deleted, the Manage views panel closes too.
 - **Works with any icon set.** Favourite, default and shared are shown by the button itself (filled, with `aria-pressed`) instead of a solid icon. Apps that replace Flux's icons with Tabler's, which has no solid style, no longer crash.
+- The view name fields turn off autofill (`autocomplete="off"`, plus the 1Password, LastPass, Bitwarden and Dashlane opt-outs), so password managers no longer offer a person's name or login there.
 - The menu uses the `queue-list` icon instead of a bookmark, and no longer draws two separators above its actions.
 - Fixed a template compile error: the delete modals no longer carry `wire:key` on the `flux:modal` tag itself, which Livewire's automatic loop keys broke.
 

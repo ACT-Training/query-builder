@@ -677,3 +677,10 @@ describe('the saved views bar', function () {
             ->assertSeeHtml('Delete the view "Mine"?');
     });
 });
+
+it('keeps password managers and autofill off the view name field', function () {
+    signInAs(1);
+
+    expect(Livewire::test(SavedViewsTable::class)->html())
+        ->toMatch('/<input[^>]*wire:model="savedViewName"[^>]*autocomplete="off"[^>]*data-1p-ignore/s');
+});

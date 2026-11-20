@@ -77,7 +77,7 @@
             <flux:text class="mt-2">Saves the current filters, search, sort, columns and rows per page.</flux:text>
         </div>
 
-        <flux:input wire:model="savedViewName" label="Name" maxlength="255" required />
+        <flux:input wire:model="savedViewName" label="Name" maxlength="255" required autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" />
 
         <flux:checkbox wire:model="savedViewShared" label="Share with everyone who can see this table" />
 
@@ -120,7 +120,7 @@
                                 class="flex items-center gap-2"
                                 x-on:submit.prevent="$wire.renameSavedView(@js($view->id), name); editing = false"
                             >
-                                <flux:input size="sm" x-model="name" maxlength="255" aria-label="View name" />
+                                <flux:input size="sm" x-model="name" maxlength="255" aria-label="View name" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" />
                                 <flux:button size="sm" type="submit" variant="primary">Save</flux:button>
                                 <flux:button size="sm" variant="ghost" x-on:click="editing = false">Cancel</flux:button>
                             </form>
