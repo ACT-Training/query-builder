@@ -2,7 +2,7 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
-## 3.1.0 - Unreleased
+## 3.1.0 - 2026-11-20
 
 ## What's New
 
