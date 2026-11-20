@@ -4,8 +4,11 @@
         @includeIf($this->headerView())
     </div>
 
-    @if($this->hasSavedViews())
-        @include('query-builder::components.saved-views')
+    {{-- Saved views sit at the right of the toolbar; without the toolbar, they get a row of their own. --}}
+    @if($this->hasSavedViews() && ! ($this->columns() && $this->isToolbarVisible()))
+        <div class="px-4 pt-4 flex justify-end">
+            @include('query-builder::components.saved-views')
+        </div>
     @endif
 
     @if($this->columns())
@@ -39,6 +42,10 @@
                     </div>
 
                     <div class="p-4 flex items-center gap-2">
+
+                        @if($this->hasSavedViews())
+                            @include('query-builder::components.saved-views')
+                        @endif
 
                         @if($this->areActionsVisible())
                             @include('query-builder::components.actions')

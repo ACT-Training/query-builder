@@ -75,6 +75,14 @@ class OtherSavedViewsTable extends SavedViewsTable
     }
 }
 
+class UnsearchableSavedViewsTable extends SavedViewsTable
+{
+    public function columns(): array
+    {
+        return [Column::make('Name', 'name'), Column::make('Department', 'department')];
+    }
+}
+
 class DottedFilterTable extends SavedViewsTable
 {
     public function filters(): array
@@ -630,4 +638,49 @@ it('removes preferences when a view is deleted', function () {
     repository()->delete($view->id);
 
     expect(SavedViewPreference::count())->toBe(0);
+});
+
+describe('the saved views bar', function () {
+    it('sits at the right of the search row, after the search box', function () {
+        signInAs(1);
+        SavedViewEmployee::query()->create(['name' => 'Ada', 'department' => 'IT', 'salary' => 1]);
+
+        $html = Livewire::test(SavedViewsTable::class)->html();
+
+        expect($html)->toContain('ml-auto')
+            ->and(strpos($html, 'id="simple-search"'))->toBeLessThan(strpos($html, '-saved-views"'))
+            ->and(substr_count($html, '-saved-views"'))->toBe(1);
+    });
+
+    it('gets a row of its own when the search row is not shown', function () {
+        signInAs(1);
+
+        $html = Livewire::test(UnsearchableSavedViewsTable::class)->html();
+
+        expect(substr_count($html, '-saved-views"'))->toBe(1)
+            ->and($html)->toContain('px-4 pt-4 flex justify-end');
+    });
+
+    it('shows once in a QueryBuilder', function () {
+        signInAs(1);
+
+        expect(substr_count(Livewire::test(SavedViewsQueryTable::class)->html(), '-saved-views"'))->toBe(1);
+    });
+
+    it('asks before deleting a view in a modal, never the browser\'s own dialog', function () {
+        signInAs(1);
+
+        Livewire::test(SavedViewsTable::class)
+            ->set('savedViewName', 'Mine')
+            ->call('saveView')
+            ->assertDontSeeHtml('wire:confirm')
+            ->assertSeeHtml('Delete the view "Mine"?');
+    });
+});
+
+it('keeps password managers and autofill off the view name field', function () {
+    signInAs(1);
+
+    expect(Livewire::test(SavedViewsTable::class)->html())
+        ->toMatch('/<input[^>]*wire:model="savedViewName"[^>]*autocomplete="off"[^>]*data-1p-ignore/s');
 });
