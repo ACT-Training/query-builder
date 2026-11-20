@@ -84,6 +84,7 @@ trait WithSearch
     public function resetSearch(): void
     {
         $this->searchBy = '';
+        $this->resetSelection(); /* @phpstan-ignore-line (BaseColumn uses this trait too, but never calls it) */
         $this->resetPage();
     }
 

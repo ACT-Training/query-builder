@@ -218,7 +218,7 @@ abstract class QueryBuilder extends Component
     public function render(): Factory|View
     {
         if ($this->selectAll) {
-            $this->selectedRows = $this->rows->pluck('id')->toArray(); /* @phpstan-ignore-line */
+            $this->selectedRows = $this->pageRowKeys();
         }
 
         return view('query-builder::query-table');

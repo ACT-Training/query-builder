@@ -33,6 +33,7 @@ trait WithFilters
         foreach ($this->filters() as $filter) {
             $this->filterValues[$filter->code()] = null;
         }
+        $this->resetSelection();
         $this->resetPage();
     }
 

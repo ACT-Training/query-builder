@@ -352,6 +352,28 @@ Used with `TableBuilder` for simpler key/operator/value filtering:
 
 `TextFilter`, `NumberFilter`, `DateFilter`, `BooleanFilter`, `SelectFilter`, `NullFilter`
 
+## Bulk Actions
+
+`TableBuilder` and `QueryBuilder` tables can offer actions on the rows people tick. Return them from `actions()`:
+
+```php
+use ACTTraining\QueryBuilder\Support\Actions\Action;
+use Illuminate\Support\Enumerable;
+
+public function actions(): array
+{
+    return [
+        Action::make('Archive', 'archive', fn (Enumerable $models) => $models->each->archive()),
+        Action::make('Export all', 'export', fn () => $this->export())->standalone(),
+    ];
+}
+```
+
+- The callback receives the selected rows, always within the table's current search, filters and criteria. After "Select all" that's every matching row on every page, and nothing outside them. Changing the search, a filter, the criteria or the saved view clears the selection.
+- By default the callback gets an Eloquent collection. For actions that may run on thousands of rows, add `->lazy()` to get a `LazyCollection` that loads them 500 at a time, in key order rather than the table's sort order (`->lazy(1000)` for a different chunk size). Type the callback's parameter as `Enumerable` or `LazyCollection`, not `Collection`.
+- A `->standalone()` action runs without a selection and gets an empty collection.
+- `$this->selectedRowsCount()` returns how many rows an action would act on.
+
 ## Saved Views
 
 `TableBuilder` and `QueryBuilder` tables can let people save what they're looking at as a named view: the filters (or criteria), search, sort, columns and rows per page. Each person can:
