@@ -27,7 +27,7 @@ trait WithActions
     {
         $action = $this->resolveActions()->firstOrFail(fn (BaseAction $action): bool => $key === $action->key());
 
-        if (! $action->isStandalone() && count($this->selectedRows) == 0) {
+        if (! $action->isStandalone() && ! $this->hasSelectedRows()) {
             return null;
         }
 
@@ -40,6 +40,17 @@ trait WithActions
         }
 
         return $response;
+    }
+
+    /**
+     * With "Select all", whether any row still matches: QueryBuilder keeps only the
+     * current page in $selectedRows, which can be empty while other pages are not.
+     */
+    protected function hasSelectedRows(): bool
+    {
+        return $this->selectAll
+            ? $this->selectedRowsQuery()->exists()
+            : count($this->selectedRows) > 0;
     }
 
     /**
