@@ -15,6 +15,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithMessage;
 use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowInjection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSavedViews;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
@@ -45,6 +46,7 @@ abstract class TableBuilder extends Component
     use WithPagination;
     use WithRowClick;
     use WithRowInjection;
+    use WithSavedViews;
     use WithSearch;
     use WithSelecting;
     use WithSorting;

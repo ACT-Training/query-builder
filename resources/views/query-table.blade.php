@@ -4,6 +4,10 @@
         @includeIf($this->headerView())
     </div>
 
+    @if($this->hasSavedViews())
+        @include('query-builder::components.saved-views')
+    @endif
+
     @if($this->columns())
 
         <div class="my-6">

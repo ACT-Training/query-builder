@@ -2,6 +2,27 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
+## 3.1.0 - Unreleased
+
+## What's New
+
+### Saved table views (pipeline2#33)
+
+`TableBuilder` and `QueryBuilder` tables can let people save the current filters (or criteria), search, sort, columns and rows per page as a named view. People can update, rename and delete their own views, share them with everyone who can open the table, favourite any view they can see, and pick a default view that's applied when the page opens without filters in the URL. Only a view's owner can change, share or delete it.
+
+```php
+public function config(): void
+{
+    $this->enableSavedViews('enquiries');
+}
+```
+
+- Off unless a table calls `enableSavedViews()`. Existing tables don't change.
+- Needs `livewire/flux` (free components) and the new publishable migration: `php artisan vendor:publish --tag="query-builder-migrations"`.
+- Storage sits behind the `SavedViewRepository` contract, so an app can use its own table.
+- `AdvancedTablesImporter` converts Filament Advanced Tables saved views, keeping owners, sharing and favourites, with the filter mapping supplied by the app. It can be run more than once.
+- In a `QueryBuilder` with saved views turned on, the columns someone hides now stay hidden after they sort, search or filter. Tables without saved views still show every column again after each change, as before.
+
 ## 3.0.0 - 2026-10-30
 
 ## Breaking

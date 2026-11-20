@@ -352,6 +352,82 @@ Used with `TableBuilder` for simpler key/operator/value filtering:
 
 `TextFilter`, `NumberFilter`, `DateFilter`, `BooleanFilter`, `SelectFilter`, `NullFilter`
 
+## Saved Views
+
+`TableBuilder` and `QueryBuilder` tables can let people save what they're looking at as a named view: the filters (or criteria), search, sort, columns and rows per page. Each person can:
+
+- save the current state as a new view, and update a view they own with what the table shows now
+- rename or delete views they own
+- share a view they own with everyone who can open the table, or stop sharing it
+- favourite any view they can see (their own or a shared one); favourites show as quick buttons above the table
+- make any view they can see their default for that table; it's applied when the page opens without filters or a search in the URL
+
+Only a view's owner can rename, update, share or delete it. When an owner stops sharing a view, it disappears from other people's favourites and defaults. Saved views are off unless a table turns them on, and they're hidden from guests. `ReportBuilder` doesn't support them yet.
+
+### Set up
+
+1. Saved views use [Flux](https://fluxui.dev) (its free components). Install it if your app doesn't have it: `composer require livewire/flux`.
+2. Publish and run the migration (two tables: `query_builder_saved_views` and `query_builder_saved_view_user`):
+
+    ```bash
+    php artisan vendor:publish --tag="query-builder-migrations"
+    php artisan migrate
+    ```
+
+    The migration stores user ids as big integers. If your users have UUID or ULID keys, change the two `user_id` columns in the published migration first.
+
+3. Turn saved views on in the table's `config()`, with a key that's unique to the table. Views are stored against this key, so don't change it later.
+
+    ```php
+    public function config(): void
+    {
+        $this->enableSavedViews('enquiries');
+    }
+    ```
+
+    In a `QueryBuilder`, call `parent::config()` first if you rely on its defaults.
+
+When a view is applied, anything the table no longer has (a removed filter, condition, column or sort) is dropped, so old views keep working after a table changes.
+
+### Your own storage
+
+To store views somewhere else, write a class implementing `ACTTraining\QueryBuilder\Support\Contracts\SavedViewRepository` and set it in the published config:
+
+```php
+// config/query-builder.php
+'saved_views' => [
+    'repository' => App\Support\MySavedViewRepository::class,
+],
+```
+
+### Importing views from Filament Advanced Tables
+
+`AdvancedTablesImporter` converts Advanced Tables' saved views (`filament_filter_sets` and `filament_filter_set_user`) into saved views. It carries across each view's owner, name, search, sort, sharing and favourites. Only your app knows how a Filament filter maps onto your new table, so you supply that mapping: a closure that receives the decoded Advanced Tables `filters` array (and the whole row) and returns the parts of the saved state it can fill in, or `null` to skip the view.
+
+```php
+use ACTTraining\QueryBuilder\Support\SavedViews\AdvancedTablesImporter;
+
+$report = app(AdvancedTablesImporter::class)->importFromDatabase(
+    tables: ['App\Filament\Resources\EnquiryResource' => 'enquiries'], // Advanced Tables resource => table key
+    mapState: fn (array $filters, array $row) => [
+        // TableBuilder: filter codes are "Label:operator"
+        'filters' => array_filter([
+            'Stage:=' => $filters['tableFilters']['pipeline_stage_id']['value'] ?? null,
+        ]),
+        // QueryBuilder instead: 'criteria' => [[column, operation, value, extraValue]], 'andOr' => 'and', 'columns' => [...]
+    ],
+);
+
+$this->info("{$report->created} created, {$report->updated} updated, {$report->favourites} favourites");
+collect($report->skipped)->each(fn ($reason, $id) => $this->warn("Skipped {$id}: {$reason}"));
+collect($report->warnings)->each(fn ($warning) => $this->warn($warning));
+```
+
+- Public views stay shared. Rejected views come across as private.
+- A global favourite becomes a shared view, but people have to favourite it themselves.
+- Views based on a preset view, grouping or per-column searches are imported with a warning, because saved views can't do those.
+- It's safe to run more than once (for a rehearsal and then the real switchover): it updates the views it imported before instead of duplicating them. A re-run overwrites an imported view's name, filters and sharing with the Advanced Tables data, so run it before people start using the new table. It only adds favourites to views it creates, so it never brings back a favourite someone removed. Use `import()` instead of `importFromDatabase()` to pass in rows you've read yourself, for example from another connection.
+
 ## Relationship Support
 
 Dot-notation keys work throughout columns, conditions, and filters to traverse Eloquent relationships:
