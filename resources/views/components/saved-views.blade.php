@@ -13,7 +13,8 @@
     $manageModal = $this->identifier().'-manage-view';
 @endphp
 
-<div class="flex flex-wrap items-center gap-2 px-4 pt-4" wire:key="{{ $this->identifier() }}-saved-views">
+{{-- No padding of its own: the table views place it at the right of the search or toolbar row. Pass $savedViewsClass to position it. --}}
+<div class="flex flex-wrap items-center gap-2 {{ $savedViewsClass ?? '' }}" wire:key="{{ $this->identifier() }}-saved-views">
     @foreach ($favouriteViews as $view)
         <flux:button
             size="sm"
@@ -25,8 +26,8 @@
         </flux:button>
     @endforeach
 
-    <flux:dropdown position="bottom" align="start">
-        <flux:button size="sm" icon="bookmark" icon:trailing="chevron-down">
+    <flux:dropdown position="bottom" align="end">
+        <flux:button size="sm" icon="queue-list" icon:trailing="chevron-down">
             {{ $activeView?->name ?? 'Views' }}
         </flux:button>
 
@@ -49,10 +50,7 @@
                 @endif
             @endforeach
 
-            @if (count($savedViews))
-                <flux:menu.separator />
-            @endif
-
+            {{-- Each group above draws its own separator before what follows, so none is added here. --}}
             <flux:modal.trigger :name="$saveModal">
                 <flux:menu.item icon="plus">Save as a new view</flux:menu.item>
             </flux:modal.trigger>
@@ -132,18 +130,18 @@
                     <div class="flex items-center gap-1" x-show="! editing">
                         <flux:button
                             size="sm"
-                            variant="ghost"
+                            :variant="$view->isFavourite ? 'filled' : 'ghost'"
                             icon="star"
-                            :icon:variant="$view->isFavourite ? 'solid' : 'outline'"
+                            :aria-pressed="$view->isFavourite ? 'true' : 'false'"
                             wire:click="toggleSavedViewFavourite('{{ $view->id }}')"
                             :aria-label="$view->isFavourite ? 'Remove from favourites' : 'Add to favourites'"
                             :tooltip="$view->isFavourite ? 'Remove from favourites' : 'Add to favourites'"
                         />
                         <flux:button
                             size="sm"
-                            variant="ghost"
+                            :variant="$view->isDefault ? 'filled' : 'ghost'"
                             icon="home"
-                            :icon:variant="$view->isDefault ? 'solid' : 'outline'"
+                            :aria-pressed="$view->isDefault ? 'true' : 'false'"
                             wire:click="toggleDefaultSavedView('{{ $view->id }}')"
                             :aria-label="$view->isDefault ? 'Stop using as my default' : 'Use as my default'"
                             :tooltip="$view->isDefault ? 'Stop using as my default' : 'Use as my default'"
@@ -152,9 +150,9 @@
                         @if ($owned)
                             <flux:button
                                 size="sm"
-                                variant="ghost"
+                                :variant="$view->isShared ? 'filled' : 'ghost'"
                                 icon="users"
-                                :icon:variant="$view->isShared ? 'solid' : 'outline'"
+                                :aria-pressed="$view->isShared ? 'true' : 'false'"
                                 wire:click="toggleSavedViewShared('{{ $view->id }}')"
                                 :aria-label="$view->isShared ? 'Stop sharing' : 'Share with everyone'"
                                 :tooltip="$view->isShared ? 'Stop sharing' : 'Share with everyone'"
@@ -171,8 +169,7 @@
                                 size="sm"
                                 variant="ghost"
                                 icon="trash"
-                                wire:click="deleteSavedView('{{ $view->id }}')"
-                                wire:confirm="Delete the view &quot;{{ $view->name }}&quot;? This can't be undone."
+                                x-on:click="$flux.modal('{{ $manageModal }}-delete-{{ $view->id }}').show()"
                                 aria-label="Delete"
                                 tooltip="Delete"
                             />
@@ -183,3 +180,30 @@
         </ul>
     </div>
 </flux:modal>
+
+{{-- Deleting a view is confirmed in a modal, never the browser's own dialog. --}}
+@foreach ($myViews as $view)
+    <div wire:key="{{ $manageModal }}-delete-{{ $view->id }}">
+    <flux:modal name="{{ $manageModal }}-delete-{{ $view->id }}" class="w-full max-w-md">
+        <div class="flex flex-col gap-6">
+            <div>
+                <flux:heading size="lg">Delete the view "{{ $view->name }}"?</flux:heading>
+                <flux:text class="mt-2">This can't be undone. Anyone using it as their default goes back to the full list.</flux:text>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <flux:modal.close>
+                    <flux:button variant="ghost">Cancel</flux:button>
+                </flux:modal.close>
+
+                <flux:button
+                    variant="danger"
+                    x-on:click="$flux.modal('{{ $manageModal }}-delete-{{ $view->id }}').close(); if ({{ count($savedViews) }} === 1) $flux.modal('{{ $manageModal }}').close(); $wire.deleteSavedView('{{ $view->id }}')"
+                >
+                    Delete view
+                </flux:button>
+            </div>
+        </div>
+    </flux:modal>
+    </div>
+@endforeach

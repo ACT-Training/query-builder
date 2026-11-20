@@ -3,8 +3,16 @@
         @includeIf($this->headerView())
     </div>
 
-    @if($this->hasSavedViews())
-        @include('query-builder::components.saved-views')
+    @php
+        $searchRowShown = $this->isSearchVisible() && $this->searchableColumnsSet() && ! $this->areActionsVisible()
+            && ($this->isFiltered() || $this->isSearchActive() || $this->rows->count() > 0);
+    @endphp
+
+    {{-- Saved views sit at the right of the search or actions row; with neither, they get a row of their own. --}}
+    @if($this->hasSavedViews() && ! $searchRowShown && ! $this->areActionsVisible())
+        <div class="px-4 pt-4 flex justify-end">
+            @include('query-builder::components.saved-views')
+        </div>
     @endif
 
     <div class="my-6">
@@ -17,6 +25,10 @@
                     @endif
 
                     @include('query-builder::components.search')
+
+                    @if($this->hasSavedViews())
+                        @include('query-builder::components.saved-views', ['savedViewsClass' => 'ml-auto'])
+                    @endif
                 </div>
             @endif
         @endif
@@ -39,6 +51,10 @@
                     </div>
 
                     <div class="p-4 flex items-center gap-2">
+
+                        @if($this->hasSavedViews())
+                            @include('query-builder::components.saved-views')
+                        @endif
 
                         @if($this->areActionsVisible())
                             @include('query-builder::components.actions')
