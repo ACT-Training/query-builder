@@ -20,6 +20,7 @@ use ACTTraining\QueryBuilder\Support\Concerns\WithPagination;
 use ACTTraining\QueryBuilder\Support\Concerns\WithQueryBuilder;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowClick;
 use ACTTraining\QueryBuilder\Support\Concerns\WithRowInjection;
+use ACTTraining\QueryBuilder\Support\Concerns\WithSavedViews;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSearch;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSelecting;
 use ACTTraining\QueryBuilder\Support\Concerns\WithSorting;
@@ -51,6 +52,7 @@ abstract class QueryBuilder extends Component
     use WithQueryBuilder;
     use WithRowClick;
     use WithRowInjection;
+    use WithSavedViews;
     use WithSearch;
     use WithSelecting;
     use WithSorting;
@@ -74,8 +76,12 @@ abstract class QueryBuilder extends Component
     {
         $this->config();
 
-        $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
-
+        // Without saved views every request shows every column again, as it always
+        // has. With them, the columns someone chose (or a view applied) must survive
+        // the next request, so only the first request fills them in.
+        if (! $this->hasSavedViews() || ! $this->savedViewsBooted) {
+            $this->displayColumns = $this->resolveColumns()->pluck('key')->toArray();
+        }
     }
 
     public function config(): void
@@ -103,6 +109,57 @@ abstract class QueryBuilder extends Component
     protected function isColumnDisplayed(BaseColumn $column): bool
     {
         return in_array($column->key, $this->displayColumns, true);
+    }
+
+    protected function savedViewFilterState(): array
+    {
+        $criteria = array_map(fn (array $criterion) => [
+            'column' => $criterion['column'],
+            'operation' => $criterion['operation'],
+            'value' => $criterion['value'] ?? null,
+            'extraValue' => $criterion['extraValue'] ?? null,
+        ], $this->criteria);
+
+        return [
+            'criteria' => $criteria,
+            'andOr' => $this->andOr,
+            'columns' => $this->displayColumns,
+        ];
+    }
+
+    protected function applySavedViewFilterState(array $state): void
+    {
+        $conditions = $this->resolveConditions();
+        $criteria = [];
+
+        foreach ($state['criteria'] ?? [] as $saved) {
+            $condition = $conditions->firstWhere('key', $saved['column'] ?? null);
+            $operation = $saved['operation'] ?? null;
+
+            if (! $condition || ! is_string($operation) || ! array_key_exists($operation, $condition->operations)) {
+                continue;
+            }
+
+            $criteria[] = [
+                'column' => $condition->key,
+                'operation' => $operation,
+                'value' => $saved['value'] ?? null,
+                'extraValue' => $saved['extraValue'] ?? null,
+                'requiresExtra' => $this->displayExtraValueForOperation($operation),
+                'displayValue' => $this->displayValueForOperation($operation),
+                'inputType' => $condition->inputType,
+                'factor' => $condition->factor,
+                'options' => $condition->options ?? [],
+            ];
+        }
+
+        $this->criteria = $criteria;
+        $this->andOr = ($state['andOr'] ?? 'and') === 'or' ? 'or' : 'and';
+
+        $allColumns = $this->resolveColumns()->pluck('key')->all();
+        $columns = array_values(array_intersect($allColumns, (array) ($state['columns'] ?? [])));
+
+        $this->displayColumns = $columns ?: $allColumns;
     }
 
     #[Computed]

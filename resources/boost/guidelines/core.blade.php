@@ -34,6 +34,13 @@
 - A grouped `ReportBuilder` adds a grand-total footer by itself for COUNT and SUM (none for AVG, MIN or MAX). Don't add one by hand.
 - In `ReportBuilder::availableColumns()`, set `'footer' => 'sum'` (or `avg`, `min`, `max`, `count`) or `'footerLabel' => 'Total'` on a column definition.
 
+## Saved Views
+
+- `TableBuilder` and `QueryBuilder` support per-user saved views (save, update, rename, delete, share, favourite, default). Turn them on in `config()` with `$this->enableSavedViews('a-unique-table-key')`. Don't change the key once people have saved views. `ReportBuilder` doesn't support them.
+- They need `livewire/flux` and the package's migration (`php artisan vendor:publish --tag="query-builder-migrations"`). Don't build your own saved-views UI or table.
+- To store views elsewhere, implement `ACTTraining\QueryBuilder\Support\Contracts\SavedViewRepository` and set `query-builder.saved_views.repository`.
+- To convert Filament Advanced Tables views, call `ACTTraining\QueryBuilder\Support\SavedViews\AdvancedTablesImporter::importFromDatabase($tables, $mapState)` with a closure mapping Filament's `filters` array to saved state (`filters` for a TableBuilder; `criteria`, `andOr` and `columns` for a QueryBuilder). It can be run more than once.
+
 ## ReportBuilder Columns
 
 - `availableColumns()` returns an array of groups, each a list of column definitions keyed by `label` and `key` (both required). Optional keys: `type` (`text` default, `number`, `float`, `boolean`, `date`, `enum`, `null`, `view`), `sortable`, `justify`, `view`, `options` (for `enum`), `skipCondition`, `footer` and `footerLabel`.

@@ -3,6 +3,10 @@
         @includeIf($this->headerView())
     </div>
 
+    @if($this->hasSavedViews())
+        @include('query-builder::components.saved-views')
+    @endif
+
     <div class="my-6">
 
         @if($this->isSearchVisible() && $this->searchableColumnsSet() && ! $this->areActionsVisible())

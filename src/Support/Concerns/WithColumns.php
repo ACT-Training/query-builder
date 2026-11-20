@@ -27,7 +27,16 @@ trait WithColumns
     {
         $this->useCachedRows();
 
-        return $this->resolveColumns()->pluck('key')->toArray();
+        $keys = $this->resolveColumns()->pluck('key')->toArray();
+
+        // The column chooser's Reset button calls this. QueryBuilder used to show
+        // every column again on the next request anyway; with saved views it
+        // keeps the chosen columns, so reset them here.
+        if (property_exists($this, 'displayColumns')) {
+            $this->displayColumns = $keys;
+        }
+
+        return $keys;
     }
 
     public function updatedDisplayColumns(): void
