@@ -17,8 +17,21 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      # Set PHP up the same way as run-tests. aglipanci/laravel-pint-action ran in
+      # composer:latest, which no longer has the mbstring extension Pint 1.x needs,
+      # so it silently installed Pint 0.1.7 and reformatted the whole repository.
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: mbstring
+          coverage: none
+
+      - name: Install Pint
+        run: composer global require laravel/pint:^1.32 --no-interaction --no-progress
+
       - name: Fix PHP code style issues
-        uses: aglipanci/laravel-pint-action@2.6
+        run: "$(composer global config bin-dir --absolute --quiet)/pint"
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v7
