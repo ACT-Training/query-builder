@@ -2,6 +2,14 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
+## 3.1.3 - 2026-11-20
+
+### "Select all" follow-ups (#133, from the #132 review)
+
+- **Fixed (#133):** in a `QueryBuilder`, "Select all" with an empty current page made the action do nothing. It now acts on the matching rows.
+- **Fixed (#133):** in a `ReportBuilder` or `GroupsBuilder`, removing a criterion, resetting the report, or changing the grouping or totals now clears the selection.
+- **Fixed (#133):** the "Select all" message spans only the visible columns.
+
 ## 3.1.2 - 2026-11-20
 
 ### "Select all" acts only on the matching rows (#127)
@@ -14,9 +22,6 @@ All notable changes to `query-builder` will be documented in this file.
 - With every matching row selected, the table now says "All N matching rows are selected."
 - **New:** `->lazy()` on an action hands its callback a `LazyCollection` that loads the rows 500 at a time (or `->lazy($chunkSize)`), for actions that may run on thousands of rows. Without it, the callback still gets an Eloquent collection.
 - **New:** `selectedRowsCount()` returns how many rows an action would act on.
-- **Fixed (#133):** in a `QueryBuilder`, "Select all" with an empty current page made the action do nothing. It now acts on the matching rows.
-- **Fixed (#133):** in a `ReportBuilder` or `GroupsBuilder`, removing a criterion, resetting the report, or changing the grouping or totals now clears the selection.
-- **Fixed (#133):** the "Select all" message spans only the visible columns.
 
 ### Upgrading
 
