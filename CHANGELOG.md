@@ -2,7 +2,7 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
-## 3.1.1 - Unreleased
+## 3.1.1 - 2026-11-20
 
 ### Saved views fit the table and the style guide (pipeline2#33)
 
