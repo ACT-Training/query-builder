@@ -136,6 +136,7 @@ trait WithGroupBuilder
     {
         unset($this->criteria[$index]);
         $this->criteria = array_values($this->criteria);
+        $this->resetSelection();
 
         $this->saveToSession();
     }
@@ -144,6 +145,7 @@ trait WithGroupBuilder
     {
         $this->criteria = [];
         $this->selectedColumns = [];
+        $this->resetSelection();
         $this->saveToSession();
     }
 

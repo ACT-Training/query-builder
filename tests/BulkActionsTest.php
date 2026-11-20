@@ -45,6 +45,15 @@ class BulkActionCustomKeyRecord extends Model
     public $timestamps = false;
 }
 
+// Apps commonly sort a model with a global scope named "order".
+class BulkActionOrderedRecord extends BulkActionRecord
+{
+    protected static function booted(): void
+    {
+        static::addGlobalScope('order', fn (Builder $query) => $query->orderBy('name', 'desc'));
+    }
+}
+
 class BulkActionSpy
 {
     public static ?Enumerable $models = null;
@@ -157,6 +166,21 @@ class BulkActionsCustomKeyTable extends TableBuilder
     {
         return [
             Action::make('Archive', 'archive', fn (Enumerable $models) => BulkActionSpy::record($models)),
+        ];
+    }
+}
+
+class BulkActionsOrderedTable extends BulkActionsTable
+{
+    public function query(): Builder
+    {
+        return BulkActionOrderedRecord::query();
+    }
+
+    public function actions(): array
+    {
+        return [
+            Action::make('Archive lazily', 'archive-lazily', fn (Enumerable $models) => BulkActionSpy::record($models))->lazy(4),
         ];
     }
 }
@@ -302,6 +326,18 @@ describe('Select all', function () {
             ->and(BulkActionSpy::$models->count())->toBe(20)
             ->and(BulkActionSpy::$models->pluck('category')->unique()->all())->toBe(['a']);
     });
+});
+
+it('loads every row lazily when the model sorts itself with an "order" global scope', function () {
+    Livewire::test(BulkActionsOrderedTable::class)
+        ->set('selectPage', true)
+        ->call('toggleSelectAll')
+        ->call('executeAction', 'archive-lazily');
+
+    $ids = BulkActionSpy::$models->pluck('id');
+
+    expect($ids)->toHaveCount(25)
+        ->and($ids->unique())->toHaveCount(25);
 });
 
 describe('a manual selection', function () {

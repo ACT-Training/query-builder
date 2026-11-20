@@ -143,7 +143,7 @@
 
                         @if($this->areActionsVisible() && $selectable && $selectPage && $this->rows->count() < $this->rows->total())
                             <tr class="bg-gray-100" wire:key="{{ $this->identifier() }}-row-message">
-                                <td colspan="{{ count($this->columns()) + 1 }}" class="px-6 py-4">
+                                <td colspan="{{ collect($this->columns())->filter(fn ($column) => ! $column->hidden())->count() + 1 }}" class="px-6 py-4">
                                     @unless($selectAll)
                                         <div>
                                     <span>You have selected <span

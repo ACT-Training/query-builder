@@ -36,14 +36,16 @@ trait WithSelecting
     }
 
     /**
-     * A selection belongs to the rows it was made from. Once the search, a filter
-     * or the criteria change, it would act on a different set of rows than the
-     * person chose, so it's dropped. (Livewire calls this for every property the
+     * A selection belongs to the rows it was made from. Once the search, a filter,
+     * the criteria or a report's grouping change, it would act on a different set
+     * of rows than the person chose, so it's dropped. (Livewire calls this for every property the
      * browser updates.)
      */
     public function updatedWithSelecting(string $property): void
     {
-        if (in_array(Str::before($property, '.'), ['searchBy', 'filterValues', 'criteria', 'andOr'], true)) {
+        $narrowing = ['searchBy', 'filterValues', 'criteria', 'andOr', 'groupBy', 'aggregateFunction', 'aggregateColumn'];
+
+        if (in_array(Str::before($property, '.'), $narrowing, true)) {
             $this->resetSelection();
         }
     }

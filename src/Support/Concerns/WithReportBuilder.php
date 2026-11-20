@@ -305,6 +305,7 @@ trait WithReportBuilder
     {
         unset($this->criteria[$index]);
         $this->criteria = array_values($this->criteria);
+        $this->resetSelection();
 
         $this->saveToSession();
     }
@@ -316,6 +317,7 @@ trait WithReportBuilder
         $this->groupBy = null;
         $this->aggregateColumn = 'id';
         $this->aggregateFunction = 'COUNT';
+        $this->resetSelection();
         $this->saveToSession();
     }
 
