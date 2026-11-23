@@ -6,8 +6,9 @@ use ACTTraining\QueryBuilder\Support\Contracts\CriteriaInterface;
 use Illuminate\Support\Str;
 
 /**
- * "Is any of" and "is none of": the field has, or hasn't, any of several values. On a related
- * record (a dot in the field), "is none of" keeps the rows with no related record at all.
+ * "Is any of" and "is none of": the field has, or hasn't, any of several values. A plain column is
+ * named as given, like the other criteria. On a related record (a dot in the field), the column is
+ * qualified with the related table, and "is none of" keeps the rows with no related record at all.
  */
 class ManyCriteria extends BaseCriteria implements CriteriaInterface
 {
@@ -18,22 +19,17 @@ class ManyCriteria extends BaseCriteria implements CriteriaInterface
 
     public function apply($query): void
     {
-        if (! $this->none) {
-            $this->applyWhereCondition($query, $this->field, function ($query, $field) {
-                $query->whereIn($query->qualifyColumn($field), $this->values);
-            });
-
-            return;
-        }
-
         if (! Str::contains($this->field, '.')) {
-            $query->whereNotIn($this->field, $this->values);
+            $query->{$this->none ? 'whereNotIn' : 'whereIn'}($this->field, $this->values);
 
             return;
         }
 
-        $query->whereDoesntHave(Str::beforeLast($this->field, '.'), function ($query) {
+        $relation = Str::beforeLast($this->field, '.');
+        $hasAny = function ($query) {
             $query->whereIn($query->qualifyColumn(Str::afterLast($this->field, '.')), $this->values);
-        });
+        };
+
+        $query->{$this->none ? 'whereDoesntHave' : 'whereHas'}($relation, $hasAny);
     }
 }

@@ -214,6 +214,11 @@ trait WithQueryBuilder
             return $this->getManyCriteria($column, $criteria['operation'], $value);
         }
 
+        // Several choices only mean something to "is any of" and "is none of".
+        if (is_array($value)) {
+            return null;
+        }
+
         if (is_null($value) && $criteria['displayValue']) {
             return null;
         }

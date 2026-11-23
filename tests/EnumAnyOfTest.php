@@ -170,16 +170,43 @@ it('keeps the choices when the test changes between two that take several', func
     expect($table->get('criteria.0.value'))->toBe(['red', 'blue']);
 });
 
+it('offers "is any of" and "is none of" in the list of tests', function () {
+    $condition = EnumCondition::make('Colour', 'colour', ['red' => 'Red'])->multiple();
+
+    expect($condition->toArray()['operations'])->toHaveKeys(['is_any_of', 'is_none_of']);
+
+    Livewire::test(AnyOfTable::class)
+        ->call('addCriteria')
+        ->assertSeeHtml('<option value="is_any_of">is any of</option>')
+        ->assertSeeHtml('<option value="is_none_of">is none of</option>');
+});
+
 it('shows a list that takes several choices for "is any of"', function () {
     Livewire::test(AnyOfTable::class)
         ->call('addCriteria')
         ->set('criteria.0.operation', 'is_any_of')
-        ->assertSeeHtml('multiple')
-        ->assertSeeHtml('wire:model.live.debounce.1000ms="criteria.0.value"');
+        ->assertSeeHtmlInOrder(['id="value-0"', 'multiple', '</select>']);
 });
 
 it('shows a list that takes one choice for "is"', function () {
-    Livewire::test(AnyOfTable::class)
-        ->call('addCriteria')
-        ->assertDontSeeHtml('multiple');
+    $html = Livewire::test(AnyOfTable::class)->call('addCriteria')->html();
+
+    expect(preg_match('/<select[^>]*id="value-0"[^>]*>/s', $html, $select))->toBe(1)
+        ->and($select[0])->not->toContain('multiple');
+});
+
+it('ignores several choices given to a test that takes one, rather than failing', function () {
+    expect(anyOfNames('colour', 'equals', ['red', 'blue']))->toBe(['Apple', 'Basil', 'Cornflower', 'Dust']);
+});
+
+it('opens a saved view with "is any of", keeping its choices', function () {
+    $table = Livewire::test(AnyOfTable::class);
+    $table->instance()->applySavedViewState(['criteria' => [
+        ['column' => 'colour', 'operation' => 'is_any_of', 'value' => ['red', 'blue']],
+        ['column' => 'labels.id', 'operation' => 'is_none_of', 'value' => '2'],
+    ]]);
+
+    expect($table->instance()->criteria[0]['value'])->toBe(['red', 'blue'])
+        ->and($table->instance()->criteria[1]['value'])->toBe(['2'])
+        ->and($table->instance()->rowsQuery()->pluck('name')->all())->toBe(['Apple']);
 });

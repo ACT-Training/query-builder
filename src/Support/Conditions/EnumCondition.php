@@ -55,6 +55,7 @@ class EnumCondition extends BaseCondition
     public function multiple(bool $allowsMany = true): static
     {
         $this->allowsMany = $allowsMany;
+        $this->operations = $this->operations();
 
         return $this;
     }
