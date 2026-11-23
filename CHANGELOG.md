@@ -2,6 +2,17 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
+## 3.2.0 - 2026-11-23
+
+### Several choices on a list condition (pipeline2#65)
+
+- **New:** `->multiple()` on an `EnumCondition` adds "is any of" and "is none of", where people pick several choices from the list. The criterion's value is then a list of choices, and saved views keep it.
+- "Is none of" on a related record (`tags.id`) keeps rows with no related record at all.
+- A criterion with nothing chosen is ignored.
+- Changing a criterion's test between one that takes a single choice and one that takes several clears its value.
+
+No upgrade steps: conditions without `->multiple()` don't change. Apps that override `editor.blade.php` should show a list that takes several choices when `$this->operationTakesSeveralValues($criterion['operation'])` is true.
+
 ## 3.1.3 - 2026-11-20
 
 ### "Select all" follow-ups (#133, from the #132 review)

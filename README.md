@@ -343,8 +343,24 @@ Used with `QueryBuilder` and `ReportBuilder` for criteria-based filtering:
 | `FloatCondition` | equals, not_equals, greater_than, less_than, is_between |
 | `BooleanCondition` | is_true, is_false |
 | `DateCondition` | equals, before, after, is_between |
-| `EnumCondition` | equals, not_equals (with defined options) |
+| `EnumCondition` | equals, not_equals (with defined options); with `->multiple()`, also is_any_of, is_none_of |
 | `NullCondition` | is_set, is_not_set |
+
+### Several choices
+
+`->multiple()` on an `EnumCondition` adds "is any of" and "is none of", where people pick several choices. The criterion's `value` is then a list:
+
+```php
+EnumCondition::make('Stage', 'pipeline_stage_id', $stages)->multiple();
+
+// a saved or preset criterion
+['column' => 'pipeline_stage_id', 'operation' => 'is_any_of', 'value' => ['1', '4']]
+```
+
+- "Is any of" shows the rows whose value is one of the choices. On a related record (`tags.id`), it shows rows with any of them.
+- "Is none of" leaves those rows out. On a column, rows with no value are left out too, as with "is not". On a related record, rows with no related record at all are kept.
+- A criterion with nothing chosen is ignored. A single value counts as one choice.
+- Changing the test between one that takes a single choice and one that takes several clears the value.
 
 ## Filters (TableBuilder)
 

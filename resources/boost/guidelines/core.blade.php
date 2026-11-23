@@ -22,7 +22,7 @@
 - Every column, condition and filter is created with `::make($label, $key)`. When `$key` is omitted it defaults to `Str::snake($label)`, so pass `$key` explicitly whenever the attribute name differs.
 - Keys use dot notation to traverse relationships, e.g. `contract.job.name`. The last segment is the column; the rest is the relationship path.
 - Columns (`ACTTraining\QueryBuilder\Support\Columns`): `Column`, `BooleanColumn`, `DateColumn`, `ViewColumn`. Common modifiers: `->sortable()`, `->searchable()`, `->justify('left'|'center'|'right')`, `->component('view.name')`, `->reformatUsing(fn ($value) => ...)`, `->withSubTitle(fn ($row) => ...)`, `->hideIf($condition)`, `->hideHeader()`. `DateColumn` adds `->format()` and `->humanDiff()`.
-- Conditions (`ACTTraining\QueryBuilder\Support\Conditions`, for `QueryBuilder`): `TextCondition`, `NumberCondition`, `FloatCondition`, `BooleanCondition`, `DateCondition`, `EnumCondition` (use `->options([...])`), `NullCondition`.
+- Conditions (`ACTTraining\QueryBuilder\Support\Conditions`, for `QueryBuilder`): `TextCondition`, `NumberCondition`, `FloatCondition`, `BooleanCondition`, `DateCondition`, `EnumCondition` (use `->options([...])`; `->multiple()` adds `is_any_of` and `is_none_of`, whose value is a list), `NullCondition`.
 - Filters (`ACTTraining\QueryBuilder\Support\Filters`, for `TableBuilder`): `TextFilter`, `NumberFilter`, `DateFilter`, `BooleanFilter`, `SelectFilter` (use `->options([...])`), `NullFilter`.
 - Do not mix the two systems: conditions belong to `QueryBuilder`/`ReportBuilder`, filters belong to `TableBuilder`.
 
