@@ -30,6 +30,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -143,7 +144,7 @@ abstract class QueryBuilder extends Component
             $criteria[] = [
                 'column' => $condition->key,
                 'operation' => $operation,
-                'value' => $saved['value'] ?? null,
+                'value' => $this->operationTakesSeveralValues($operation) ? Arr::wrap($saved['value'] ?? null) : ($saved['value'] ?? null),
                 'extraValue' => $saved['extraValue'] ?? null,
                 'requiresExtra' => $this->displayExtraValueForOperation($operation),
                 'displayValue' => $this->displayValueForOperation($operation),

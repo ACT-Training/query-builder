@@ -17,6 +17,11 @@ class EnumCondition extends BaseCondition
     public array $options;
 
     /**
+     * Whether people may pick several choices, with "is any of" and "is none of".
+     */
+    public bool $allowsMany = false;
+
+    /**
      * Constructor for EnumCondition
      * It initializes the $options property along with the properties inherited from BaseCondition.
      *
@@ -44,12 +49,30 @@ class EnumCondition extends BaseCondition
         return new static($key, $label, $options);
     }
 
+    /**
+     * Lets people pick several choices: adds "is any of" and "is none of" to "is" and "is not".
+     */
+    public function multiple(bool $allowsMany = true): static
+    {
+        $this->allowsMany = $allowsMany;
+        $this->operations = $this->operations();
+
+        return $this;
+    }
+
     public function operations(): array
     {
-        return [
+        $operations = [
             'equals' => 'is',
             'not_equals' => 'is not',
         ];
+
+        if ($this->allowsMany) {
+            $operations['is_any_of'] = 'is any of';
+            $operations['is_none_of'] = 'is none of';
+        }
+
+        return $operations;
     }
 
     /**

@@ -9,7 +9,9 @@ use ACTTraining\QueryBuilder\Support\Criteria\BooleanCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\CompareCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\DateCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\LikeCriteria;
+use ACTTraining\QueryBuilder\Support\Criteria\ManyCriteria;
 use ACTTraining\QueryBuilder\Support\Criteria\NullCriteria;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Enumerable;
 
 trait WithQueryBuilder
@@ -72,6 +74,7 @@ trait WithQueryBuilder
         }
 
         if ($keyName === 'operation') {
+            $this->resetValueWhenChoosingSeveralChanges($index, $value);
             $this->criteria[$index]['displayValue'] = $this->displayValueForOperation($value);
             if (! $this->criteria[$index]['displayValue']) {
                 $this->criteria[$index]['value'] = null;
@@ -122,6 +125,14 @@ trait WithQueryBuilder
         return $condition->options ?? [];
     }
 
+    /**
+     * Whether the operation takes several choices ("is any of", "is none of").
+     */
+    public function operationTakesSeveralValues($operation): bool
+    {
+        return in_array($operation, ['is_any_of', 'is_none_of'], true);
+    }
+
     public function displayExtraValueForOperation($value): bool
     {
         return in_array($value, ['is_between', 'is_not_between']);
@@ -145,6 +156,20 @@ trait WithQueryBuilder
         $this->resetPage();
         $this->criteria = [];
         $this->resetSelection();
+    }
+
+    /**
+     * A single choice can't stand for several, or the other way round, so the value is cleared when
+     * the operation changes between the two kinds. Between "is any of" and "is none of" the choices stay.
+     */
+    protected function resetValueWhenChoosingSeveralChanges($index, $operation): void
+    {
+        $value = $this->criteria[$index]['value'] ?? null;
+        $takesSeveral = $this->operationTakesSeveralValues($operation);
+
+        if ($takesSeveral !== is_array($value)) {
+            $this->criteria[$index]['value'] = $takesSeveral ? [] : null;
+        }
     }
 
     protected function resolveConditions(): Enumerable
@@ -179,11 +204,20 @@ trait WithQueryBuilder
     }
 
     private function getCriteriaClass($criteria
-    ): CompareCriteria|LikeCriteria|BooleanCriteria|DateCriteria|NullCriteria|null {
+    ): CompareCriteria|LikeCriteria|BooleanCriteria|DateCriteria|NullCriteria|ManyCriteria|null {
         $column = $criteria['column'];
         $value = $criteria['value'] ?? null;
         $extraValue = $criteria['extraValue'] ?? null;
         $factor = $criteria['factor'] ?? null;
+
+        if ($this->operationTakesSeveralValues($criteria['operation'])) {
+            return $this->getManyCriteria($column, $criteria['operation'], $value);
+        }
+
+        // Several choices only mean something to "is any of" and "is none of".
+        if (is_array($value)) {
+            return null;
+        }
 
         if (is_null($value) && $criteria['displayValue']) {
             return null;
@@ -218,5 +252,23 @@ trait WithQueryBuilder
             'is_not_set' => new NullCriteria($column, 'is_not_set'),
             default => new CompareCriteria($column, $value),
         };
+    }
+
+    /**
+     * "Is any of" or "is none of", or null until something is chosen. A single value counts as one choice.
+     */
+    private function getManyCriteria(string $column, string $operation, mixed $value): ?ManyCriteria
+    {
+        $values = collect(Arr::wrap($value))
+            ->filter(fn ($choice) => is_scalar($choice) && (string) $choice !== '')
+            ->map(fn ($choice) => (string) $choice)
+            ->values()
+            ->all();
+
+        if ($values === []) {
+            return null;
+        }
+
+        return new ManyCriteria($column, $values, $operation === 'is_none_of');
     }
 }
