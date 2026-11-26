@@ -2,6 +2,24 @@
 
 All notable changes to `query-builder` will be documented in this file.
 
+## 3.2.1 - Unreleased
+
+### Only accept sort, criteria and grouping keys that the table defines
+
+- **Fixed:** a table now sorts only by the key of one of its `->sortable()` columns, or by the default sort that it sets with `setSort()` in `mount()` or `config()`. Any other sort is ignored and cleared. This is checked when the query is built, so it also covers a sort set directly on the component or on a table made outside Livewire.
+- **Fixed:** the sort direction must be `asc` or `desc`. Anything else becomes `asc`.
+- **Fixed:** `orderByRelated()` checks that the first part of the key is a relationship before it uses it. A key whose first part isn't a relationship is sorted as a table-qualified column.
+- **Fixed:** `QueryBuilder` and `ReportBuilder` ignore criteria on a column that isn't one of the table's conditions. A `ReportBuilder` also accepts criteria on any column in `availableColumns()`, so criteria on columns that aren't displayed keep working.
+- **Fixed:** a `ReportBuilder` ignores a group by key that isn't in `availableColumns()`, and counts rows when the total's column isn't one of its number columns. Choosing Sum, Average, Minimum or Maximum before the column now shows a count until the column is chosen.
+- **Fixed:** sorting a `QueryBuilder` by a relationship column (`author.name`) failed with an unknown column error. It now sorts as `TableBuilder` does.
+- **New:** `ensureValidSort()` clears a sort that the table doesn't allow. Call it before your own code uses `$sortBy` or `$sortDirection`, for example in an export.
+- **New:** `RelationGuard::isRelation($model, $name)` tells whether a name is a relationship of a model. Use it in your own `orderByRelated()` overrides.
+- Tables get a new locked public property, `$defaultSortBy`, which holds the default sort.
+
+### Upgrading
+
+No changes are needed for tables whose sort keys are their sortable columns. A default sort set with `setSort()` in `mount()` or `config()` keeps working even if it isn't a column. A sort set later, outside those methods, must be a sortable column.
+
 ## 3.2.0 - 2026-11-23
 
 ### Several choices on a list condition (pipeline2#65)

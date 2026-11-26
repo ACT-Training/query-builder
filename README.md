@@ -298,6 +298,8 @@ All column types use a fluent `make($label, $key)` constructor. If `$key` is omi
 
 Columns support: `->sortable()`, `->searchable()`, `->justify('right')`, `->component('view.name')`, `->reformatUsing(callable)`, `->withSubTitle(callable)`, `->hideIf(condition)`, `->hideHeader()`.
 
+A table sorts only by the key of a `->sortable()` column, or by the default sort it sets with `setSort()` in `mount()` or `config()`. Any other sort is ignored. If your own code uses `$this->sortBy` (for example in an export), call `$this->ensureValidSort()` first.
+
 ## Footer Totals
 
 Any column can show a value in a footer row at the bottom of the table. Footer values come from their own query over **every row matching the current search, filters and criteria**, not just the page on screen. This works in `TableBuilder`, `QueryBuilder` and `ReportBuilder`.

@@ -44,6 +44,17 @@ trait WithColumns
         $this->useCachedRows();
     }
 
+    /**
+     * The keys of the columns that people may sort by.
+     */
+    protected function sortableColumnKeys(): array
+    {
+        return $this->resolveColumns()
+            ->filter(fn ($column) => $column->isSortable())
+            ->pluck('key')
+            ->all();
+    }
+
     protected function resolveColumns(): Enumerable
     {
         return collect($this->columns());

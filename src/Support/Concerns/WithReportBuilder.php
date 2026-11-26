@@ -92,7 +92,28 @@ trait WithReportBuilder
 
     public function hasGroupBy(): bool
     {
-        return $this->enableGroupBy && filled($this->groupBy);
+        // The group by key comes from the browser, so it must be one of the report's columns.
+        return $this->enableGroupBy
+            && filled($this->groupBy)
+            && in_array($this->groupBy, array_column($this->groupableColumns(), 'key'), true);
+    }
+
+    /**
+     * The total's function and column come from the browser. Use them only when
+     * the report offers them; otherwise count the rows. A function chosen before
+     * its column also counts until the column is chosen.
+     *
+     * @return array{0: string, 1: string}
+     */
+    protected function validAggregate(): array
+    {
+        $validFunction = array_key_exists($this->aggregateFunction, $this->aggregateFunctions());
+        $validColumn = $this->aggregateFunction === 'COUNT'
+            || in_array($this->aggregateColumn, array_column($this->aggregatableColumns(), 'key'), true);
+
+        return $validFunction && $validColumn
+            ? [$this->aggregateFunction, $this->aggregateColumn]
+            : ['COUNT', 'id'];
     }
 
     public function aggregateFunctions(): array
@@ -211,6 +232,8 @@ trait WithReportBuilder
         }
 
         if ($this->hasGroupBy()) {
+            [$aggregateFunction, $aggregateColumn] = $this->validAggregate();
+
             $groupByConfig = $this->findElementByKey($this->availableGroupByColumns(), $this->groupBy);
             $groupByLabel = $groupByConfig['label'] ?? $this->groupBy;
 
@@ -225,13 +248,13 @@ trait WithReportBuilder
                 $groupColumn->reformatUsing(fn ($value) => $options[$value] ?? $value);
             }
 
-            $functionLabel = $this->aggregateFunctions()[$this->aggregateFunction] ?? $this->aggregateFunction;
-            $aggregateConfig = $this->aggregateFunction !== 'COUNT'
-                ? $this->findElementByKey($this->availableColumns(), $this->aggregateColumn)
+            $functionLabel = $this->aggregateFunctions()[$aggregateFunction] ?? $aggregateFunction;
+            $aggregateConfig = $aggregateFunction !== 'COUNT'
+                ? $this->findElementByKey($this->availableColumns(), $aggregateColumn)
                 : null;
-            $aggregateColumnLabel = $aggregateConfig['label'] ?? $this->aggregateColumn;
+            $aggregateColumnLabel = $aggregateConfig['label'] ?? $aggregateColumn;
 
-            $aggregateLabel = $this->aggregateFunction === 'COUNT'
+            $aggregateLabel = $aggregateFunction === 'COUNT'
                 ? $functionLabel
                 : "{$functionLabel} of {$aggregateColumnLabel}";
 
@@ -245,7 +268,7 @@ trait WithReportBuilder
 
             // A grand total only makes sense for counts and sums: adding up averages,
             // minimums or maximums would mislead, so those groupings have no footer.
-            if (in_array($this->aggregateFunction, ['COUNT', 'SUM'], true)) {
+            if (in_array($aggregateFunction, ['COUNT', 'SUM'], true)) {
                 $groupColumn->footerLabel('Total');
                 $aggregateCol->footer(function (Builder $groups) {
                     $total = $groups->getModel()->getConnection()

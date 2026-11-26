@@ -24,6 +24,8 @@
 - Columns (`ACTTraining\QueryBuilder\Support\Columns`): `Column`, `BooleanColumn`, `DateColumn`, `ViewColumn`. Common modifiers: `->sortable()`, `->searchable()`, `->justify('left'|'center'|'right')`, `->component('view.name')`, `->reformatUsing(fn ($value) => ...)`, `->withSubTitle(fn ($row) => ...)`, `->hideIf($condition)`, `->hideHeader()`. `DateColumn` adds `->format()` and `->humanDiff()`.
 - Conditions (`ACTTraining\QueryBuilder\Support\Conditions`, for `QueryBuilder`): `TextCondition`, `NumberCondition`, `FloatCondition`, `BooleanCondition`, `DateCondition`, `EnumCondition` (use `->options([...])`; `->multiple()` adds `is_any_of` and `is_none_of`, whose value is a list), `NullCondition`.
 - Filters (`ACTTraining\QueryBuilder\Support\Filters`, for `TableBuilder`): `TextFilter`, `NumberFilter`, `DateFilter`, `BooleanFilter`, `SelectFilter` (use `->options([...])`), `NullFilter`.
+- A table sorts only by the key of a `->sortable()` column, or by the default sort it sets with `setSort()` in `mount()` or `config()`. It ignores any other `sortBy`, and any direction other than `asc` or `desc`. `QueryBuilder` and `ReportBuilder` ignore criteria on a column that isn't a condition (a `ReportBuilder` also accepts any key in `availableColumns()`), and a report ignores a group or total column that isn't in `availableColumns()`.
+- If your own code reads `$this->sortBy` (an export, a queued job, an `orderByRelated()` override), call `$this->ensureValidSort()` first. In an `orderByRelated()` override, check the relation with `ACTTraining\QueryBuilder\Support\RelationGuard::isRelation($model, $name)` before you call it.
 - Do not mix the two systems: conditions belong to `QueryBuilder`/`ReportBuilder`, filters belong to `TableBuilder`.
 
 ## Footer Totals

@@ -31,7 +31,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -169,7 +168,7 @@ abstract class QueryBuilder extends Component
         /* @phpstan-ignore-next-line */
         $query = $this
             ->query()
-            ->apply($this->getCriteriaCollection($this->getCriteriaArray()));
+            ->apply($this->getCriteriaCollection($this->getCriteriaArray($this->validCriteria())));
 
         if ($this->searchBy && $this->searchBy !== '') {
             $criteria = [];
@@ -184,19 +183,7 @@ abstract class QueryBuilder extends Component
             $query->apply(CriteriaCollection::oneOf($this->getCriteriaArray($criteria)));
         }
 
-        $query->when($this->sortBy !== '', function ($query) {
-            $query->orderBy($this->sortBy, $this->sortDirection);
-        });
-
-        $query->when($this->sortBy !== '', function ($query) {
-            if (Str::contains($this->sortBy, '.')) {
-                // If it's a relationship, use orderByRelated
-                $this->orderByRelated($query, $this->sortBy, $this->sortDirection);
-            } else {
-                // Otherwise, use regular orderBy
-                $query->orderBy($this->sortBy, $this->sortDirection);
-            }
-        });
+        $this->applySorting($query);
 
         return $query;
     }

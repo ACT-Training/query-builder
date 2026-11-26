@@ -172,6 +172,30 @@ trait WithQueryBuilder
         }
     }
 
+    /**
+     * The criteria come from the browser: keep only those on a column that the
+     * table offers.
+     */
+    protected function validCriteria(): array
+    {
+        $allowed = $this->allowedCriteriaColumns();
+
+        return array_values(array_filter(
+            $this->criteria,
+            fn ($criterion) => is_array($criterion)
+                && is_string($criterion['column'] ?? null)
+                && in_array($criterion['column'], $allowed, true)
+        ));
+    }
+
+    /**
+     * The columns that people may add criteria on.
+     */
+    protected function allowedCriteriaColumns(): array
+    {
+        return $this->resolveConditions()->pluck('key')->all();
+    }
+
     protected function resolveConditions(): Enumerable
     {
         return collect($this->conditions());
@@ -190,7 +214,7 @@ trait WithQueryBuilder
         $classArray = [];
 
         if ($criteria === null) {
-            $criteria = $this->criteria;
+            $criteria = $this->validCriteria();
         }
 
         foreach ($criteria as $criterion) {
