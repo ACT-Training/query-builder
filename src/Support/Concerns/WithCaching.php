@@ -18,7 +18,7 @@ trait WithCaching
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function cache($callback)
+    protected function cache($callback)
     {
         $cacheKey = $this->id;
 

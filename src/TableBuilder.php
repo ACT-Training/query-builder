@@ -4,6 +4,7 @@
 
 namespace ACTTraining\QueryBuilder;
 
+use ACTTraining\QueryBuilder\Support\Concerns\GuardsBrowserCalls;
 use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCardView;
 use ACTTraining\QueryBuilder\Support\Concerns\WithColumns;
@@ -35,6 +36,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 abstract class TableBuilder extends Component
 {
+    use GuardsBrowserCalls;
     use WithActions;
     use WithCardView;
     use WithColumns;
@@ -86,15 +88,9 @@ abstract class TableBuilder extends Component
     #[Computed]
     public function rowsQuery()
     {
-        $query = $this->query()->when($this->sortBy !== '', function ($query) {
-            if (Str::contains($this->sortBy, '.')) {
-                // If it's a relationship, use orderByRelated
-                $this->orderByRelated($query, $this->sortBy, $this->sortDirection);
-            } else {
-                // Otherwise, use regular orderBy
-                $query->orderBy($this->sortBy, $this->sortDirection);
-            }
-        });
+        $query = $this->query();
+
+        $this->applySorting($query);
 
         if ($this->searchBy && $this->searchBy !== '') {
             // Grouped, so the searchable columns OR against each other and AND against

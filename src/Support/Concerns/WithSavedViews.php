@@ -254,9 +254,7 @@ trait WithSavedViews
         $this->searchBy = is_string($state['search'] ?? null) ? $state['search'] : '';
 
         $sortBy = $state['sort']['by'] ?? '';
-        $sortable = $this->resolveColumns()->filter(fn ($column) => $column->isSortable())->pluck('key')->all();
-
-        if (is_string($sortBy) && in_array($sortBy, $sortable, true)) {
+        if (is_string($sortBy) && in_array($sortBy, $this->allowedSortKeys(), true)) {
             $this->sortBy = $sortBy;
             $this->sortDirection = ($state['sort']['direction'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
         } else {
