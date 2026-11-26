@@ -8,6 +8,7 @@ namespace ACTTraining\QueryBuilder;
 
 use ACTTraining\QueryBuilder\Support\Collection\CriteriaCollection;
 use ACTTraining\QueryBuilder\Support\Columns\BaseColumn;
+use ACTTraining\QueryBuilder\Support\Concerns\GuardsBrowserCalls;
 use ACTTraining\QueryBuilder\Support\Concerns\WithActions;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCaching;
 use ACTTraining\QueryBuilder\Support\Concerns\WithCardView;
@@ -40,6 +41,7 @@ use Livewire\Component;
  */
 abstract class QueryBuilder extends Component
 {
+    use GuardsBrowserCalls;
     use WithActions;
     use WithCaching;
     use WithCardView;

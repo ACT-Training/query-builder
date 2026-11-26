@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Attributes\Lazy;
+use Livewire\Exceptions\MethodNotFoundException;
 use Livewire\Exceptions\NonPublicComponentMethodCall;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
@@ -147,12 +148,12 @@ it('does not let the browser call the methods that set a table up', function (st
     'pagination' => ['usePagination', [false]],
     'page name' => ['pageName', ['other']],
     'saved views' => ['enableSavedViews', ['other-table']],
-    'saved view state' => ['applySavedViewState', [['sort' => ['by' => 'title']]]],
+    'start-up hook' => ['callWithSorting', ['__lazyLoad']],
 ]);
 
 it('does not let the browser call cache() on a query builder', function () {
     Livewire::test(BrowserCallsQueryTable::class)->call('cache', 'phpversion');
-})->throws(NonPublicComponentMethodCall::class);
+})->throws(MethodNotFoundException::class);
 
 it('does not run a callback given to cache() from outside the component', function () {
     expect(method_exists(BrowserCallsQueryTable::class, 'cache'))->toBeTrue()

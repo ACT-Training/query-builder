@@ -75,19 +75,33 @@ abstract class ReportBuilder extends QueryBuilder
     }
 
     /**
-     * Criteria may be on any of the report's columns, also those not displayed.
+     * Criteria may be on any of the report's columns that the editor offers as a
+     * condition, also those not displayed.
      */
     protected function allowedCriteriaColumns(): array
     {
-        $keys = parent::allowedCriteriaColumns();
+        return array_merge(parent::allowedCriteriaColumns(), $this->conditionKeysIn($this->availableColumns()));
+    }
 
-        $available = $this->availableColumns();
+    private function conditionKeysIn(array $columns): array
+    {
+        $keys = [];
 
-        array_walk_recursive($available, function ($value, $key) use (&$keys) {
-            if ($key === 'key' && is_string($value)) {
-                $keys[] = $value;
+        foreach ($columns as $column) {
+            if (! is_array($column)) {
+                continue;
             }
-        });
+
+            if (isset($column['key'], $column['label'])) {
+                if (is_string($column['key']) && empty($column['skipCondition'])) {
+                    $keys[] = $column['key'];
+                }
+
+                continue;
+            }
+
+            array_push($keys, ...$this->conditionKeysIn($column));
+        }
 
         return $keys;
     }

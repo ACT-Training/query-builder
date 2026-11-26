@@ -38,11 +38,30 @@ class RelationGuard
 
         $type = $method->getReturnType();
 
+        // A method that a Laravel trait (such as SoftDeletes) adds to the model is a
+        // relationship only when it says so.
+        if (self::comesFromLaravelTrait($model, $name)) {
+            return $type instanceof ReflectionNamedType
+                && ! $type->isBuiltin()
+                && is_a($type->getName(), Relation::class, true);
+        }
+
         if ($type instanceof ReflectionNamedType) {
             return ! $type->isBuiltin() && is_a($type->getName(), Relation::class, true);
         }
 
         // No return type, or a union type: decide when the method has run.
         return true;
+    }
+
+    private static function comesFromLaravelTrait(Model $model, string $name): bool
+    {
+        foreach (class_uses_recursive($model) as $trait) {
+            if (str_starts_with($trait, 'Illuminate\\') && method_exists($trait, $name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

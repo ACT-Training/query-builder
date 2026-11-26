@@ -95,6 +95,16 @@ trait WithSorting
         $this->recordingDefaultSort = false;
     }
 
+    /**
+     * Livewire calls this before a method that the browser asked for. Before a lazy
+     * table loads, Livewire skips the booted hooks, so close the start-up here too.
+     * Loading a lazy table runs mount() and booted() again, so it may record.
+     */
+    public function callWithSorting($methodName, $params = [], $returnEarly = null, $metadata = null): void
+    {
+        $this->recordingDefaultSort = $methodName === '__lazyLoad';
+    }
+
     public function updatedWithSorting(string $property): void
     {
         if (in_array($property, ['sortBy', 'sortDirection'], true)) {

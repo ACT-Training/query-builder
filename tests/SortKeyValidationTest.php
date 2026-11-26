@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Schema;
+use Livewire\Exceptions\NonPublicComponentMethodCall;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 
@@ -223,12 +224,21 @@ describe('TableBuilder', function () {
             ->and(SortKeyPost::count())->toBe(3);
     });
 
-    it('ignores the same key when it comes through sort() or setSort()', function (string $method) {
-        $component = Livewire::test(SortKeyTable::class)->call($method, 'countCall.title');
+    it('ignores the same key when it comes through sort()', function () {
+        $component = Livewire::test(SortKeyTable::class)->call('sort', 'countCall.title');
 
         expect(SortKeyPost::$calls)->toBe(0)
             ->and($component->get('sortBy'))->toBe('');
-    })->with(['sort', 'setSort']);
+    });
+
+    it("ignores the same key when the table's own code calls setSort() after start-up", function () {
+        $table = Livewire::test(SortKeyTable::class)->instance();
+        $table->bootedWithSorting();
+        $table->setSort('countCall.title');
+
+        expect($table->sortBy)->toBe('')
+            ->and($table->defaultSortBy)->toBe('');
+    });
 
     it('ignores a sort key that is not a sortable column', function (string $key) {
         $component = Livewire::test(SortKeyTable::class)->set('sortBy', $key);
@@ -291,11 +301,9 @@ describe('TableBuilder', function () {
             ->and(sortKeyTitles($component))->toBe(['Charlie', 'Alpha', 'Bravo']);
     });
 
-    it('does not let the browser add a default sort through setSort()', function () {
-        $component = Livewire::test(SortKeyMountDefaultTable::class)->call('setSort', 'hidden_value');
-
-        expect($component->get('sortBy'))->toBe('');
-    });
+    it('does not let the browser call setSort()', function () {
+        Livewire::test(SortKeyMountDefaultTable::class)->call('setSort', 'hidden_value');
+    })->throws(NonPublicComponentMethodCall::class);
 
     it('does not let the browser change the recorded default sort', function () {
         Livewire::test(SortKeyMountDefaultTable::class)->set('defaultSortBy', 'hidden_value');

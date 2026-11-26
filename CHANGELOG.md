@@ -14,11 +14,16 @@ All notable changes to `query-builder` will be documented in this file.
 - **Fixed:** sorting a `QueryBuilder` by a relationship column (`author.name`) failed with an unknown column error. It now sorts as `TableBuilder` does.
 - **New:** `ensureValidSort()` clears a sort that the table doesn't allow. Call it before your own code uses `$sortBy` or `$sortDirection`, for example in an export.
 - **New:** `RelationGuard::isRelation($model, $name)` tells whether a name is a relationship of a model. Use it in your own `orderByRelated()` overrides.
+- **Fixed:** the browser can no longer call the methods that set a table up: `setSort()`, `additionalSearchables()`, `usePagination()`, `pageName()`, `enableSavedViews()`, the `display…()` methods and the like. Your own code calls them as before. Add to the list with `methodsNotCallableFromBrowser()`.
+- **Fixed:** the browser can no longer change `enableGroupBy` or `enableQueryBuilder`. Add to the list with `propertiesNotUpdatableFromBrowser()`.
+- **Fixed:** `cache()` in `WithCaching` is now protected.
+- **Fixed:** a `ReportBuilder` ignores criteria on a column marked `skipCondition`.
+- **Fixed:** `RelationGuard` doesn't treat methods that Laravel's traits (such as `SoftDeletes`) add to a model as relationships, unless they return a `Relation`.
 - Tables get a new locked public property, `$defaultSortBy`, which holds the default sort.
 
 ### Upgrading
 
-No changes are needed for tables whose sort keys are their sortable columns. A default sort set with `setSort()` in `mount()` or `config()` keeps working even if it isn't a column. A sort set later, outside those methods, must be a sortable column.
+No changes are needed for tables whose sort keys are their sortable columns. A default sort set with `setSort()` in `mount()` or `config()` keeps working even if it isn't a column. A sort set later, outside those methods, must be a sortable column. If a Blade view calls one of the set-up methods above from the browser (for example `wire:click="setSort(...)"`), use `sort()` or your own action instead.
 
 ## 3.2.0 - 2026-11-23
 
