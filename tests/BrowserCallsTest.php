@@ -70,6 +70,21 @@ class BrowserCallsTable extends TableBuilder
 #[Lazy]
 class BrowserCallsLazyTable extends BrowserCallsTable {}
 
+/** A lazy table whose own action sets the sort from what the browser sends. */
+#[Lazy]
+class BrowserCallsLazyActionTable extends BrowserCallsTable
+{
+    public function mount(): void
+    {
+        $this->setSort('id', 'desc');
+    }
+
+    public function chooseSort(string $key): void
+    {
+        $this->setSort($key);
+    }
+}
+
 class BrowserCallsQueryTable extends QueryBuilder
 {
     public function query(): Builder
@@ -149,6 +164,7 @@ it('does not let the browser call the methods that set a table up', function (st
     'page name' => ['pageName', ['other']],
     'saved views' => ['enableSavedViews', ['other-table']],
     'start-up hook' => ['callWithSorting', ['__lazyLoad']],
+    'start-up window' => ['initializeWithSorting', []],
 ]);
 
 it('does not let the browser call cache() on a query builder', function () {
@@ -186,6 +202,30 @@ it('does not record a default sort that the browser sets before a lazy table loa
         ['method' => '__lazyLoad', 'params' => [$matches[1]], 'metadata' => []],
     ]);
 })->throws(NonPublicComponentMethodCall::class);
+
+it('does not record a sort that a table action sets before or while a lazy table loads', function (array $calls) {
+    $component = Livewire::test(BrowserCallsLazyActionTable::class);
+
+    preg_match("/__lazyLoad\\('([^']+)'\\)/", html_entity_decode($component->html()), $matches);
+
+    expect($matches)->not->toBeEmpty();
+
+    $calls = array_map(fn (string $method) => $method === '__lazyLoad'
+        ? ['method' => '__lazyLoad', 'params' => [$matches[1]], 'metadata' => []]
+        : ['method' => 'chooseSort', 'params' => ['hidden_value'], 'metadata' => []], $calls);
+
+    [$snapshot] = app(HandleComponents::class)->update($component->snapshot, [], $calls);
+
+    $loaded = in_array('__lazyLoad', array_column($calls, 'method'), true);
+
+    // Loading records the table's own default from mount(), and nothing else.
+    expect($snapshot['data']['defaultSortBy'])->toBe($loaded ? 'id' : '')
+        ->and($snapshot['data']['sortBy'])->not->toBe('hidden_value');
+})->with([
+    'before it loads' => [['chooseSort']],
+    'before it loads, in the same request' => [['chooseSort', '__lazyLoad']],
+    'after it loads, in the same request' => [['__lazyLoad', 'chooseSort']],
+]);
 
 it('does not let the browser turn on report grouping or the query builder', function (string $property) {
     Livewire::test(BrowserCallsReport::class)->set($property, true);

@@ -10,6 +10,11 @@ use ReflectionNamedType;
 /**
  * Tells whether a name is a relationship of a model, before the package calls a
  * method by that name. Eloquent's own isRelation() accepts any method of the model.
+ *
+ * This is a second check only. The main check is the allow-list: a table only uses
+ * keys that it defines itself (its sortable columns, conditions and report columns).
+ * It still accepts an app's own public method with no return type, so never use it
+ * as the only check on a name that comes from the browser.
  */
 class RelationGuard
 {

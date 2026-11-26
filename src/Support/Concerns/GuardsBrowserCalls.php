@@ -15,6 +15,7 @@ trait GuardsBrowserCalls
 {
     /**
      * Public methods that the browser can't call. Override and merge to add more.
+     * When you add a public set-up method to the package, add it here too.
      */
     protected function methodsNotCallableFromBrowser(): array
     {
@@ -46,6 +47,7 @@ trait GuardsBrowserCalls
             'bootedWithSorting',
             'callGuardsBrowserCalls',
             'callWithSorting',
+            'initializeWithSorting',
         ];
     }
 
